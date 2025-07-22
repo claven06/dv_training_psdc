@@ -4,16 +4,16 @@ logic a, b, cin, s, cout;
 
 fa dut (.*);
 
-initial begin
-    $fsdbDumpfile("dump.fsdb");
-    $fsdbDumpvars;
-    $fsdbDumpMDA;
-end
-
 //initial begin
-//    $vcdplusfile("dump.vpd");
-//    $vcdpluson;
+//    $fsdbDumpfile("dump.fsdb");
+//    $fsdbDumpvars;
+//    $fsdbDumpMDA;
 //end
+
+initial begin
+    $vcdplusfile("dump.vpd");
+    $vcdpluson;
+end
 
 initial begin
     a = '0;

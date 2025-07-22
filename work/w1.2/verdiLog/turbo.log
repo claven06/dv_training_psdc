@@ -1,3 +1,0 @@
-Command Line: /home/synopsys/verdi/W-2024.09-SP2/platform/LINUXAMD64/bin/Novas -ssf dump.fsdb
-uname(Linux psdc-eda04.psdc.org.my 4.18.0-553.52.1.el8_10.x86_64 #1 SMP Wed May 14 09:36:12 EDT 2025 x86_64)
-au time 8.509208 2.350037 0.186770 delta 207626240 207626240 total 1229631488 1229631488

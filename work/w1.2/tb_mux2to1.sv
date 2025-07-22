@@ -7,6 +7,17 @@ logic y;
 
 mux2to1 dut (.*);
 
+//initial begin
+//    $fsdbDumpfile("dump.fsdb");
+//    $fsdbDumpvars;
+//    $fsdbDumpMDA;
+//end
+
+initial begin
+    $vcdplusfile("dump.vpd");
+    $vcdpluson;
+end
+
 initial begin
     a = '0;
     b = '0;
@@ -29,12 +40,4 @@ initial begin
     $finish;
 end
 
-
-initial begin
-    $vcdplusfile("dump.vpd");
-    $vcdpluson;
-end
-
-
 endmodule
-
