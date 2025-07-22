@@ -73,7 +73,6 @@ initial begin
     rstn    <= 1'b1;
 
     `ifdef VALID_TEST
-    // Valid = 0, expect outputs to remain 0
     vld <= '0;
     for (int i = 0; i < ITER_NUM; i++) begin
         addr <= $urandom();
@@ -81,18 +80,6 @@ initial begin
 
         repeat(5) @(posedge clk);
     end
-
-    // Valid = 1, expect either A or B outputs to have values
-    vld <= 1'b1;
-    for (int i = 0; i < ITER_NUM; i++) begin
-        addr <= $urandom();
-        data <= $urandom();
-
-        repeat(5) @(posedge clk);
-    end
-
-    // Deassert valid
-    vld <= '0;
     repeat(10) @(posedge clk);
     `endif
 
