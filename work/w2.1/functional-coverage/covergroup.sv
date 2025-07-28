@@ -1,0 +1,47 @@
+
+//covergroup
+
+module tb;
+
+  // Declare some variables that can be "sampled" in the covergroup
+  bit [1:0] mode;
+  bit [2:0] cfg;
+
+  // Declare a clock to act as an event that can be used to sample
+  // coverage points within the covergroup
+  bit clk;
+  always #20 clk = ~clk;
+
+  // "cg" is a covergroup that is sampled at every posedge clk
+  covergroup cg @ (posedge clk);
+    coverpoint mode;
+  endgroup
+
+  // Create an instance of the covergroup
+  cg  cg_inst;
+
+  initial begin
+    // Instantiate the covergroup object similar to a class object
+    cg_inst= new();
+
+    cg_inst.set_inst_name("mode_cov");
+//    cg_inst.start();    //Begins coverage collection
+    // Stimulus : Simply assign random values to the coverage variables
+    // so that different values can be sampled by the covergroup object
+    for (int i = 0; i < 5; i++) begin
+      @(negedge clk);
+      mode = $random;
+      cfg  = $random;
+      $display ("[%0t] mode=0x%0h cfg=0x%0h", $time, mode, cfg);
+    end
+  end
+
+  // At the end of 500ns, terminate test and print collected coverage
+  initial begin
+    #500 
+//    cg_inst.stop(); //ends coverage collection
+    $display ("Instance Coverage = %0.2f %%", cg_inst.get_inst_coverage());
+    $display ("Cumulative Coverage = %0.2f %%", cg_inst.get_coverage());
+    $finish;
+  end
+endmodule
