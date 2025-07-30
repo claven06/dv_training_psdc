@@ -1,6 +1,6 @@
 #variables
-VCS_OPTS = -sverilog
-RUN_OPTS = -R 
+VCS_OPTS = -sverilog -kdb
+RUN_OPTS = -R
 
 #Grab the second word in the make command (e.g., the .sv file)
 SRC      = $(filter %.sv, $(MAKECMDGOALS))

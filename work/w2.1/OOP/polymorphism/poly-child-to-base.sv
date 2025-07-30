@@ -21,6 +21,7 @@ class ExtPacket extends Packet;
 
 	// This is a new variable only available in child class
 	int data;
+    int addr;
 
     function new (int addr, data);
         super.new (addr); 	// Calls 'new' method of parent class
@@ -32,26 +33,44 @@ class ExtPacket extends Packet;
 	endfunction
 endclass
 
+class ExtExtPacket extends ExtPacket;
+
+	// This is a new variable only available in child class
+	int data2;
+
+    function new (int addr, data, data2);
+        super.new (addr, data); 	// Calls 'new' method of parent class
+        this.data2 = data2;
+    endfunction
+
+	function void display ();
+		$display ("[Grandchild] addr=0x%0h data=0x%0h data2=0x%0h", addr, data, data2);
+	endfunction
+endclass
+
 module tb;
 	Packet      bc; 	// bc stands for BaseClass
 	ExtPacket   sc; 	// sc stands for SubClass
+    ExtExtPacket ssc;   // ssc stands for SubSubClass
 
 	initial begin
-		sc = new (32'hfeed_feed, 32'h1234_5678);
+		ssc = new (32'hfeed_feed, 32'h1234_5678, 32'ha5a5_a5a5);
 
 		// Assign sub-class to base-class handle
+		sc = ssc;
 		bc = sc;
 
 		bc.display ();
 		sc.display ();
+		ssc.display ();
 
 // Even though bc points to the child class instance, when display() function
-// is called from bc it still invoked the display() function within the 
-// base class. This is because the function was called based on the type of 
-// the handle instead of the type of object the handle is pointing to. 
-// Now let's try to reference a subclass member via a base class handle for 
+// is called from bc it still invoked the display() function within the
+// base class. This is because the function was called based on the type of
+// the handle instead of the type of object the handle is pointing to.
+// Now let's try to reference a subclass member via a base class handle for
 // which you'll get a compilation error.
-  
+
         // Print variable in sub-class that is pointed to by
         // base class handle
 		//$display ("data=0x%0h", bc.data);

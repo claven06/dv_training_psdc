@@ -16,10 +16,10 @@ module tb;
   initial begin
     Packet p1 = new();
     Packet p2 = new();
-//    Packet::show_count(); // Legal: called without object
-    
+    Packet::show_count(); // Legal: called without object
+
     p2.show_count();      // Also legal, but not recommended
-    p1.show_count();      //  
+    p1.show_count();      //
 
   end
 endmodule

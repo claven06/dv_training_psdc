@@ -25,7 +25,7 @@ module tb;
       	// In a for loop, lets randomize this class handle
       	// 5 times and see how the value of mode changes
         // A class can be randomized by calling its "randomize()"
-		for (int i = 0; i < 5; i++) begin
+		for (int i = 0; i < 20; i++) begin
 			abc.randomize();
           $display ("mode = 0x%0h", abc.mode);
 		end

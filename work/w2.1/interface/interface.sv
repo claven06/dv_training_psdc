@@ -10,12 +10,16 @@ interface myBus #(parameter D_WIDTH=8) (input clk);
 
 endinterface
 
-module dut (myBus busIf);
-  always @ (posedge busIf.clk)
-    if (busIf.enable)
-      busIf.data <= busIf.data+1;
+module dut #(parameter D_WIDTH=8) (
+    input logic clk,
+    input logic enable,
+    output logic [D_WIDTH-1:0] data
+);
+  always @ (posedge clk)
+    if (enable)
+      data <= data+1;
     else
-      busIf.data <= 0;
+      data <= 0;
 endmodule
 
 
@@ -30,7 +34,10 @@ module tb_top;
   myBus busIf (clk);
 
   // Instantiate the DUT; pass modport DUT of busIf
-  dut dut0 (busIf.DUT);
+  dut dut0 (.clk(busIf.clk),
+    .data(busIf.data),
+    .enable(busIf.enable)
+);
 
   // Testbench code : let's wiggle enable
   initial begin
@@ -45,8 +52,8 @@ module tb_top;
     // Monitor signals
     $monitor("T=%0d clk=%b enable=%b data=%b",$time,clk,busIf.enable,busIf.data);
     //enable wave dump
-    $dumpfile("dump.vcd"); 
+    $dumpfile("dump.vcd");
     $dumpvars;
   end
-    
+
 endmodule

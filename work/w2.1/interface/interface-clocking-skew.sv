@@ -27,6 +27,11 @@ interface _if (input bit clk);
     input #0 output #2 req;
   endclocking
 
+  clocking cb_15 @(posedge clk);
+    input #15 gnt;
+    input #0 output #15  req;
+  endclocking
+
 endinterface
 
 module tb;
@@ -39,6 +44,7 @@ module tb;
     if0.cb_0.req <= 0;
     if0.cb_2.req <= 0;
     if0.cb_5.req <= 0;
+    if0.cb_15.req <= 0;
   end
 
   // Instantiate the interface
@@ -52,17 +58,12 @@ module tb;
   // Drive stimulus
   initial begin
     for (int i = 0; i < 10; i++) begin
-      bit[3:0] delay = $random;
-      $display("[T=%0t] i=%0d delay=%0d",$time,i,delay);
-      repeat (delay) @(posedge if0.clk);
-//      if0.cb_5.req <= ~if0.cb_5.req;
+      repeat (5) @(posedge if0.clk);
 
-      case(i%3)
-      0: if0.cb_0.req <= ~if0.cb_0.req;
-      1: if0.cb_2.req <= ~if0.cb_2.req;
-      2: if0.cb_5.req <= ~if0.cb_5.req;
-      endcase
-
+      if0.cb_0.req <= ~if0.cb_0.req;
+      if0.cb_2.req <= ~if0.cb_2.req;
+      if0.cb_5.req <= ~if0.cb_5.req;
+      if0.cb_15.req <= ~if0.cb_15.req;
     end
     #20 $finish;
   end
@@ -70,9 +71,15 @@ module tb;
   initial begin
     // Monitor signals
     $monitor("T=%0t clk=%0b req=%0b gnt=%0b",$time,clk,if0.req,if0.gnt);
+    $monitor("T=%0t clk=%0b cb_0.req=%0b  cb_0.gnt=%0b ",$time,clk,if0.cb_0.req,if0.cb_0.gnt);
+    $monitor("T=%0t clk=%0b cb_2.req=%0b  cb_2.gnt=%0b ",$time,clk,if0.cb_2.req,if0.cb_2.gnt);
+    $monitor("T=%0t clk=%0b cb_5.req=%0b  cb_5.gnt=%0b ",$time,clk,if0.cb_5.req,if0.cb_5.gnt);
+    $monitor("T=%0t clk=%0b cb_15.req=%0b cb_15.gnt=%0b",$time,clk,if0.cb_15.req,if0.cb_15.gnt);
     //enable wave dump
-    $dumpfile("dump.vcd"); 
-    $dumpvars;
+    // $vcdplusfile("dump.vpd");  // Set file name
+    //$vcdpluson;                // Start dumping all signals
+    $fsdbDumpfile("dump.fsdb");       // Specify output file name
+    $fsdbDumpvars(0, tb);  // Dump all signals under the testbench
   end
 
 endmodule

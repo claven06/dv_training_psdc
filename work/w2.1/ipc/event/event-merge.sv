@@ -1,12 +1,14 @@
 module tb;
 
   // Create event variables
-  event event_a, event_b;
+  event event_a, event_b, event_c;
 
   initial begin
     // Comment code below and try again to see Thread2 finish later
-    event_b = event_a;
-    $display("[T=%0t] initial begin: setting event_b = event_a",$time);
+    event_c = event_a;
+    $display("[T=%0t] initial begin: setting event_c = event_a",$time);
+    event_a = event_b;
+    $display("[T=%0t] initial begin: setting event_a = event_b",$time);
 
     fork
       // Thread1: waits for event_a to be triggered
@@ -19,6 +21,12 @@ module tb;
       begin
         wait(event_b.triggered);
         $display ("[T=%0t] Thread2: Wait for event_b is over", $time);
+      end
+
+      // Thread2: waits for event_b to be triggered
+      begin
+        wait(event_c.triggered);
+        $display ("[T=%0t] Thread2: Wait for event_c is over", $time);
       end
 
       // Thread3: triggers event_a at 20ns

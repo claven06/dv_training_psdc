@@ -3,13 +3,16 @@ class Packet;
 	function display ();
 		$display ("[Base] addr=0x%0h", addr);
 	endfunction
+	function funky ();
+		$display ("[Base] funky=0x%0h", addr);
+	endfunction
 endclass
 
 class extPacket extends Packet;
-	function new ();
-		super.new ();   // call base class display method
-        $display("[Child] addr=0x%0h", addr);
-	endfunction
+    function display ();
+		super.display ();   // call base class display method
+         $display("[Child] addr=0x%0h", addr);
+    endfunction
 endclass
 
 module tb;
@@ -19,7 +22,8 @@ module tb;
   	initial begin
       ep = new();
       p = new();
-      p.display();
+      ep.display();
+      ep.funky();
     end
 endmodule
 

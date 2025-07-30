@@ -56,6 +56,18 @@ module tb_top;
       fork
          #10 Gen.genData ();
          Drv.drvData ();
-      join_none
+      join
+      fork
+         #10 Gen.genData ();
+         Drv.drvData ();
+      join
+      fork
+         #10 Gen.genData ();
+         Drv.drvData ();
+      join
+      fork
+         #10 Gen.genData ();
+         Drv.drvData ();
+      join
    end
 endmodule

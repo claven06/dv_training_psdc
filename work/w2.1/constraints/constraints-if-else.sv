@@ -1,9 +1,9 @@
 //
-//In the code shown below, the first if block checks whether mode is 
-//inside 5 and 11. If this condition is true, then mod_en should be 
-//constrained to 1 and if it is false, then the else part is executed. 
-//There is another if-else block within the else part which checks 
-//if mode is 1 and tries to satisfy the constraints mentioned in 
+//In the code shown below, the first if block checks whether mode is
+//inside 5 and 11. If this condition is true, then mod_en should be
+//constrained to 1 and if it is false, then the else part is executed.
+//There is another if-else block within the else part which checks
+//if mode is 1 and tries to satisfy the constraints mentioned in
 //the appropriate parts.
 //
 class ABC;

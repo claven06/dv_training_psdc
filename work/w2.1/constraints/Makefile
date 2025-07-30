@@ -1,6 +1,7 @@
 #variables
+SEED ?= 1234
 VCS_OPTS = -sverilog -kdb -debug_access+all
-RUN_OPTS = -R 
+RUN_OPTS = -R +ntb_random_seed=${SEED}
 FILE_TO_DEL = csrc simv simv.daidir ucli.key libnz4w_r.soLog verdiLog \
 verdi_config_file inter.fsdb dump.vcd novas*
 
@@ -17,7 +18,7 @@ run:
 #	./simv $(RUN_OPTS)
 
 clean:
-	rm -rf $(FILE_TO_DEL) 
+	rm -rf $(FILE_TO_DEL)
 
 # Dummy target to absorb extra argument (e.g., .sv)
 %:

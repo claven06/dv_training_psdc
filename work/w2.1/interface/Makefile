@@ -1,6 +1,6 @@
 #variables
 VCS_OPTS = -sverilog -kdb -debug_access+all
-RUN_OPTS = -R 
+RUN_OPTS = -R
 FILE_TO_DEL = csrc simv simv.daidir ucli.key libnz4w_r.soLog verdiLog \
 verdi_config_file inter.fsdb dump.vcd novas*
 
@@ -17,11 +17,17 @@ run:
 #	./simv $(RUN_OPTS)
 
 clean:
-	rm -rf $(FILE_TO_DEL) 
+	rm -rf $(FILE_TO_DEL)
+	rm -rf csrc dump* DVEfiles simv simv.daidir ucli.key
+	rm -rf novas* verdiLog
+
 
 # Dummy target to absorb extra argument (e.g., .sv)
 %:
 	@true
+
+wave:
+	verdi -ssf dump.fsdb &
 
 .PHONY: all build run clean
 
