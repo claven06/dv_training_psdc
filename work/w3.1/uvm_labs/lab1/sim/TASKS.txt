@@ -1,0 +1,77 @@
+% export NR=1
+Generate the run commands only without executing the run commands
+
+% make dv
+Observe STDOUT
+
+% make dv > com
+Pipe STDOUT to a file named stdout
+
+% vcs...
+Run the vcs command
+
+% qrun
+Or run this quick run file
+
+% vim top_comp.log
+No TimeScale specified
+
+% vcs... -timescale=1ns/1ps
+Run the vcs command with the timescale setting
+
+% top\_simv -l top\_sim.log
+Run the simulation
+Observe the UVM messages
+
+% top\_simv -l top\_sim.log +UVM_NO_RELNOTES
+As suggested, add in +UVM_NO_RELNOTES to suppress the release notes
+
+% vim qrun
+Add this to the vcs command, see below
+ -timescale=1ns/1ps
+
+% vim ../design/my_uvm_pkg.sv
+% vim ../design/top.f
+% vim ../design/top_tb.sv
+Get familiar with the contents of these files
+
+% mv ../design/my_uvm_pkg.sv ../design/top_uvm_pkg.sv
+Change the package file name
+
+% vim ../design/top.f
+% vim ../design/top_tb.sv
+% vim ../design/top_uvm_pkg.sv
+Modify these files accordingly
+
+% qrun
+Observe STDOUT
+Observe the UVM messages
+
+% vim ../design/top_tb.sv
+Change this line run_test("my_first_test"); to run_test("top_first_test");
+The test name has been changed
+
+% vim ../design/top_uvm_pkg.sv
+Modify this file accordingly
+
+% qrun
+Observe STDOUT
+Observe the UVM messages
+
+% vim ../design/top_uvm_pkg.sv
+Add in these into the run phase, see below
+      `uvm_warning("TEST", "Hello UVM World!")
+      `uvm_error("TEST", "Hello UVM World!")
+      `uvm_fatal("TEST", "Hello UVM World!")
+
+% qrun
+Observe STDOUT
+Observe the UVM messages
+
+% vim ../design/top_uvm_pkg.sv
+Comment out this
+      `uvm_fatal("TEST", "Hello UVM World!")
+
+% qrun
+Observe STDOUT
+Observe the UVM messages

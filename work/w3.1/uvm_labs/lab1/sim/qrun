@@ -1,0 +1,2 @@
+vcs -l top\_comp.log -sverilog -debug_access+all -kdb -debug_report -top top_tb -o top\_simv -ntb_opts uvm-ieee-2020-2.0 -file /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top.f  -timescale=1ns/1ps
+top\_simv -l top\_sim.log +UVM_NO_RELNOTES

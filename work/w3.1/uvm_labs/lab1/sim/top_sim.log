@@ -1,0 +1,29 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/sim/./top_simv -l top_sim.log +UVM_NO_RELNOTES
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  4 14:26 2025
+UVM_INFO @ 0: reporter [RNTST] Running test top_first_test...
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top_uvm_pkg.sv(16) @ 0: uvm_test_top.bb [BUILD] Build phase executed
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top_uvm_pkg.sv(41) @ 0: uvm_test_top [TEST] Hello UVM World!
+UVM_WARNING /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top_uvm_pkg.sv(42) @ 0: uvm_test_top [TEST] Hello UVM World!
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top_uvm_pkg.sv(43) @ 0: uvm_test_top [TEST] Hello UVM World!
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top_uvm_pkg.sv(45) @ 0: uvm_test_top [TEST] Factory returned test of type=base_build, path=uvm_test_top.bb
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 0: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :    4
+UVM_WARNING :    1
+UVM_ERROR :    1
+UVM_FATAL :    0
+** Report counts by id
+[BUILD]     1
+[RNTST]     1
+[TEST]     4
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+$finish at simulation time                    0
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 0 ps
+CPU Time:      0.200 seconds;       Data structure size:   0.5Mb
+Mon Aug  4 14:26:04 2025

@@ -1,0 +1,30 @@
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO lab8/design/bus_test.sv @ 0: uvm_test_top [BTOP/TEST] Launching the sequence
+UVM_INFO lab8/design/bus_sequence.sv @ 0: uvm_test_top.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO lab8/design/bus_sequence_prio.sv @ 0: uvm_test_top.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO lab8/design/bus_sequence_prio.sv @ 0: uvm_test_top.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO lab8/design/bus_monitor.sv @ 0: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xf5, data=0x83ed6dec, write=0
+UVM_INFO lab8/design/bus_driver.sv @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xf5, data = 0x83ed6dec, write = 0
+UVM_INFO lab8/design/bus_monitor.sv @ 10000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xf5, data=0xcffde2ff, write=0
+UVM_INFO lab8/design/bus_driver.sv @ 10000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xf5, data = 0xcffde2ff, write = 0
+UVM_INFO lab8/design/bus_monitor.sv @ 20000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xfd, data=0x4fd22442, write=0
+UVM_INFO lab8/design/bus_driver.sv @ 20000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0x4fd22442, write = 0
+UVM_INFO lab8/design/bus_monitor.sv @ 30000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xac, data=0x4728c1ad, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 30000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xac, data = 0x4728c1ad, write = 1
+UVM_INFO lab8/design/bus_monitor.sv @ 40000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xe3, data=0x8fa734ed, write=0
+UVM_INFO lab8/design/bus_driver.sv @ 40000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xe3, data = 0x8fa734ed, write = 0
+UVM_INFO lab8/design/bus_monitor.sv @ 50000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xa5, data=0x2f989233, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 50000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xa5, data = 0x2f989233, write = 1
+UVM_INFO lab8/design/bus_monitor.sv @ 60000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xe5, data=0x6862a4b0, write=0
+UVM_INFO lab8/design/bus_driver.sv @ 60000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xe5, data = 0x6862a4b0, write = 0
+UVM_INFO lab8/design/bus_monitor.sv @ 70000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xae, data=0x55e426c4, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 70000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xae, data = 0x55e426c4, write = 1
+UVM_INFO lab8/design/bus_monitor.sv @ 80000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xae, data=0x1c4db6d6, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 80000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xae, data = 0x1c4db6d6, write = 1
+UVM_INFO lab8/design/bus_monitor.sv @ 90000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xa8, data=0x439292d7, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 90000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xa8, data = 0x439292d7, write = 1
+UVM_INFO lab8/design/bus_monitor.sv @ 100000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xa6, data=0x03cd9d9d, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 100000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xa6, data = 0x03cd9d9d, write = 1
+UVM_INFO lab8/design/bus_monitor.sv @ 110000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xaf, data=0x7e4182d8, write=1
+UVM_INFO lab8/design/bus_driver.sv @ 110000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xaf, data = 0x7e4182d8, write = 1
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 120000: reporter [UVM/REPORT/SERVER] 

@@ -1,0 +1,115 @@
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO lab13/design/bus_consumer.sv @ 0: uvm_test_top.env.consumer [FIFO_INFO] FIFO Size: 4
+UVM_INFO lab13/design/bus_consumer.sv @ 0: uvm_test_top.env.consumer [FIFO_INFO] FIFO Process Time: 13
+UVM_INFO lab13/design/bus_test.sv @ 0: uvm_test_top [TEST] Starting sequences with config:
+UVM_INFO lab13/design/bus_test.sv @ 0: uvm_test_top [TEST] Launching the sequence
+UVM_INFO lab13/design/bus_sequence.sv @ 0: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 0: uvm_test_top.env.agent.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 0: uvm_test_top.env.agent.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 0: uvm_test_top.env.agent.sqr@@hseq [high_prio_seq] Sent 1/2 high sequences, next sequence after 3
+UVM_INFO lab13/design/bus_monitor.sv @ 3000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xfb, data=0x848803b1, write=0
+UVM_INFO lab13/design/bus_consumer.sv @ 3000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=1): addr=0xfb, data=0x848803b1, write=0
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 3000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xfb, data=0x848803b1, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 3000: uvm_test_top.env.agent.drv [DRIVER] Driving high transaction: addr=0xfb, data=0x848803b1, write=0
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 3000: uvm_test_top.env.agent.sqr@@hseq [high_prio_seq] Sent 2/2 high sequences, next sequence after 3
+UVM_INFO lab13/design/bus_monitor.sv @ 6000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xf4, data=0xfb0e1d7b, write=0
+UVM_INFO lab13/design/bus_consumer.sv @ 6000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xf4, data=0xfb0e1d7b, write=0
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 6000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xf4, data=0xfb0e1d7b, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 6000: uvm_test_top.env.agent.drv [DRIVER] Driving high transaction: addr=0xf4, data=0xfb0e1d7b, write=0
+UVM_INFO lab13/design/bus_sequence.sv @ 6000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 1/8 normal sequences, next sequence after 13
+UVM_INFO lab13/design/bus_consumer.sv @ 13000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=1): addr=0xfb, data=0x848803b1, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 13000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfb, data=0x848803b1, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab13/design/bus_monitor.sv @ 19000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xa0, data=0x73dc5be0, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 19000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xa0, data=0x73dc5be0, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 19000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xa0, data=0x73dc5be0, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 19000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xa0, data=0x73dc5be0, write=1
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 19000: uvm_test_top.env.agent.sqr@@lseq [low_prio_seq] Sent 1/5 low sequences, next sequence after 5
+UVM_INFO lab13/design/bus_monitor.sv @ 24000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xef, data=0x38ceeae4, write=0
+UVM_INFO lab13/design/bus_consumer.sv @ 24000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xef, data=0x38ceeae4, write=0
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 24000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xef, data=0x38ceeae4, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 24000: uvm_test_top.env.agent.drv [DRIVER] Driving low transaction: addr=0xef, data=0x38ceeae4, write=0
+UVM_INFO lab13/design/bus_sequence.sv @ 24000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 2/8 normal sequences, next sequence after 10
+UVM_INFO lab13/design/bus_consumer.sv @ 26000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xf4, data=0xfb0e1d7b, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 26000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xf4, data=0xfb0e1d7b, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab13/design/bus_monitor.sv @ 34000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xa0, data=0x0dc9cefd, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 34000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xa0, data=0x0dc9cefd, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 34000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xa0, data=0x0dc9cefd, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 34000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xa0, data=0x0dc9cefd, write=1
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 34000: uvm_test_top.env.agent.sqr@@lseq [low_prio_seq] Sent 2/5 low sequences, next sequence after 10
+UVM_INFO lab13/design/bus_consumer.sv @ 39000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xa0, data=0x73dc5be0, write=1
+UVM_INFO lab13/design/bus_monitor.sv @ 44000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xed, data=0xc5fe5ebe, write=0
+UVM_INFO lab13/design/bus_consumer.sv @ 44000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xed, data=0xc5fe5ebe, write=0
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 44000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xed, data=0xc5fe5ebe, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 44000: uvm_test_top.env.agent.drv [DRIVER] Driving low transaction: addr=0xed, data=0xc5fe5ebe, write=0
+UVM_INFO lab13/design/bus_sequence.sv @ 44000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 3/8 normal sequences, next sequence after 15
+UVM_INFO lab13/design/bus_consumer.sv @ 52000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xef, data=0x38ceeae4, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 52000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xef, data=0x38ceeae4, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab13/design/bus_monitor.sv @ 59000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xa3, data=0x62f3e20d, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 59000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xa3, data=0x62f3e20d, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 59000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xa3, data=0x62f3e20d, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 59000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xa3, data=0x62f3e20d, write=1
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 59000: uvm_test_top.env.agent.sqr@@lseq [low_prio_seq] Sent 3/5 low sequences, next sequence after 6
+UVM_INFO lab13/design/bus_consumer.sv @ 65000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xa0, data=0x0dc9cefd, write=1
+UVM_INFO lab13/design/bus_monitor.sv @ 65000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xe7, data=0xc6dd871e, write=0
+UVM_INFO lab13/design/bus_consumer.sv @ 65000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xe7, data=0xc6dd871e, write=0
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 65000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe7, data=0xc6dd871e, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 65000: uvm_test_top.env.agent.drv [DRIVER] Driving low transaction: addr=0xe7, data=0xc6dd871e, write=0
+UVM_INFO lab13/design/bus_sequence.sv @ 65000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 4/8 normal sequences, next sequence after 10
+UVM_INFO lab13/design/bus_monitor.sv @ 75000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xae, data=0xec6878b4, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 75000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=4): addr=0xae, data=0xec6878b4, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 75000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xae, data=0xec6878b4, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 75000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xae, data=0xec6878b4, write=1
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 75000: uvm_test_top.env.agent.sqr@@lseq [low_prio_seq] Sent 4/5 low sequences, next sequence after 8
+UVM_INFO lab13/design/bus_consumer.sv @ 78000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=3): addr=0xed, data=0xc5fe5ebe, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 78000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xed, data=0xc5fe5ebe, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab13/design/bus_monitor.sv @ 83000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xe5, data=0xb90c1e32, write=0
+UVM_INFO lab13/design/bus_consumer.sv @ 83000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=4): addr=0xe5, data=0xb90c1e32, write=0
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 83000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe5, data=0xb90c1e32, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 83000: uvm_test_top.env.agent.drv [DRIVER] Driving low transaction: addr=0xe5, data=0xb90c1e32, write=0
+UVM_INFO lab13/design/bus_sequence.sv @ 83000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 5/8 normal sequences, next sequence after 12
+UVM_INFO lab13/design/bus_consumer.sv @ 91000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=3): addr=0xa3, data=0x62f3e20d, write=1
+UVM_INFO lab13/design/bus_monitor.sv @ 95000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xaf, data=0xae162c00, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 95000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=4): addr=0xaf, data=0xae162c00, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 95000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xaf, data=0xae162c00, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 95000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xaf, data=0xae162c00, write=1
+UVM_INFO lab13/design/bus_sequence_prio.sv @ 95000: uvm_test_top.env.agent.sqr@@lseq [low_prio_seq] Sent 5/5 low sequences, next sequence after 6
+UVM_INFO lab13/design/bus_monitor.sv @ 101000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xe4, data=0x4f65b8ee, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 101000: uvm_test_top.env.consumer [FIFO_OVERFLOW] FIFO overflow! Discarding transaction: addr=0xe4, data=0x4f65b8ee, write=0 >>>>>>>>>>>>>>>>
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 101000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe4, data=0x4f65b8ee, write=0 ================
+UVM_INFO lab13/design/bus_driver.sv @ 101000: uvm_test_top.env.agent.drv [DRIVER] Driving low transaction: addr=0xe4, data=0x4f65b8ee, write=0
+UVM_INFO lab13/design/bus_sequence.sv @ 101000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 6/8 normal sequences, next sequence after 14
+UVM_INFO lab13/design/bus_consumer.sv @ 104000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=3): addr=0xe7, data=0xc6dd871e, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 104000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe7, data=0xc6dd871e, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab13/design/bus_monitor.sv @ 115000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xa0, data=0x953eef6c, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 115000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=4): addr=0xa0, data=0x953eef6c, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 115000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xa0, data=0x953eef6c, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 115000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xa0, data=0x953eef6c, write=1
+UVM_INFO lab13/design/bus_sequence.sv @ 115000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 7/8 normal sequences, next sequence after 15
+UVM_INFO lab13/design/bus_consumer.sv @ 117000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=3): addr=0xae, data=0xec6878b4, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 130000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xe5, data=0xb90c1e32, write=0
+UVM_ERROR lab13/design/bus_consumer.sv @ 130000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe5, data=0xb90c1e32, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab13/design/bus_monitor.sv @ 130000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xaa, data=0x5000c2e0, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 130000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xaa, data=0x5000c2e0, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 130000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xaa, data=0x5000c2e0, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 130000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xaa, data=0x5000c2e0, write=1
+UVM_INFO lab13/design/bus_sequence.sv @ 130000: uvm_test_top.env.agent.sqr@@seq [bus_sequence] Sent 8/8 normal sequences, next sequence after 13
+UVM_INFO lab13/design/bus_consumer.sv @ 143000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xaf, data=0xae162c00, write=1
+UVM_INFO lab13/design/bus_monitor.sv @ 143000: uvm_test_top.env.agent.mon [MONITOR] Observed transaction: addr=0xaa, data=0x5934074b, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 143000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=3): addr=0xaa, data=0x5934074b, write=1
+UVM_INFO lab13/design/bus_scoreboard.sv @ 143000: uvm_test_top.env.scb [SCOREBOARD] PASS: addr=0xaa, data=0x5934074b, write=1
+UVM_INFO lab13/design/bus_driver.sv @ 143000: uvm_test_top.env.agent.drv [DRIVER] Driving normal transaction: addr=0xaa, data=0x5934074b, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 156000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=2): addr=0xa0, data=0x953eef6c, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 169000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=1): addr=0xaa, data=0x5000c2e0, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 182000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing transaction (remaining=0): addr=0xaa, data=0x5934074b, write=1
+UVM_INFO lab13/design/bus_consumer.sv @ 182000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total received transactions: 15
+UVM_INFO lab13/design/bus_consumer.sv @ 182000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total processed transactions: 14
+UVM_INFO lab13/design/bus_consumer.sv @ 182000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total errors detected: 6
+UVM_INFO lab13/design/bus_consumer.sv @ 182000: uvm_test_top.env.consumer [CONSUMER_REPORT] FIFO overflows: 1
+UVM_INFO lab13/design/bus_consumer.sv @ 182000: uvm_test_top.env.consumer [CONSUMER_REPORT] Maximum FIFO utilization: 5/4
+UVM_INFO lab13/design/bus_coverage.sv @ 182000: uvm_test_top.env.cov [COVERAGE] Coverage bus_cg      : 58.33%
+UVM_INFO lab13/design/bus_coverage.sv @ 182000: uvm_test_top.env.cov [COVERAGE] Coverage addr_cp     : 50.00%
+UVM_INFO lab13/design/bus_coverage.sv @ 182000: uvm_test_top.env.cov [COVERAGE] Coverage data_cp     : 33.33%
+UVM_INFO lab13/design/bus_coverage.sv @ 182000: uvm_test_top.env.cov [COVERAGE] Coverage write_cp    : 100.00%
+UVM_INFO lab13/design/bus_coverage.sv @ 182000: uvm_test_top.env.cov [COVERAGE] Coverage addr_x_write: 50.00%
+UVM_INFO lab13/design/bus_scoreboard.sv @ 182000: uvm_test_top.env.scb [SCOREBOARD] Test Results: Passed=8 Failed=7
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 182000: reporter [UVM/REPORT/SERVER] 

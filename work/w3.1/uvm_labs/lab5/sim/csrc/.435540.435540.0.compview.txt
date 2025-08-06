@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1754367289.737940047, "rt":14.02, "ut":14.12, "st":0.53}}
+{"vcselab":{"timestamp_begin":1754367303.831072430, "rt":0.15, "ut":0.12, "st":0.02}}
+{"link":{"timestamp_begin":1754367304.036228888, "rt":0.90, "ut":0.66, "st":0.26}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1754367289.078041325}
+{"VCS_COMP_START_TIME": 1754367289.078041325}
+{"VCS_COMP_END_TIME": 1754367305.063234217}
+{"VCS_USER_OPTIONS": "-full64 -l ptop_comp.log -sverilog +v2k +vcs+lic+wait +vcs+flush+all -debug_access+all -kdb -debug_report -top ptop_tb -o ptop_simv -ntb_opts uvm-ieee-2020-2.0 +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR -file /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab5/design/ptop.f -timescale=1ns/1ps"}
+{"vcs1": {"peak_mem": 533436}}
+{"vcselab": {"peak_mem": 162444}}

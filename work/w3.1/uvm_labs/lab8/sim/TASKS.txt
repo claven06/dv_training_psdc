@@ -1,0 +1,146 @@
+bus/
+├── bus_transaction.sv      // Transaction class
+├── bus_sequence.sv         // Sequence class
+├── bus_sequence_prio.sv    // Additional Sequence class
+├── bus_sequencer.sv        // Sequencer class
+├── bus_driver.sv           // Driver class
+├── bus_monitor.sv          // Monitor class
+├── bus_test.sv             // Test class
+└── bus_tb.sv               // Testbench top
+
+Data Flow
+─────────
+1. bus_tb - Simulation begins and runs bus_test class
+2. bus_test::build_phase() - Instantiate bus_sequencer and bus_driver. Use UVM factory to create these components
+3. bus_test::connect_phase() - Driver’s seq_item_port connects to sequencer’s seq_item_export. This enables the sequencer to send transactions to the driver. The monitor analysis implementation (ap_implementation) is connected to the driver's analysis port (ap)
+4. bus_test::run_phase() - Three sequence objects are created: bus_sequence, high_prio_seq and low_prio_seq. Uses fork...join to run all 3 sequences in parallel. The test's objection is raised
+5. bus_sequence::body() - Transactions are created. Each transaction is randomized. There are three sequences: bus_sequence creates 7 transactions, high_prio_seq creates 3 transactions and prevents others from accessing sequencer while locked, low_prio_seq creates 3 transactions. All sequences are done using start_item() and finish_item()
+6. Sequencer Arbitration - Sequencer receives requests from all 3 sequences. Since high_prio_seq locks the sequencer, it gets exclusive access while locked. Normal and low priority sequences compete for access after lock is released
+7. bus_driver::run_phase() - The driver receives each transaction (get_next_item(tr)). Prints the transaction data. Waits for 10 time units (simulating DUT interaction). Acknowledges transaction completion (item_done()). It also writes each received transaction to the analysis port: ap.write(tr). Now transactions are sent to both the DUT simulation (not implemented) and also broadcast via analysis port
+8. bus_monitor - When driver calls ap.write(tr), the monitor receives the transaction in its write() method. The monitor prints the observed transaction. It simply observes and prints all transactions that the driver has handled
+9. bus_test::run_phase() - Once the sequence is complete, the test’s objection is dropped. Simulation ends after all phases are completed
+
+% cp ../../lab7/design/* ../design
+% vim ../design/bus_monitor.sv
+Please copy the Content1 into it, see below
+
+Content1
+────────
+class bus_monitor extends uvm_component;
+   `uvm_component_utils(bus_monitor)
+
+   // Analysis port implementation to receive transactions
+   uvm_analysis_imp #(bus_transaction, bus_monitor) ap_implementation;
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+      ap_implementation = new("ap_implementation", this);
+   endfunction
+
+   function void write(bus_transaction tr);
+      `uvm_info("MONITOR",
+                $sformatf("Observed transaction: addr=0x%2h, data=0x%8h, write=%0b",
+                          tr.addr, tr.data, tr.write),
+                UVM_LOW)
+   endfunction
+endclass
+
+% vim ../design/bus_tb.sv
+Include the new bus_monitor.sv right after bus_driver.sv, see below
+   `include "bus_monitor.sv"  // Lab 8
+
+% vim ../design/bus_test.sv
+Remember to setup the monitor, add each of the following to the right line, see below
+   bus_monitor mon;  // Lab 8
+      mon = bus_monitor::type_id::create("mon", this);  // Lab 8
+      drv.ap.connect(mon.ap_implementation);  // Lab 8
+
+% vim ../design/bus_driver.sv
+Remember to connect the monitor, add each of the following to the right line, see below
+  uvm_analysis_port #(bus_transaction) ap;  // Lab 8
+      ap = new("ap", this);  // Lab 8
+Add this after the 'get_next_item' line, see below
+         ap.write(tr);  // Lab 8
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log or qgrep
+Note that there are 7 (bus_sequence), 3 (high_prio_seq), 2 (low_prio_seq) transactions
+Note that there are similar transactions printed by [MONITOR]
+Since there is no DUI we connect the monitor to the driver
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab8/lab8/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+Data Flow Diagram
+─────────────────
++----------------------------------------------------+
+|                  bus_tb (Top Module)               |
+|  - run_test("bus_test")                            |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - build_phase: creates sqr, drv, mon              |
+|  - connect_phase: connects drv <-> sqr             |
+|  - connect_phase: connects drv.ap <-> mon.ap_imp   |
+|  - run_phase: raises objection                     |
+|  - run_phase: launches sequences in parallel:      |
+|      * bus_sequence (7 transactions)               |
+|      * high_prio_seq (3 transactions, locked)      |
+|      * low_prio_seq (2 transactions)               |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                bus_sequence (Sequence)             |
+|  - Creates the three sequences                     |
+|  - Randomizes: addr[7:4]=A, write=1 bus_sequence   |
+|  - Randomizes: addr[7:4]=F, write=0 high_prio_seq  |
+|  - Randomizes: addr[7:4]=E, write=0 low_prio_seq   |
+|  - start_item() / finish_item() for each sequence  |
++----------------------------------------------------+
+                         |
+                         v
++----------------------------------------------------+
+|                bus_sequencer (Sequencer)           |
+|  - Handles sequence priority:                      |
+|      * Processes high_prio_seq first (due to lock) |
+|      * Then processes bus_sequence and low_prio_seq|
+|  - Forwards transactions to driver via TLM port    |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                 bus_driver (Driver)                |
+|  - get_next_item(tr)                               |
+|  - Prints transaction info:                        |
+|     * High priority: addr[7:4]=F, write=0          |
+|     * Normal: addr[7:4]=A, write=1                 |
+|     * Low priority: addr[7:4]=E, write=0           |
+|  - Sends transaction to monitor via ap.write(tr)   |
+|  - Simulates DUT interaction (delay)               |
+|  - item_done()                                     |
++----------------------------------------------------+
+                          |       | (via analysis port)
+                          |       v
+                          |   +----------------------------------------------------+
+                          |   |                 bus_monitor (Monitor)              |
+                          |   |  - Receives transactions via write() method        |
+                          |   |  - Prints observed transaction info                |
+                          |   +----------------------------------------------------+
+                          |       ^
+                          |       |
++----------------------------------------------------+
+|      (DUT - Not present)                           |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - run_phase: drops objection                      |
++----------------------------------------------------+

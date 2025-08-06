@@ -1,0 +1,182 @@
+bus/
+├── bus_transaction.sv      // Transaction class
+├── bus_sequence.sv         // Sequence class
+├── bus_sequence_prio.sv    // Additional Sequence class
+├── bus_sequencer.sv        // Sequencer class
+├── bus_driver.sv           // Driver class
+├── bus_monitor.sv          // Monitor class
+├── bus_env.sv              // Env class
+├── bus_test.sv             // Test class
+└── bus_tb.sv               // Testbench top
+
+Data Flow
+─────────
+1. bus_tb - Simulation begins and runs bus_test class
+2. bus_test::build_phase() - The test creates only the environment. All components (drv, mon, sqr) are now built inside the bus_env.
+3. bus_test::run_phase() - Three sequence objects are created: bus_sequence, high_prio_seq and low_prio_seq. Uses fork...join to run all 3 sequences in parallel. The test's objection is raised
+4. bus_env - It instantiates bus_driver, bus_monitor and bus_sequencer
+5. bus_env::build_phase() - Instantiate drv, mon, sqr. Use UVM factory to create these components
+6. bus_env::connect_phase() - Driver’s seq_item_port connects to sequencer’s seq_item_export. Driver's analysis port connected to environment analysis export. Environment analysis export connected to monitor's analysis implementation. The bus_env allows full decoupling i.e. bus_test connects only to bus_env; bus_env handles internal connections
+7. bus_sequence::body() - Transactions are created. Each transaction is randomized. There are three sequences: bus_sequence creates 7 transactions, high_prio_seq creates 3 transactions and prevents others from accessing sequencer while locked, low_prio_seq creates 3 transactions. All sequences are done using start_item() and finish_item()
+8. Sequencer Arbitration - Sequencer env.sqr receives requests from all 3 sequences. Since high_prio_seq locks the sequencer, it gets exclusive access while locked. Normal and low priority sequences compete for access after lock is released
+9. bus_driver::run_phase() - The driver dequeues transactions. Prints the transaction data. Waits for 10 time units (simulating DUT interaction). Acknowledges transaction completion (item_done()). It also writes each received transaction to the analysis port: ap.write(tr). Now transactions are sent to both the DUT simulation (not implemented) and also broadcast via analysis port
+10. bus_monitor - It is connected to environment's ap_export via its own ap_implementation. When driver sends a transaction on analysis port, monitor's write() method receives it and prints the observed transaction. It simply observes and prints all transactions that the driver has handled
+11. bus_test::run_phase() - Once the sequence is complete, the test’s objection is dropped. Simulation ends after all phases are completed
+
+% cp ../../lab8/design/* ../design
+% vim ../design/bus_env.sv
+Please copy the Content1 into it, see below
+
+Content1
+────────
+class bus_env extends uvm_env;
+   `uvm_component_utils(bus_env)
+
+   // Analysis port export to forward transactions
+   uvm_analysis_export #(bus_transaction) ap_export;
+
+   bus_driver drv;
+   bus_monitor mon;
+   bus_sequencer sqr;
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+      ap_export = new("ap_export", this);
+   endfunction
+
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      drv = bus_driver::type_id::create("drv", this);
+      mon = bus_monitor::type_id::create("mon", this);
+      sqr = bus_sequencer::type_id::create("sqr", this);
+   endfunction
+
+   function void connect_phase(uvm_phase phase);
+      // Connect driver sequencer
+      drv.seq_item_port.connect(sqr.seq_item_export);
+
+      // Connect driver analysis port to export
+      drv.ap.connect(ap_export);
+
+      // Connect analysis port export to monitor's implementation
+      ap_export.connect(mon.ap_implementation);
+   endfunction
+endclass
+
+% vim ../design/bus_tb.sv
+Include the new bus_env.sv right after bus_monitor.sv, see below
+   `include "bus_env.sv"  // Lab 9
+
+% vim ../design/bus_test.sv
+Remember to setup the env, add each of the following to the right line, see below
+   bus_env env;  // Lab 9
+      env = bus_env::type_id::create("env", this);  // Lab 9
+Comment these out, see below
+      //sqr = bus_sequencer::type_id::create("sqr", this);
+      //drv = bus_driver::type_id::create("drv", this);
+      //mon = bus_monitor::type_id::create("mon", this);  // Lab 8
+   //function void connect_phase(uvm_phase phase);
+   //   drv.seq_item_port.connect(sqr.seq_item_export);
+   //   drv.ap.connect(mon.ap_implementation);  // Lab 8
+   //endfunction
+Change the launch of the sequence to the following, see below
+        seq.start(env.sqr); // Lab 9 Launch the sequence
+        hseq.start(env.sqr); // Lab 7 Lab 9 Launch the sequence
+        lseq.start(env.sqr); // Lab 7 Lab 9 Launch the sequence
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log or qgrep
+Note that there are 7 (bus_sequence), 3 (high_prio_seq), 2 (low_prio_seq) transactions
+NOte that there are similar transactions printed by [MONITOR]
+Since there is no DUI we connect the monitor to the driver
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab9/lab9/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+Data Flow Diagram
+─────────────────
++------------------------------------------------------+
+|                  bus_tb (Top Module)                 |
+|  - run_test("bus_test")                              |
++------------------------------------------------------+
+                           |
+                           v
++------------------------------------------------------+
+|                  bus_test (UVM Test)                 |
+|  - build_phase: creates env                          |
+|  - run_phase: raises objection                       |
+|  - run_phase: launches sequences in parallel:        |
+|      * bus_sequence (7 transactions)                 |
+|      * high_prio_seq (3 transactions, locked)        |
+|      * low_prio_seq (2 transactions)                 |
++------------------------------------------------------+
+                           |
+                           v
++------------------------------------------------------+
+|                   bus_env (Environment)              |
+|  - build_phase: creates drv, mon, sqr                |
+|  - connect_phase:                                    |
+|      * drv.seq_item_port <-> sqr.seq_item_export     |
+|      * drv.ap <-> ap_export <-> mon.ap_implementation|
++------------------------------------------------------+
+                           |   |   |
+                           |   |   |
+                           |   |   +-----------------------------+
+                           |   |                                 |
+                           |   +-----------------------------+   |
+                           |                                 |   |
+                           +-----------------------------+   |   |
+                                                         |   |   |
+                                                         |   |   |
++----------------------------------------------------+   |   |   |
+|                bus_sequence (Sequence)             |   |   |   |
+|  - Creates the three sequences                     |   |   |   |
+|  - Randomizes: addr[7:4]=A, write=1 bus_sequence   |   |   |   |
+|  - Randomizes: addr[7:4]=F, write=0 high_prio_seq  |   |   |   |
+|  - Randomizes: addr[7:4]=E, write=0 low_prio_seq   |   |   |   |
+|  - start_item() / finish_item() for each sequence  |   |   |   |
++----------------------------------------------------+   |   |   |
+                           |                             |   |   |
+                           v                             |   |   |
++----------------------------------------------------+   |   |   |
+|                bus_sequencer (Sequencer)           |   |   |   |
+|  - Handles sequence priority:                      |   |   |   |
+|      * Processes high_prio_seq first (due to lock) |<--+   |   |
+|      * Then processes bus_sequence and low_prio_seq|       |   |
+|  - Forwards transactions to driver via TLM port    |       |   |
++----------------------------------------------------+       |   |
+                           |                                 |   |
+                           v                                 |   |
++----------------------------------------------------+       |   |
+|                 bus_driver (Driver)                |       |   |
+|  - get_next_item(tr)                               |       |   |
+|  - Prints transaction info:                        |       |   |
+|     * High priority: addr[7:4]=F, write=0          |       |   |
+|     * Normal: addr[7:4]=A, write=1                 |<------+   |
+|     * Low priority: addr[7:4]=E, write=0           |           |
+|  - Sends transaction to monitor via ap.write(tr)   |           |
+|  - Simulates DUT interaction (delay)               |           |
+|  - item_done()                                     |           |
++----------------------------------------------------+           |
+                           |       | (via analysis port)         |
+                           |       v                             v
+                           |   +----------------------------------------------------+
+                           |   |                 bus_monitor (Monitor)              |
+                           |   |  - Receives transactions via write() method        |
+                           |   |  - Prints observed transaction info                |     
+                           |   +----------------------------------------------------+
+                           |       ^
+                           v       |
++----------------------------------------------------+
+|      (DUT - Not present)                           |
++----------------------------------------------------+
+                           |
+                           v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - run_phase: drops objection                      |
++----------------------------------------------------+

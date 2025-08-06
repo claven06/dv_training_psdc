@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1754288625.526923267, "rt":12.67, "ut":12.83, "st":0.42}}
+{"vcselab":{"timestamp_begin":1754288638.273028943, "rt":0.14, "ut":0.11, "st":0.02}}
+{"link":{"timestamp_begin":1754288638.476444729, "rt":0.87, "ut":0.63, "st":0.27}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1754288624.969215534}
+{"VCS_COMP_START_TIME": 1754288624.969215534}
+{"VCS_COMP_END_TIME": 1754288639.482337829}
+{"VCS_USER_OPTIONS": "-l top_comp.log -sverilog -debug_access+all -kdb -debug_report -top top_tb -o top_simv -ntb_opts uvm-ieee-2020-2.0 -file /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab1/design/top.f"}
+{"vcs1": {"peak_mem": 537764}}
+{"vcselab": {"peak_mem": 162440}}

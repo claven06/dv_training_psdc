@@ -1,0 +1,52 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/sim/./ptop_simv -l ptop_sim.log +UVM_NO_RELNOTES
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  4 16:12 2025
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_tb.sv(9) @ 0: reporter [PTOP/TB] Starting testbench
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_test_pkg.sv(15) @ 0: uvm_test_top [PTOP/TEST/NEW] Creating uvm_test_top
+UVM_INFO @ 0: reporter [RNTST] Running test ptop_test...
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_test_pkg.sv(20) @ 0: uvm_test_top [PTOP/TEST/BUILD] Start of build_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_parent_pkg.sv(15) @ 0: uvm_test_top.parent [PTOP/PARENT/NEW] Creating parent
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_test_pkg.sv(22) @ 0: uvm_test_top [PTOP/TEST/BUILD] End of build_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_parent_pkg.sv(20) @ 0: uvm_test_top.parent [PTOP/PARENT/BUILD] Start of build_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_child_pkg.sv(12) @ 0: uvm_test_top.parent.child [PTOP/CHILD/NEW] Creating child
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_parent_pkg.sv(22) @ 0: uvm_test_top.parent [PTOP/PARENT/BUILD] End of build_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_child_pkg.sv(17) @ 0: uvm_test_top.parent.child [PTOP/CHILD/BUILD] Executing build_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_child_pkg.sv(22) @ 0: uvm_test_top.parent.child [PTOP/CHILD/CONNECT] Executing connect_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_parent_pkg.sv(27) @ 0: uvm_test_top.parent [PTOP/PARENT/CONNECT] Start of connect_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_parent_pkg.sv(28) @ 0: uvm_test_top.parent [PTOP/PARENT/CONNECT] End of connect_phase
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab2/design/ptop_test_pkg.sv(27) @ 0: uvm_test_top [PTOP/TEST/ENDOFELAB] Printing test topology
+--------------------------------------
+Name          Type         Size  Value
+--------------------------------------
+uvm_test_top  ptop_test    -     @147 
+  parent      ptop_parent  -     @221 
+    child     ptop_child   -     @236 
+--------------------------------------
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 0: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :   14
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[PTOP/CHILD/BUILD]     1
+[PTOP/CHILD/CONNECT]     1
+[PTOP/CHILD/NEW]     1
+[PTOP/PARENT/BUILD]     2
+[PTOP/PARENT/CONNECT]     2
+[PTOP/PARENT/NEW]     1
+[PTOP/TB]     1
+[PTOP/TEST/BUILD]     2
+[PTOP/TEST/ENDOFELAB]     1
+[PTOP/TEST/NEW]     1
+[RNTST]     1
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+$finish at simulation time                    0
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 0 ps
+CPU Time:      0.190 seconds;       Data structure size:   0.5Mb
+Mon Aug  4 16:12:41 2025

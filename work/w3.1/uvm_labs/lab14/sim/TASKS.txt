@@ -1,0 +1,179 @@
+bus/
+├── bus_tran.sv      // Transaction class
+├── bus_seq.sv       // Sequence class
+├── bus_seq_prio.sv  // Additional Sequence class
+├── bus_sqr.sv       // Sequencer class
+├── bus_drv.sv       // Driver class
+├── bus_mon.sv       // Monitor class
+├── bus_agt.sv       // Agent class
+├── bus_con.sv       // Consumer class
+├── bus_scb.sv       // Scoreboard class
+├── bus_cov.sv       // Coverage class
+├── bus_env.sv       // Env class
+├── bus_test.sv      // Test class
+└── bus_tb.sv        // Testbench top
+
+Bus UVM
+───────
+This is a polished version of Lab 13 with some simplifications and enhancements
+Please go over each of these files
+
+% ls -l ../design/*
+Conmpare these files with the corresponding files in Lab 13
+Please perform % diff or % tkdiff
+
+% echo $ASSERT
+Ensure it is set to 1
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log
+Note that there is the assertions report at the end
+
+% vim ../design/bus_scb.sv
+Add in these right after the write function line, see below
+    // Add in assertion for demo purpose
+    assert(tr.write == 1 && tr.addr[7:4] == 4'hA) else begin
+      `uvm_error("ASSERTION", $sformatf("FAIL %0d/%0d %s transaction: addr=0x%2h, data=0x%8h, write=%0b ++++++++++++++++",
+                                         tr.seq_index, tr.seq_count, tr.seq_type, tr.addr, tr.data, tr.write))
+    end
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log
+Note that there is the assertions report at the end
+Note the additional assertion errors
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab14/lab14/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% grep ERROR bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab14/lab14/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% urg -full64 -dir bus_simv.vdb -report bus_cov
+% \ls -l `echo $ROOT/sim/bus_cov/dashboard.html`
+Copy and paste the full path of dashboard.html to the web browser
+
+Data Flow Diagram
+─────────────────
++------------------------------------------------------+
+|                  bus_tb (Top Module)                 |
+|  - run_test("bus_test")                              |
++------------------------------------------------------+
+                           |
+                           v
++------------------------------------------------------+
+|                  bus_test (UVM Test)                 |
+|  - build_phase: creates env                          |
+|  - run_phase: raises objection                       |
+|  - run_phase: launches sequences in parallel:        |
+|      * bus_seq (8 transactions)                      |
+|      * high_prio_seq (2 transactions, locked)        |
+|      * low_prio_seq (5 transactions)                 |
++------------------------------------------------------+
+                           |
+                           v
++-----------------------------------------------------------+
+|                   bus_env (Environment)                   |
+|  - build_phase: creates agt, con, scb, cov                |
+|  - connect_phase:                                         |
+|      * agent.ap_port <-> con.analysis_export              |
+|      * agent.ap_port <-> scb.scb_imp                      |
+|      * agent.ap_port <-> cov.cov_imp                      |
++-----------------------------------------------------------+
+                           |
+                           v
++-----------------------------------------------------------+
+|                   bus_agt (Agent)                         |
+|  - build_phase: creates drv, mon, sqr                     |---------------------------------------------------------+
+|  - connect_phase:                                         |                                                         |
+|      * drv.seq_item_port <-> sqr.seq_item_export          |-----------------------------------------------------+   |
+|      * drv.ap <-> mon.ap_imp                              |                                                     |   |
+|      * mon.ap_port <-> agt.ap_port                        |---------------------------+                         |   |
++-----------------------------------------------------------+                           |                         |   |
+                           |   |   |                                                    |                         |   |
+                           |   |   |                                                    |                         |   |
+                           |   |   +-----------------------------+                      |                         |   |
+                           |   |                                 |                      |                         |   |
+                           |   +-----------------------------+   |                      |                         |   |
+                           |                                 |   |                      |                         |   |
+                           +-----------------------------+   |   |                      |                         |   |
+                                                         |   |   |                      |                         |   |
+                                                         |   |   |                      |                         |   |
++----------------------------------------------------+   |   |   |                      |                         |   |
+|                bus_seq (Sequence)                  |   |   |   |                      |                         |   |
+|  - Creates the three sequences                     |   |   |   |                      |                         |   |
+|  - Randomizes: addr[7:4]=A, write=1 bus_seqa       |   |   |   |                      |                         |   |
+|  - Randomizes: addr[7:4]=F, write=0 high_prio_seq  |   |   |   |                      |                         |   |
+|  - Randomizes: addr[7:4]=E, write=0 low_prio_seq   |   |   |   |                      |                         |   |
+|  - start_item() / finish_item() for each sequence  |   |   |   |                      |                         |   |
++----------------------------------------------------+   |   |   |                      |                         |   |
+                           |                             |   |   |                      |                         |   |
+                           v                             |   |   |                      |                         |   |
++----------------------------------------------------+   |   |   |                      |                         |   |
+|                bus_sqr (Sequencer)                 |   |   |   |                      |                         |   |
+|  - Handles sequence priority:                      |   |   |   |                      |                         |   |
+|      * Processes high_prio_seq first (due to lock) |<--+   |   |                      |                         |   |
+|      * Then processes bus_seq and low_prio_seq     |       |   |                      |                         |   |
+|  - Forwards transactions to driver via TLM port    |       |   |                      |                         |   |
++----------------------------------------------------+       |   |                      |                         |   |
+                           |                                 |   |                      |                         |   |
+                           v                                 |   |                      |                         |   |
++----------------------------------------------------+       |   |                      |                         |   |
+|                 bus_drv (Driver)                   |       |   |                      |                         |   |
+|  - get_next_item(tr)                               |       |   |                      |                         |   |
+|  - Prints transaction info:                        |       |   |                      |                         |   |
+|     * High priority: addr[7:4]=F, write=0          |       |   |                      |                         |   |
+|     * Normal: addr[7:4]=A, write=1                 |<------+   |                      |                         |   |
+|     * Low priority: addr[7:4]=E, write=0           |           |                      |                         |   |
+|  - Sends transaction to monitor via ap.write(tr)   |           |                      |                         |   |
+|  - Simulates DUT interaction (delay)               |           |                      |                         |   |
+|  - item_done()                                     |           |                      |                         |   |
++----------------------------------------------------+           |                      |                         |   |
+                           |       | (via analysis port)         |                      |                         |   |
+                           |       v                             v                      |                         |   |
+                           |   +----------------------------------------------------+   |                         |   |
+                           |   |                 bus_mon (Monitor)                  |   |                         |   |
+                           |   |  - Receives transactions via write() method        |   |                         |   |
+                           |   |  - Prints observed transaction info                |   |                         |   |
+                           |   +----------------------------------------------------+   |                         |   |
+                           |       ^                                                    |                         |   |
+                           v       |                                                    v                         |   |
++----------------------------------------------------+   +----------------------------------------------------+   |   |
+|      (DUT - Not present)                           |   |                bus_con (Consumer)                  |   |   |
++----------------------------------------------------+   |  - Receives transactions via data_fifo.try_put(tr) |   |   |
+                           |                             |  - If FIFO is full, log overflow                   |   |   |
+                           |                             |  - FIFO retrieve transaction, data_fifo.get(tr)    |   |   |
+                           |                             |  - Process delay added to demo FIFO overflow       |   |   |
+                           |                             |  - Checks transactions (write must be 1)           |   |   |
+                           |                             |  - Counts received transactions and errors         |   |   |
+                           |             +---------------|  - Reports summary at end of simulation            |   |   |
+                           |             |               +----------------------------------------------------+   |   |
+                           |             |                                                                        |   |
+                           |             |                                                                        |   |
+                           |             |               +----------------------------------------------------+   |   |
+                           |             |               |              bus_scb (Scoreboard)                  |<--+   |
+                           |             |               |  - The write function performs values comparison   |       |
+                           |             |   +-----------|  - Report generated                                |       |
+                           |             |   |           +----------------------------------------------------+       |
+                           |             |   |                                                                        |
+                           |             |   |                                                                        |
+                           |             |   |           +----------------------------------------------------+       |
+                           |             |   |           |                bus_cov (Coverage)                  |<------+
+                           |             |   |           |  - Coverage group is defined                       |
+                           |             |   |           |  - Bins established                                |
+                           |             |   |   +-------|  - The write function samples tr                   |
+                           |             |   |   |       +----------------------------------------------------+
+                           |             |   |   |
+                           |             |   |   |
+                           v             v   v   v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - run_phase: drops objection                      |
++----------------------------------------------------+

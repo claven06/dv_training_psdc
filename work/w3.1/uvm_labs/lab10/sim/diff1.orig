@@ -1,0 +1,49 @@
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO lab10/design/bus_test.sv @ 0: uvm_test_top [BTOP/TEST] Launching the sequence
+UVM_INFO lab10/design/bus_sequence.sv @ 0: uvm_test_top.env.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO lab10/design/bus_sequence_prio.sv @ 0: uvm_test_top.env.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO lab10/design/bus_sequence_prio.sv @ 0: uvm_test_top.env.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO lab10/design/bus_monitor.sv @ 0: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0xb41701ed, write=0
+UVM_INFO lab10/design/bus_driver.sv @ 0: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0xb41701ed, write = 0
+UVM_INFO lab10/design/bus_consumer.sv @ 0: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xfd, data=0xb41701ed, write=0
+UVM_ERROR lab10/design/bus_consumer.sv @ 0: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0xb41701ed, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab10/design/bus_monitor.sv @ 10000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0x6242ebf8, write=0
+UVM_INFO lab10/design/bus_driver.sv @ 10000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0x6242ebf8, write = 0
+UVM_INFO lab10/design/bus_consumer.sv @ 10000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xfd, data=0x6242ebf8, write=0
+UVM_ERROR lab10/design/bus_consumer.sv @ 10000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0x6242ebf8, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab10/design/bus_monitor.sv @ 20000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0x1c4f121b, write=0
+UVM_INFO lab10/design/bus_driver.sv @ 20000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0x1c4f121b, write = 0
+UVM_INFO lab10/design/bus_consumer.sv @ 20000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xfd, data=0x1c4f121b, write=0
+UVM_ERROR lab10/design/bus_consumer.sv @ 20000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0x1c4f121b, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab10/design/bus_monitor.sv @ 30000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 30000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xab, data = 0xd62a4d9b, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 30000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO lab10/design/bus_monitor.sv @ 40000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe1, data=0x144d9ab2, write=0
+UVM_INFO lab10/design/bus_driver.sv @ 40000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xe1, data = 0x144d9ab2, write = 0
+UVM_INFO lab10/design/bus_consumer.sv @ 40000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xe1, data=0x144d9ab2, write=0
+UVM_ERROR lab10/design/bus_consumer.sv @ 40000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe1, data=0x144d9ab2, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab10/design/bus_monitor.sv @ 50000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 50000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa4, data = 0xdb3b2ae3, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 50000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO lab10/design/bus_monitor.sv @ 60000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe9, data=0xeba177d5, write=0
+UVM_INFO lab10/design/bus_driver.sv @ 60000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xe9, data = 0xeba177d5, write = 0
+UVM_INFO lab10/design/bus_consumer.sv @ 60000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xe9, data=0xeba177d5, write=0
+UVM_ERROR lab10/design/bus_consumer.sv @ 60000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe9, data=0xeba177d5, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO lab10/design/bus_monitor.sv @ 70000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 70000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa6, data = 0xe7ccad2a, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 70000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO lab10/design/bus_monitor.sv @ 80000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 80000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa5, data = 0xbd7cc6ff, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 80000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO lab10/design/bus_monitor.sv @ 90000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 90000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xac, data = 0x3b02ed13, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 90000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO lab10/design/bus_monitor.sv @ 100000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 100000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xac, data = 0x2432d2a1, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 100000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO lab10/design/bus_monitor.sv @ 110000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa7, data=0x54802abe, write=1
+UVM_INFO lab10/design/bus_driver.sv @ 110000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa7, data = 0x54802abe, write = 1
+UVM_INFO lab10/design/bus_consumer.sv @ 110000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa7, data=0x54802abe, write=1
+UVM_INFO lab10/design/bus_consumer.sv @ 120000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total received transactions: 12
+UVM_INFO lab10/design/bus_consumer.sv @ 120000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total errors detected: 5
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 120000: reporter [UVM/REPORT/SERVER] 

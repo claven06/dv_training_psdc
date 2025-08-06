@@ -1,0 +1,279 @@
+bus/
+├── bus_transaction.sv      // Transaction class
+├── bus_sequence.sv         // Sequence class
+├── bus_sequencer.sv        // Sequencer class
+├── bus_driver.sv           // Driver class
+├── bus_test.sv             // Test class
+└── bus_tb.sv               // Testbench top
+
+Data Flow
+─────────
+1. bus_tb - Simulation begins and runs bus_test class
+2. bus_test::build_phase() - Instantiate bus_sequencer and bus_driver. Use UVM factory to create these components
+3. bus_test::connect_phase() - Driver’s seq_item_port connects to sequencer’s seq_item_export. This enables the sequencer to send transactions to the driver
+4. bus_test::run_phase() - A new sequence object is created. The sequence is started on the sequencer. The test's objection is raised
+5. bus_sequence::body() - Bus transactions are created. Each transaction is randomized. The sequence sends each transaction to the sequencer using start_item() and finish_item()
+6. bus_sequencer - It automatically forwards the transactions to the driver via the seq_item_export → seq_item_port connection
+7. bus_driver::run_phase() - The driver receives each transaction (get_next_item(tr)). Prints the transaction data. Waits for 10 time units (simulating DUT interaction). Acknowledges transaction completion (item_done())
+8. bus_test::run_phase() - Once the sequence is complete, the test’s objection is dropped. Simulation ends after all phases are completed
+
+% vim ../design/bus_transaction.sv
+% vim ../design/bus_sequence.sv
+% vim ../design/bus_sequencer.sv
+% vim ../design/bus_driver.sv
+% vim ../design/bus_test.sv
+% vim ../design/bus_tb.sv
+For each of these files, please copy the right contents into it from the six contents below, see below
+Remember to <fill_in_the_name_here>
+
+Content1
+────────
+class <fill_in_the_name_here> extends uvm_test;
+   `uvm_component_utils(bus_test)
+
+   bus_sequencer sqr;
+   bus_driver drv;
+   bus_sequence seq;
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+   endfunction
+
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      sqr = bus_sequencer::type_id::create("sqr", this);
+      drv = bus_driver::type_id::create("drv", this);
+   endfunction
+
+   function void connect_phase(uvm_phase phase);
+      drv.seq_item_port.connect(sqr.seq_item_export);
+   endfunction
+
+   virtual task run_phase(uvm_phase phase);
+      seq = bus_sequence::type_id::create("seq");
+      `uvm_info("BTOP/TEST", "Launching the sequence", UVM_MEDIUM);
+      phase.raise_objection(this);
+      seq.start(sqr); // Launch the sequence
+      phase.drop_objection(this);
+   endtask
+endclass
+
+Content2
+────────
+`include "uvm_macros.svh"
+
+module <fill_in_the_name_here>;
+
+   // Include all required files
+   `include "bus_transaction.sv"
+   `include "bus_sequence.sv"
+   `include "bus_sequencer.sv"
+   `include "bus_driver.sv"
+   `include "bus_test.sv"
+
+   initial begin
+      run_test("bus_test");
+   end
+endmodule
+
+Content3
+────────
+class <fill_in_the_name_here> extends uvm_driver #(bus_transaction);
+   `uvm_component_utils(bus_driver)
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+   endfunction
+
+   virtual task run_phase(uvm_phase phase);
+      bus_transaction tr;
+
+      forever begin
+         seq_item_port.get_next_item(tr);
+
+         `uvm_info("DRIVER",
+                   $sformatf("Driving transaction:\n  addr  = 0x%0h,\n  data  = 0x%0h,\n  write = %0b",
+                             tr.addr, tr.data, tr.write),
+                   UVM_MEDIUM)
+
+         // Simulate DUT interaction here
+
+         seq_item_port.item_done();
+      end
+   endtask
+endclass
+
+Content4
+────────
+`include "uvm_macros.svh"
+
+import uvm_pkg::*;
+
+class <fill_in_the_name_here> extends uvm_sequence_item;
+   rand bit [7:0] addr;
+   rand bit [31:0] data;
+   rand bit write;
+
+   `uvm_object_utils(bus_transaction)
+
+   function new(string name = "bus_transaction");
+      super.new(name);
+   endfunction
+endclass
+
+Content5
+────────
+class <fill_in_the_name_here> extends uvm_sequence #(bus_transaction);
+   `uvm_object_utils(bus_sequence)
+
+   function new(string name = "bus_sequence");
+      super.new(name);
+   endfunction
+
+   task body();
+      bus_transaction tr;
+      `uvm_info(get_type_name(), "Normal Priority Sequence", UVM_MEDIUM)
+      repeat (5) begin
+         tr = bus_transaction::type_id::create("tr");
+         start_item(tr);
+         assert(tr.randomize() with { write == 1; }); // Limit to write transactions only
+         finish_item(tr);
+      end
+   endtask
+endclass
+
+Content6
+────────
+class <fill_in_the_name_here> extends uvm_sequencer #(bus_transaction);
+   `uvm_component_utils(bus_sequencer)
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+   endfunction
+endclass
+
+% vim ../design/bus.f
+For ease of compilation -f <file_name.f> option will be used
+Add in these, see below
++incdir+$UVM_DESIGN
+$UVM_DESIGN/bus_tb.sv
+
+% echo $FLIST
+Ensure FLIST is set to 1
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log
+Note that the transactions are displayed
+The sequence generates exactly 5 transactions, then ends
+It runs only long enough to generate and drive 5 transactions
+
+% vim ../design/bus_driver.sv
+Change transaction display format to be in one single line, with 2 digits for addr and 8 digits for data
+See below
+... [DRIVER] Driving transaction: addr = 0xad, data = 0xf7d75ac8, write = 1
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab6/lab6/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% vim ../design/bus_sequence.sv
+Modify the randomize() call to include a extra constraint, see below
+...with { addr[7:4] == 4'hA; write == 1; }
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab6/lab6/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% vim ../design/bus_tb.sv
+Add these to the testbench after the 'module' line, to display the simulation start/end time, see below
+   initial $display(">>>>>>>> SIM TIME START: %0t", $time);
+   final   $display(">>>>>>>> SIM TIME END  : %0t", $time);
+
+% vim bus_sim.log
+Note that the simulation start/end time is 0
+The sequence generates exactly 5 transactions, then ends
+It runs only long enough to generate and drive 5 transactions
+
+% vim ../design/bus_driver.sv
+Add in the delay before the 'item_done' line, see below
+         #10;
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log
+Note that each transaction takes 10ns
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab6/lab6/' > diff3
+% diff diff3 diff3.orig
+There should be no discrepency
+
+% vim ../design/bus_sequence.sv
+Add in more transactions, see below
+7
+
+% vim bus_sim.log
+Note that each transaction takes 10ns
+There are 7 transactions now
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab6/lab6/' > diff4
+% diff diff4 diff4.orig
+There should be no discrepency
+
+Data Flow Diagram
+─────────────────
++----------------------------------------------------+
+|                  bus_tb (Top Module)               |
+|  - run_test("bus_test")                            |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - build_phase: creates sqr, drv                   |
+|  - connect_phase: connects drv <-> sqr             |
+|  - run_phase: raises objection                     |
+|  - run_phase: launches bus_sequence                |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                bus_sequence (Sequence)             |
+|  - Creates bus_transaction (7 times)               |
+|  - Randomizes: addr[7:4]=A, write=1                |
+|  - start_item() / finish_item()                    |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                bus_sequencer (Sequencer)           |
+|  - Forwards transactions to driver via TLM port    |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                 bus_driver (Driver)                |
+|  - get_next_item(tr)                               |
+|  - Prints transaction info                         |
+|  - Simulates DUT interaction (delay)               |
+|  - item_done()                                     |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|      (DUT - Not present)                           |
++----------------------------------------------------+
+                          |
+                          v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - run_phase: drops objection                      |
++----------------------------------------------------+

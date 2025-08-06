@@ -1,0 +1,373 @@
+bus/
+├── bus_transaction.sv      // Transaction class
+├── bus_sequence.sv         // Sequence class
+├── bus_sequence_prio.sv    // Additional Sequence class
+├── bus_sequencer.sv        // Sequencer class
+├── bus_driver.sv           // Driver class
+├── bus_monitor.sv          // Monitor class
+├── bus_consumer.sv         // Consumer class
+├── bus_env.sv              // Env class
+├── bus_test.sv             // Test class
+└── bus_tb.sv               // Testbench top
+
+Data Flow
+─────────
+1. bus_tb - Simulation begins and runs bus_test class
+2. bus_test::build_phase() - The test creates only the environment. All components (drv, mon, sqr) are now built inside the bus_env.
+3. bus_test::run_phase() - Three sequence objects are created: bus_sequence, high_prio_seq and low_prio_seq. Uses fork...join to run all 3 sequences in parallel. The test's objection is raised
+4. bus_env - It instantiates bus_driver, bus_monitor, bus_sequencer and bus_consumer
+5. bus_env::build_phase() - Instantiate drv, mon, sqr, consumer. Use UVM factory to create these components
+6. bus_env::connect_phase() - Driver’s seq_item_port connects to sequencer’s seq_item_export. Driver's analysis port connected to monitor's analysis implementation. Monitor's put port connected to consumer's put implementation. The bus_env allows full decoupling i.e. bus_test connects only to bus_env; bus_env handles internal connections
+7. bus_sequence::body() - Transactions are created. Each transaction is randomized. There are three sequences: bus_sequence creates 7 transactions, high_prio_seq creates 3 transactions and prevents others from accessing sequencer while locked, low_prio_seq creates 3 transactions. All sequences are done using start_item() and finish_item()
+8. Sequencer Arbitration - Sequencer env.sqr receives requests from all 3 sequences. Since high_prio_seq locks the sequencer, it gets exclusive access while locked. Normal and low priority sequences compete for access after lock is released
+9. bus_driver::run_phase() - The driver dequeues transactions. Prints the transaction data. Waits for 10 time units (simulating DUT interaction). Acknowledges transaction completion (item_done()). It also writes each received transaction to the analysis port: ap.write(tr). Now transactions are sent to both the DUT simulation (not implemented) and also broadcast via analysis port
+10. bus_monitor - It is connected to environment's ap_export via its own ap_implementation. When driver sends a transaction on analysis port, monitor's write() method receives it and prints the observed transaction. It simply observes and prints all transactions that the driver has handled
+11. bus_consumer - Consumer is connected to monitor’s put port. The consumer receives transactions via its put() function. FIFO is added. If FIFO not full: transaction is pushed into local FIFO (fifo.push_back(tr)). If the transaction is the first in the FIFO (fifo.size() == 1), a forked process starts.
+
+% cp ../../lab10/design/* ../design
+% mv ../design/bus_consumer.sv ../design/bus_consumer.sv.old
+% vim ../design/bus_consumer.sv
+Please copy the Content1 into it, see below
+
+Content1
+────────
+class bus_consumer extends uvm_component;
+   `uvm_component_utils(bus_consumer)
+
+   uvm_put_imp #(bus_transaction, bus_consumer) put_imp;
+
+   // FIFO related settings
+   local bus_transaction fifo[$];
+   local int fifo_size = 5;  // Set your desired FIFO size
+   local int fifo_process_time = 10;  // Set your desired FIFO process time
+   int fifo_overflows = 0;
+   int fifo_max_consumed = 0;
+
+   // Counters
+   int num_received;
+   int num_processed;
+   int num_errors;
+
+   // Contructors
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+      put_imp = new("put_imp", this);
+      num_received = 0;
+      num_processed = 0;
+      num_errors = 0;
+      fifo_overflows = 0;
+      fifo_max_consumed = 0;
+      `uvm_info("FIFO_INFO", $sformatf("FIFO Size: %0d", fifo_size), UVM_MEDIUM)
+      `uvm_info("FIFO_INFO", $sformatf("FIFO Process Time: %0d", fifo_process_time), UVM_MEDIUM)
+   endfunction
+
+   // Required by uvm_put_imp to have put(), can_put() and try_out()
+   function bit can_put();
+      return (fifo.size() < fifo_size);
+   endfunction
+   function bit try_put(bus_transaction tr);
+      if (can_put()) begin
+         put(tr);
+         return 1;
+      end
+      return 0;
+   endfunction
+
+   // Receive transactions here and store in FIFO
+   virtual function void put(bus_transaction tr);
+      num_received++;
+
+      // Maximum FIFO utilization
+      if (fifo.size() + 1 >= fifo_max_consumed) begin
+         fifo_max_consumed = fifo.size() + 1;
+      end
+
+      // FIFO overflow
+      if (fifo.size() >= fifo_size) begin
+         fifo_overflows++;
+         `uvm_error("FIFO_OVERFLOW", $sformatf("FIFO overflow! Discarding transaction: addr=0x%2h, data=0x%8h, write=%0b >>>>>>>>>>>>>>>>",
+		    tr.addr, tr.data, tr.write))
+         return;
+      end
+
+      fifo.push_back(tr);  // Push the transaction into the back of FIFO
+      `uvm_info("FIFO_ADD",
+                $sformatf("Added to FIFO (size=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                          fifo.size(), tr.addr, tr.data, tr.write),
+                UVM_MEDIUM)
+
+      // Start processing if this is the first item
+      if (fifo.size() == 1) begin
+         fork
+            process_fifo();
+         join_none
+      end
+   endfunction
+
+   // Process transactions from FIFO
+   local task process_fifo();
+      bus_transaction tr;
+      while (fifo.size() > 0) begin
+         #fifo_process_time;  // Simulate processing delay
+	 num_processed++;
+
+         tr = fifo.pop_front();  // Retrieve the transaction from the front of FIFO
+         `uvm_info("FIFO_PROCESS",
+                   $sformatf("Processing from FIFO (remaining=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                             fifo.size(), tr.addr, tr.data, tr.write),
+                   UVM_MEDIUM)
+         
+         // Example check: write should be 1
+         if (tr.write == 0) begin
+            num_errors++;
+            `uvm_error("CONSUMER_CHECK",
+                       $sformatf("Invalid transaction! addr=0x%2h, data=0x%8h, write=%0b <<<<<<<<<<<<<<<<",
+		       tr.addr, tr.data, tr.write))
+         end
+      end
+   endtask
+
+   // Print summary at end of simulation
+   function void report_phase(uvm_phase phase);
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Total received transactions: %0d", num_received),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Total processed transactions: %0d", num_processed),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Total errors detected: %0d", num_errors),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("FIFO overflows: %0d", fifo_overflows),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Maximum FIFO utilization: %0d/%0d", fifo_max_consumed, fifo_size),
+                UVM_NONE)
+   endfunction
+endclass
+
+% vim ../design/bus_driver.sv
+Replace the sformatf line with below, see below
+                   $sformatf("Driving %s transaction: addr=0x%2h, data=0x%8h, write=%0b",
+                             tr.seq_type, tr.addr, tr.data, tr.write),
+Comment out this, see below
+         //#10;
+
+% vim ../design/bus_sequence_prio.sv
+Add in these to high_prio_seq, see below
+   int delay;  // Lab 11
+   int sent_count;  // Lab 11
+Initiate this in both of the function new, see below
+      sent_count = 0;  // Lab 11
+In high_prio_seq task body(), change the repeat line to below, see below
+      repeat (seq_count) begin  // Lab 11
+In high_prio_seq task body(), add these right after the assert line, see below
+         req.seq_type = "high";  // Lab 11
+         delay = get_random_delay();  // Lab 11
+         sent_count++;  // Lab 11
+         `uvm_info(get_type_name(), $sformatf("Sent %0d/%0d %s sequences, next sequence after %0d", sent_count, seq_count, req.seq_type, delay), UVM_MEDIUM)  // Lab 11
+         #delay;  // Lab 11
+In low_prio_seq task body(), change the repeat line to below, see below
+      repeat (seq_count) begin  // Lab 11
+In low_prio_seq task body(), add these right after the assert line, see below
+         req.seq_type = "low";  // Lab 11
+         delay = get_random_delay();  // Lab 11
+         sent_count++;  // Lab 11
+         `uvm_info(get_type_name(), $sformatf("Sent %0d/%0d %s sequences, next sequence after %0d", sent_count, seq_count, req.seq_type, delay), UVM_MEDIUM)  // Lab 11
+         #delay;  // Lab 11
+
+% vim ../design/bus_sequence.sv
+Add in these, see below
+   // Lab 11
+   int seq_count;
+   int min_delay;
+   int max_delay;
+   int delay;
+   int sent_count;
+Initiate this in the function new, see below
+      sent_count = 0;  // Lab 11
+Add in these right after the function new, see below
+   // Lab 11
+   function int get_random_delay();
+      return $urandom_range(min_delay, max_delay);
+   endfunction
+In task body(), change the repeat line to below, see below
+      repeat (seq_count) begin  // Lab 11
+In task body(), add these right after the assert line, see below
+         tr.seq_type = "normal";  // Lab 11
+         delay = get_random_delay();  // Lab 11
+         sent_count++;  // Lab 11
+         `uvm_info(get_type_name(), $sformatf("Sent %0d/%0d %s sequences, next sequence after %0d", sent_count, seq_count, tr.seq_type, delay), UVM_MEDIUM)  // Lab 11
+         #delay;  // Lab 11
+
+% vim ../design/bus_test.sv
+Add in these, see below
+   // Lab 11
+   int seq_count = 8, hseq_count = 2, lseq_count = 5;
+   int seq_min_delay = 10,  seq_max_delay = 15;
+   int hseq_min_delay = 0, hseq_max_delay = 5;
+   int lseq_min_delay = 5, lseq_max_delay = 10;
+Add in these in the task right after the lseq line, see below
+      // Lab 11
+      seq.seq_count = this.seq_count;
+      seq.min_delay = this.seq_min_delay;
+      seq.max_delay = this.seq_max_delay;
+      hseq.seq_count = this.hseq_count;
+      hseq.min_delay = this.hseq_min_delay;
+      hseq.max_delay = this.hseq_max_delay;
+      lseq.seq_count = this.lseq_count;
+      lseq.min_delay = this.lseq_min_delay;
+      lseq.max_delay = this.lseq_max_delay;
+
+      // Lab 11
+      `uvm_info("TEST", $sformatf("Starting sequences with config:\n\
+                                    Normal: count=%0d, delay=%0d-%0d\n\
+                                    High: count=%0d, delay=%0d-%0d\n\
+                                    Low: count=%0d, delay=%0d-%0d",
+                                  seq.seq_count, seq.min_delay, seq.max_delay,
+                                  hseq.seq_count, hseq.min_delay, hseq.max_delay,
+                                  lseq.seq_count, lseq.min_delay, lseq.max_delay),
+                                  UVM_MEDIUM)
+Remove "BTOP/" word from `uvm_info line
+Add in this line right before the drop_objection line, see below
+      wait(env.consumer.num_processed + env.consumer.fifo_overflows == env.consumer.num_received);  // Important to avoid simulation ended before processing all the FIFO contents
+
+% vim ../design/bus_transaction.sv
+Add in this, see below
+   string seq_type;  // Lab 11
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log or qgrep
+Note that there is a randomized delay added for each of the transactions
+Note that the delay and numnber of transaction can be set for each of the sequences: low, normal and high
+The settings are done at the test
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab11/lab11/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% grep 'size=' diff1
+Note that FIFO has reached size=3 at max, never reached size=4. This size=3 happened once only
+
+% vim ../design/bus_consumer.sv
+Change the FIFO size, see below
+local int fifo_size = 2;  // Set your desired FIFO size
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab11/lab11/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% grep 'overflow' diff2
+Note that FIFO has 1 overflow reported
+
+% vim bus_sim.log
+Review and understand the transactions
+
+% vim ../design/bus_test.sv
+You may also increase the transaction count and delay to cause FIFO overflow, see below
+   int seq_count = 8, hseq_count = 2, lseq_count = 5;
+   int seq_min_delay = 10,  seq_max_delay = 15;
+   int hseq_min_delay = 0, hseq_max_delay = 5;
+   int lseq_min_delay = 5, lseq_max_delay = 10;
+
+Data Flow Diagram
+─────────────────
++------------------------------------------------------+
+|                  bus_tb (Top Module)                 |
+|  - run_test("bus_test")                              |
++------------------------------------------------------+
+                           |
+                           v
++------------------------------------------------------+
+|                  bus_test (UVM Test)                 |
+|  - build_phase: creates env                          |
+|  - run_phase: raises objection                       |
+|  - run_phase: launches sequences in parallel:        |
+|      * bus_sequence (7 transactions)                 |
+|      * high_prio_seq (3 transactions, locked)        |
+|      * low_prio_seq (2 transactions)                 |
++------------------------------------------------------+
+                           |
+                           v
++------------------------------------------------------+
+|                   bus_env (Environment)              |
+|  - build_phase: creates drv, mon, sqr, consumer      |
+|  - connect_phase:                                    |
+|      * drv.seq_item_port <-> sqr.seq_item_export     |
+|      * drv.ap <-> ap_export <-> mon.ap_implementation|
+|      * mon.put_port <-> consumer.put_imp             |
++------------------------------------------------------+
+                           |   |   |
+                           |   |   |
+                           |   |   +-----------------------------+
+                           |   |                                 |
+                           |   +-----------------------------+   |
+                           |                                 |   |
+                           +-----------------------------+   |   |
+                                                         |   |   |
+                                                         |   |   |
++----------------------------------------------------+   |   |   |
+|                bus_sequence (Sequence)             |   |   |   |
+|  - Creates the three sequences                     |   |   |   |
+|  - Randomizes: addr[7:4]=A, write=1 bus_sequence   |   |   |   |
+|  - Randomizes: addr[7:4]=F, write=0 high_prio_seq  |   |   |   |
+|  - Randomizes: addr[7:4]=E, write=0 low_prio_seq   |   |   |   |
+|  - start_item() / finish_item() for each sequence  |   |   |   |
++----------------------------------------------------+   |   |   |
+                           |                             |   |   |
+                           v                             |   |   |
++----------------------------------------------------+   |   |   |
+|                bus_sequencer (Sequencer)           |   |   |   |
+|  - Handles sequence priority:                      |   |   |   |
+|      * Processes high_prio_seq first (due to lock) |<--+   |   |
+|      * Then processes bus_sequence and low_prio_seq|       |   |
+|  - Forwards transactions to driver via TLM port    |       |   |
++----------------------------------------------------+       |   |
+                           |                                 |   |
+                           v                                 |   |
++----------------------------------------------------+       |   |
+|                 bus_driver (Driver)                |       |   |
+|  - get_next_item(tr)                               |       |   |
+|  - Prints transaction info:                        |       |   |
+|     * High priority: addr[7:4]=F, write=0          |       |   |
+|     * Normal: addr[7:4]=A, write=1                 |<------+   |
+|     * Low priority: addr[7:4]=E, write=0           |           |
+|  - Sends transaction to monitor via ap.write(tr)   |           |
+|  - Simulates DUT interaction (delay)               |           |
+|  - item_done()                                     |           |
++----------------------------------------------------+           |
+                           |       | (via analysis port)         |
+                           |       v                             v
+                           |   +----------------------------------------------------+
+                           |   |                 bus_monitor (Monitor)              |
+                           |   |  - Receives transactions via write() method        |
+                           |   |  - Prints observed transaction info                |
+                           |   |  - Calls do_put() i.e. put_port.put(tr)            |
+                           |   +----------------------------------------------------+
+                           |       ^                                              |
+                           v       |                                              v
++----------------------------------------------------+   +----------------------------------------------------+
+|      (DUT - Not present)                           |   |                bus_consumer (Consumer)             |
++----------------------------------------------------+   |  - Receives transactions via put() method          |
+                           |                             |  - FIFO queue: fifo[$]                             |
+                           |                             |  - If FIFO is full, log overflow                   |
+                           |                             |  - If FIFO detects a transaction, fifo.push_back   |
+                           |                             |  - FIFO retrieve transaction, fifo.pop_front       |
+                           |                             |  - Process delay added to demo FIFO overflow       |
+                           |                             |  - Checks transactions (write must be 1)           |
+                           |                             |  - Counts received transactions and errors         |
+                           |             +---------------|  - Reports summary at end of simulation            |
+                           |             |               +----------------------------------------------------+
+                           v             v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - run_phase: drops objection                      |
++----------------------------------------------------+

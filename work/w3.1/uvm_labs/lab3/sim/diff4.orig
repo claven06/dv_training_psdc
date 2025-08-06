@@ -1,0 +1,3 @@
+../design/ptop_child_pkg.sv:      #50ns; // Simulate some child activity
+../design/ptop_parent_pkg.sv:      #10ns; // Simulate some parent activity
+../design/ptop_test_pkg.sv:      #15ns; // Simulate some test activity

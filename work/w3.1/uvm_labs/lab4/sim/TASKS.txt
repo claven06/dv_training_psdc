@@ -1,0 +1,102 @@
+ptop/
+├── ptop_uvm_pkg.sv     // Master package (aggregates all others)
+├── ptop_child_pkg.sv   // Child component package
+├── ptop_parent_pkg.sv  // Parent component package  
+├── ptop_test_pkg.sv    // Test class package
+└── ptop_tb.sv          // Testbench top
+
+% cp ../../lab2/design/* ../design
+% vim ../design/ptop_parent_pkg.sv
+% vim ../design/ptop_test_pkg.sv
+For each of these files, please copy the right contents into it from the two contents below, see below
+Remember to add the content right before the 'endclass' line
+Remember to initialize test_done and parent_done in the function of the build_phase, see below
+      test_done = 0;    // Hierachical objection
+      parent_done = 0;    // Hierachical objection
+
+Content1
+────────
+    // Objection with timeout
+    bit test_done;
+    task run_phase(uvm_phase phase);
+      phase.raise_objection(this, "Starting test");
+
+      fork
+        begin
+          // Main test activity
+          `uvm_info("PTOP/TEST/RUN", "Test activity started", UVM_MEDIUM)
+          #200ns;
+          test_done = 1;
+          `uvm_info("PTOP/TEST/RUN", "Test activity completed", UVM_MEDIUM)
+          phase.drop_objection(this, "Test completed");
+        end
+
+        begin
+          // Timeout watchdog
+          #300ns;
+          if (!test_done) begin
+            `uvm_error("PTOP/TEST/TIMEOUT", "Test timeout reached!")
+            phase.drop_objection(this, "Timeout reached");
+          end
+        end
+      join
+    endtask
+
+Content2
+────────
+    // Objection with timeout
+    bit parent_done;
+    task run_phase(uvm_phase phase);
+      phase.raise_objection(this, "Parent starting");
+
+      fork
+        begin
+          `uvm_info("PTOP/PARENT/RUN", "Parent activity started", UVM_MEDIUM)
+          #150ns;
+          parent_done = 1;
+          `uvm_info("PTOP/PARENT/RUN", "Parent activity completed", UVM_MEDIUM)
+          phase.drop_objection(this, "Parent completed");
+        end
+  
+        begin
+          #250ns;
+          if (!parent_done) begin
+            `uvm_warning("PTOP/PARENT/TIMEOUT", "Parent activity taking too long")
+          end
+        end
+      join
+    endtask
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that run_phase will only be executed after the build_phase is completed
+Fork/join for parallel activities
+Timeout does not happen
+
+% vim ../design/ptop_test_pkg.sv
+Prolong the main test activity time
+           parent            test
+test       #150ns            #200ns-->#400ns
+
+% vim ../design/ptop_parent_pkg.sv
+Shorten the timeout parent activity time
+           parent            test
+timeout    #250ns-->#100ns   #300ns
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that run_phase will only be executed after the build_phase is completed
+Fork/join for parallel activities
+Timeout happened for both test and parent
+
+% grep UVM_ ptop_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab4/lab4/' > diff1
+% grep 'ns;' ../design/* > diff2
+% diff diff1 diff1.orig
+% diff diff2 diff2.orig
+There should be no discrepency

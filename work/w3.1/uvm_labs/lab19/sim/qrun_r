@@ -1,0 +1,2 @@
+vcs -l fa\_comp.log -sverilog -debug_access+all -kdb -debug_report -top fa_tb -o fa\_simv -ntb_opts uvm-ieee-2020-2.0 -file /home/seanooi/TRAININGS/dv/uvm/lab19/design/fa.f -timescale=1ns/1ps -cm line+tgl+cond+fsm+branch+assert -assert enable_diag +UVM_TESTNAME=fa_test_r
+fa\_simv -l fa\_sim.log +UVM_NO_RELNOTES -cm line+tgl+cond+fsm+branch+assert -assert summary +UVM_TESTNAME=fa_test_r

@@ -1,0 +1,625 @@
+bus/
+├── bus_ctrl.sv      // Bus Controller Module
+├── bus_ctrl_if.sv   // Bus Controller Interface
+├── bus_tran.sv      // Transaction class
+├── bus_seq.sv       // Sequence class
+├── bus_seq_prio.sv  // Additional Sequence class
+├── bus_sqr.sv       // Sequencer class
+├── bus_drv.sv       // Driver class
+├── bus_mon.sv       // Monitor class
+├── bus_agt.sv       // Agent class
+├── bus_con.sv       // Consumer class
+├── bus_scb.sv       // Scoreboard class
+├── bus_env.sv       // Env class
+├── bus_test.sv      // Test class
+└── bus_tb.sv        // Testbench top
+
+Bus Controller
+──────────────
+Memory and Register Storage
+  256-entry memory array (32-bit words)
+  Reserved space at addresses 0xF0-0xFF
+  Two registers:
+    control_reg (32-bit) at addresses 0xA0-0xAF, write/read
+    status_reg (32-bit) at addresses 0xB0-0xBF, read
+  Interface Signals
+    Clock (clk) and active-low reset (reset_n)
+    8-bit address bus (addr)
+    32-bit write data (wdata) and read data (rdata)
+    Control signals:
+      write: distinguishes between read/write operations
+      valid: indicates valid bus transaction
+      ready: handshake signal for transaction completion
+Functional Description
+  Address Decoding
+    Uses combinatorial logic to check for reserved addresses (0xF0-0xFF)
+    Sets addr_valid flag to 0 for reserved addresses
+  Main Operation Handling
+    Synchronous to clock edge with asynchronous reset
+    On reset:
+      Clears all registers and memory
+      Initializes outputs to zero
+    During normal operation:
+      Processes valid transactions when valid is high and address is valid
+      Handles both write and read operations:
+        Write operations:
+          Writes to control_reg for addresses 0xA0-0xAF
+          Writes to memory for all other valid addresses
+        Read operations:
+          Reads from control_reg for addresses 0xA0-0xAF
+          Reads from status_reg for addresses 0xB0-0xBF
+          Reads from memory for all other valid addresses
+      Updates status register after each operation:
+        Bit 31: operation complete flag
+        Bits 7-0: last accessed address
+        Bit 30: error flag (set for invalid address access)
+  Handshake Protocol
+    Asserts ready signal when:
+      A valid operation completes
+      An invalid address is accessed (with error flag set)
+  Reserved Address Space
+    Addresses 0xF0-0xFF are reserved and will trigger:
+      addr_valid = 0
+      Error flag in status register
+      Immediate ready assertion
+  Initialization
+    On reset, all memory locations and registers are initialized to 0
+
+% cp ../../lab14/design/* ../design
+
+% vim ../design/bus_agt.sv
+Remove the connection that was meant for demo purpose
+
+% vim ../design/bus_con.sv
+Create another FIFO to have one for write and one for read, see below
+  uvm_tlm_fifo #(bus_tran) wr_data_fifo;
+  uvm_tlm_fifo #(bus_tran) rd_data_fifo;
+For all the variables, please duplicate and name one with 'wr_' prefix, and for with 'rd_', see below
+  local int wr_fifo_process_time = 60;
+  local int rd_fifo_process_time = 59;
+  int wr_fifo_size = 10;  // Set your desired FIFO size
+  int rd_fifo_size = 9;  // Set your desired FIFO size
+Go ahead and do the same for the rest of the variables
+Replace num_errors with these, see below
+  int wr_num_pass = 0;
+  int rd_num_pass = 0;
+  int wr_num_fail = 0;
+  int rd_num_fail = 0;
+Add in these at last, see below
+  int tran_count;
+  int tran_index;
+  string tran_type;
+  string tran_dir;
+Duplicate accordingly the contents in function new to have 'wr_' and 'rd_', see below
+    wr_data_fifo = new("wr_data_fifo", this, fifo_size);
+    ...
+    ...
+    `uvm_info("FIFO_INFO", $sformatf("FIFO Size: %0d", fifo_size), UVM_MEDIUM)
+    ...
+    ...
+Replace write(bus_tran tr_dut), see below
+  function void write(bus_tran tr_dut);
+    if (tr_dut.write == 1) begin
+      wr_num_received++;
+      wr_fifo_max_utilization = update_fifo_stats(wr_data_fifo, wr_fifo_max_utilization, "wr_data_fifo");
+
+      // Try to put into FIFO: WR
+      if (!wr_data_fifo.try_put(tr_dut)) begin
+        wr_fifo_overflows++;
+        `uvm_error("FIFO_OVERFLOW",
+                   $sformatf("%s: Discard %0d/%0d %s tran: addr=0x%2h, data=0x%8h, write=%0b >>>>>>>>>>>>>>>>",
+                             tr_dut.tran_dir, tr_dut.tran_index, tr_dut.tran_count,
+                             tr_dut.tran_type, tr_dut.addr, tr_dut.data, tr_dut.write))
+      end else begin
+        `uvm_info("FIFO_ADD",
+                  $sformatf("%s: %0d/%0d %s tran (size=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                            tr_dut.tran_dir, tr_dut.tran_index, tr_dut.tran_count,
+                            tr_dut.tran_type, wr_data_fifo.used(), tr_dut.addr,
+                            tr_dut.data, tr_dut.write), UVM_MEDIUM)
+      end
+    end else begin
+      ...
+Go ahead and complete the FIFO RD portion
+Now in the run_phase, use these, see below
+    bus_tran tr_dut_wr, tr_dut_rd;
+    bit [31:0] last_read_data;
+    forever begin
+      fork
+        begin
+          wr_data_fifo.get(tr_dut_wr);
+          #wr_fifo_process_time;
+          wr_num_processed++;
+          `uvm_info("FIFO_PROCESS",
+                    $sformatf("%s: %0d/%0d %s tran (remaining=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                              tr_dut_wr.tran_dir, tr_dut_wr.tran_index, tr_dut_wr.tran_count,
+                              tr_dut_wr.tran_type, wr_data_fifo.used(), tr_dut_wr.addr,
+                              tr_dut_wr.data, tr_dut_wr.write), UVM_MEDIUM)
+        end
+        begin
+          rd_data_fifo.get(tr_dut_rd);
+          #rd_fifo_process_time;
+          rd_num_processed++;
+          `uvm_info("FIFO_PROCESS",
+                    $sformatf("%s: %0d/%0d %s tran (remaining=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                              tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                              tr_dut_rd.tran_type, rd_data_fifo.used(), tr_dut_rd.addr,
+                              tr_dut_rd.data, tr_dut_rd.write), UVM_MEDIUM)
+
+          if (tr_dut_rd.addr[7:4] == 4'hA) begin
+            if (tr_dut_rd.data == tr_dut_wr.data) begin
+              rd_num_pass++;
+              `uvm_info("FIFO_VAL",
+                        $sformatf("PASS %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata==wdata, control reg 0xA0-0xAF)",
+                                  tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                  tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data), UVM_MEDIUM)
+            end else begin
+              rd_num_fail++;
+              `uvm_error("FIFO_VAL",
+                         $sformatf("FAIL %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata!=wdata, control reg 0xA0-0xAF)",
+                                   tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                   tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data))
+            end
+          end
+          else if (tr_dut_rd.addr[7:4] == 4'hB) begin
+            if (tr_dut_rd.addr[7:0] == tr_dut_rd.data[7:0]) begin
+              rd_num_pass++;
+              `uvm_info("FIFO_VAL",
+                        $sformatf("PASS %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata==waddr, status reg 0xA0-0xAF)",
+                                  tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                  tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data), UVM_MEDIUM)
+            end else begin
+              rd_num_fail++;
+              `uvm_error("FIFO_VAL",
+                         $sformatf("FAIL %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata!=waddr, status reg 0xA0-0xAF)",
+                                   tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                   tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data))
+            end
+          end
+          else if (tr_dut_rd.addr[7:4] == 4'hF) begin
+            if (tr_dut_rd.data == last_read_data) begin
+              rd_num_pass++;
+              `uvm_info("FIFO_VAL",
+                        $sformatf("PASS %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata==last_rdata, reserved 0xF0-0xFF, wdata 0x%8h dropped)",
+                                  tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                  tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data, tr_dut_wr.data), UVM_MEDIUM)
+            end else begin
+              rd_num_fail++;
+              `uvm_error("FIFO_VAL",
+                         $sformatf("FAIL %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata!=last_rdata, reserved 0xF0-0xFF, wdata 0x%8h dropped)",
+                                   tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                   tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data, tr_dut_wr.data))
+            end
+          end
+          else begin
+            if (tr_dut_rd.data == tr_dut_wr.data) begin
+              rd_num_pass++;
+              `uvm_info("FIFO_VAL",
+                        $sformatf("PASS %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata==wdata 0x%8h)",
+                                  tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                  tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data, tr_dut_wr.data), UVM_MEDIUM)
+            end else begin
+              rd_num_fail++;
+              `uvm_error("FIFO_VAL",
+                         $sformatf("FAIL %s: %0d/%0d %s tran addr=0x%2h, data=0x%8h (rdata!=wdata 0x%8h)",
+                                   tr_dut_rd.tran_dir, tr_dut_rd.tran_index, tr_dut_rd.tran_count,
+                                   tr_dut_rd.tran_type, tr_dut_rd.addr, tr_dut_rd.data, tr_dut_wr.data))
+            end
+          end
+          last_read_data = tr_dut_rd.data;
+        end
+      join
+    end
+  endtask
+For update_fifo_stats function, use these, see below
+  function int update_fifo_stats(
+        uvm_tlm_fifo #(bus_tran) fifo,
+        int fifo_max_utilization,
+        string fifo_name
+  );
+    int current_used = fifo.used();
+    if (current_used + 1 >= fifo_max_utilization) begin
+      fifo_max_utilization = current_used + 1;
+    end
+    return fifo_max_utilization;
+  endfunction
+For the report_phase, use these, see below
+  function void report_phase(uvm_phase phase);
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Total WR received transactions: %0d", wr_num_received),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Total WR processed transactions: %0d", wr_num_processed),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("WR FIFO overflows: %0d", wr_fifo_overflows),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Maximum WR FIFO utilization: %0d/%0d", wr_fifo_max_utilization, wr_fifo_size),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Total RD received transactions: %0d", rd_num_received),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Total RD processed transactions: %0d", rd_num_processed),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Total RD pass detected: %0d", rd_num_pass),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Total RD fail detected: %0d", rd_num_fail),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("RD FIFO overflows: %0d", rd_fifo_overflows),
+              UVM_NONE)
+    `uvm_info("CONSUMER_REPORT",
+              $sformatf("Maximum RD FIFO utilization: %0d/%0d", rd_fifo_max_utilization, rd_fifo_size),
+              UVM_NONE)
+  endfunction
+
+% vim ../design/bus_ctrl_if.sv
+Refer to lab16, please come up the interfaces
+Use clocking block instead of modports so that the clock skew can be tuned
+interface bus_ctrl_if;
+  logic reset_n_tb;
+  ...
+  ...
+
+  clocking drv_cb @(posedge clk_tb);
+    default input #1step output #1;
+    ...
+    ...
+    endclocking
+
+  clocking mon_cb @(posedge clk_tb);
+    default input #1step;
+    ...
+  endclocking
+
+  // Synchronous signal assertion checks
+  // When:
+  // The testbench starts a transaction (valid_tb=1)
+  // The DUT is busy (ready=0)
+  // Then:
+  // The DUT must assert ready within 1 to 4 clock cycles
+  // If not, the assertion fails (indicating a protocol violation)
+  property valid_ready_handshake;
+    @(posedge clk_tb)
+    (valid_tb && !ready)
+    |=> ##[1:4] (ready);
+    // Below are for debug purpose
+    //(valid_tb && !ready, $display("Transaction started at %t", $time))
+    //|=> ##[1:4] (ready, $display("Handshake completed at %t", $time));
+  endproperty
+
+  assert property (valid_ready_handshake) else
+    $error("Valid-Ready handshake violation: Ready didn't arrive within 1-4 cycles after Valid");
+endinterface
+
+% cp ../../lab16/design/fa_drv.sv ../design
+% mv ../design/bus_drv.sv ../design/bus_drv.sv.old
+% vim ../design/bus_drv.sv
+Use fa_drv.sv as reference, do not use modports
+Make changes accordignly, mostly replacement
+Use these right after seq_item_port.get_next_item, see below
+      `uvm_info("DRIVER", $sformatf("Drive %s %0d/%0d %s tran to DUT: addr=0x%2h, wdata=0x%8h, write=%0b",
+                                    tr.seq_dir, tr.seq_index, tr.seq_count,
+                                    tr.seq_type, tr.addr, tr.data, tr.write), UVM_MEDIUM)
+Go ahead and complete the connection to DUT, remember to set these, see below
+      @(vif.drv_cb);
+      vif.drv_cb.reset_n_tb <= 1'b1;  // Ensure reset is inactive
+      vif.drv_cb.valid_tb <= 1'b1;
+      ...
+      ...
+Remember to save thse config, see below
+      uvm_config_db#(int)::set(null, "*", "tran_count", tr.seq_count);
+      uvm_config_db#(int)::set(null, "*", "tran_index", tr.seq_index);
+      uvm_config_db#(string)::set(null, "*", "tran_type", tr.seq_type);
+      uvm_config_db#(string)::set(null, "*", "tran_dir", tr.seq_dir);
+And add these before seq_item_port.item_done, see below
+      // Wait for DUT ready
+      while (!vif.drv_cb.ready) @(vif.drv_cb);
+
+      // Complete transaction
+      @(vif.drv_cb);
+      vif.drv_cb.valid_tb <= 1'b0;
+
+% vim ../design/bus_env.sv
+Add these right after the super.build_phase line, see below
+    // Set agent as active
+    uvm_config_db#(uvm_active_passive_enum)::set(this, "agt", "is_active", UVM_ACTIVE);
+
+% cp ../../lab16/design/fa_mon.sv ../design
+% mv ../design/bus_mon.sv ../design/bus_mon.sv.old
+% vim ../design/bus_mon.sv
+Use fa_mon.sv as reference, do not use modports
+Make changes accordignly, mostly replacement
+Add this, see below
+  string tran_dir;
+Use these instead in the run phase, see below
+    bus_tran tr_dut;
+    forever begin
+      // The property will be evaluated at every positive edge of the clock signal
+      // But only if the condition is true at that clock edge
+      @(vif.mon_cb iff (vif.mon_cb.ready));
+
+      // Create and populate transaction
+      tr_dut = bus_tran::type_id::create("tr_dut");
+      tr_dut.addr = vif.mon_cb.addr_tb;
+      tr_dut.data = vif.mon_cb.write_tb ? vif.mon_cb.wdata_tb : vif.mon_cb.rdata;
+      tr_dut.write = vif.mon_cb.write_tb;
+
+      if(!uvm_config_db#(int)::get(null, "", "tran_count", tran_count)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_count from bus_drv")
+      end
+      if(!uvm_config_db#(int)::get(null, "", "tran_index", tran_index)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_count from bus_drv")
+      end
+      if(!uvm_config_db#(string)::get(null, "", "tran_type", tran_type)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_type from bus_drv")
+      end
+      if(!uvm_config_db#(string)::get(null, "", "tran_dir", tran_dir)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_type from bus_drv")
+      end
+
+      `uvm_info("MONITOR", $sformatf("Observe %s %0d/%0d %s tran from DUT: addr=0x%2h, data=0x%8h, write=%0b",
+                                     tran_dir, tran_index, tran_count,
+                                     tran_type, tr_dut.addr, tr_dut.data, tr_dut.write), UVM_MEDIUM)
+
+      tr_dut.tran_count = this.tran_count;
+      tr_dut.tran_index = this.tran_index;
+      tr_dut.tran_type = this.tran_type;
+      tr_dut.tran_dir = this.tran_dir;
+      tr_dut.tran_ready = vif.ready;
+      mon_ap.write(tr_dut);
+    end
+  endtask
+endclass
+
+% cp ../../lab16/design/fa_scb.sv ../design
+% mv ../design/bus_scb.sv ../design/bus_scb.sv.old
+% vim ../design/bus_scb.sv
+Use fa_scb.sv as reference, do not use modports
+Make changes accordignly, mostly replacement
+Add these, see below
+  int passed_wr_count = 0;
+  int passed_rd_count = 0;
+  int failed_wr_res_count = 0;
+  int failed_rd_res_count = 0;
+  string tran_dir;
+Now in the function write, use these, see below
+  function void write(bus_tran tr_dut);
+    if (tr_dut.addr[7:4] == 4'hA) begin
+      passed_count++;
+      if (tr_dut.write == 1) passed_wr_count++;
+      if (tr_dut.write == 0) passed_rd_count++;
+      `uvm_info("SCOREBOARD", $sformatf("PASS %s %0d/%0d %s tran: addr=0x%2h, data=0x%8h, write=%0b, control reg 0xA0-0xAF",
+                                        tr_dut.tran_dir, tr_dut.tran_index, tr_dut.tran_count,
+                                        tr_dut.tran_type, tr_dut.addr, tr_dut.data, tr_dut.write),
+                                        UVM_MEDIUM)
+    end else if (tr_dut.addr[7:4] == 4'hB) begin
+      passed_count++;
+      if (tr_dut.write == 1) passed_wr_count++;
+      if (tr_dut.write == 0) passed_rd_count++;
+      `uvm_info("SCOREBOARD", $sformatf("PASS %s %0d/%0d %s tran: addr=0x%2h, data=0x%8h, write=%0b, status reg 0xB0-0xBF",
+                                        tr_dut.tran_dir, tr_dut.tran_index, tr_dut.tran_count,
+                                        tr_dut.tran_type, tr_dut.addr, tr_dut.data, tr_dut.write), UVM_MEDIUM)
+    end else if (tr_dut.addr[7:4] == 4'hF) begin
+      failed_count++;
+      if (tr_dut.write == 1) failed_wr_res_count++;
+      if (tr_dut.write == 0) failed_rd_res_count++;
+      `uvm_error("SCOREBOARD", $sformatf("FAIL %s %0d/%0d %s tran: addr=0x%2h, data=0x%8h, write=%0b, reserved 0xF0-0xFF",
+                                         tr_dut.tran_dir, tr_dut.tran_index, tr_dut.tran_count,
+                                         tr_dut.tran_type, tr_dut.addr, tr_dut.data, tr_dut.write))
+    end else begin
+      passed_count++;
+      if (tr_dut.write == 1) passed_wr_count++;
+      if (tr_dut.write == 0) passed_rd_count++;
+      `uvm_info("SCOREBOARD", $sformatf("PASS %s %0d/%0d %s tran: addr=0x%2h, data=0x%8h, write=%0b",
+                                        tr_dut.tran_dir, tr_dut.tran_index, tr_dut.tran_count,
+                                        tr_dut.tran_type, tr_dut.addr, tr_dut.data, tr_dut.write), UVM_MEDIUM)
+    end
+  endfunction
+Last, add these, see below
+  function void report_phase(uvm_phase phase);
+    `uvm_info("SCOREBOARD", $sformatf("Passed Tran: Passed=%0d Passed(WR)=%0d Passed(RD)=%0d",
+                                      passed_count, passed_wr_count, passed_rd_count), UVM_NONE)
+    `uvm_info("SCOREBOARD", $sformatf("Failed Tran: Failed=%0d Failed(WR_RES)=%0d Failed(RD_RES)=%0d",
+                                      failed_count, failed_wr_res_count, failed_rd_res_count), UVM_NONE)
+  endfunction
+endclass
+
+% mv ../design/bus_seq.sv ../design/bus_seq.sv.old
+% vim ../design/bus_seq.sv
+Please copy the Content1 into it, see below
+
+Content1
+────────
+class bus_seq extends uvm_sequence #(bus_tran);
+  `uvm_object_utils(bus_seq)
+
+  int min_delay;
+  int max_delay;
+  int delay;
+  int seq_count;
+  int seq_index;
+  string seq_type;
+  string seq_dir;
+
+  bit [7:0] last_write_addr;
+
+  function new(string name = "bus_seq");
+    super.new(name);
+    seq_index = 0;
+    seq_type = "normal";
+  endfunction
+
+  function int get_random_delay();
+    return $urandom_range(min_delay, max_delay);
+  endfunction
+
+  task body();
+    bus_tran tr;
+    `uvm_info(get_type_name(), "Normal Priority Sequence", UVM_MEDIUM)
+    repeat (seq_count) begin
+      seq_index++;
+      // Write data to a random address
+      tr = bus_tran::type_id::create("tr");
+      start_item(tr);
+      assert(tr.randomize() with { addr[7:4] == 4'hA; write == 1; });
+      //assert(tr.randomize() with { write == 1; });
+      last_write_addr = tr.addr;  // Store the write address directly
+      seq_dir = "WR";
+      `uvm_info(get_type_name(), $sformatf("Sent %s %0d/%0d %s seq: addr=0x%2h, data=0x%8h, write=%0b",
+                                           seq_dir, seq_index, seq_count, seq_type, tr.addr, tr.data, tr.write),
+					   UVM_MEDIUM)
+      tr.seq_count = this.seq_count;
+      tr.seq_index = this.seq_index;
+      tr.seq_type = this.seq_type;
+      tr.seq_dir = this.seq_dir;
+      finish_item(tr);
+      // Read the data back from the write adddress
+      tr = bus_tran::type_id::create("tr");
+      start_item(tr);
+      tr.addr = last_write_addr;
+      tr.write = 0;
+      delay = get_random_delay();
+      seq_dir = "RD";
+      `uvm_info(get_type_name(), $sformatf("Sent %s %0d/%0d %s seq: addr=0x%2h, data=0x%8h, write=%0b Next seq after %0d",
+                                           seq_dir, seq_index, seq_count, seq_type, tr.addr, tr.data, tr.write, delay),
+                                           UVM_MEDIUM)
+      tr.seq_count = this.seq_count;
+      tr.seq_index = this.seq_index;
+      tr.seq_type = this.seq_type;
+      tr.seq_dir = this.seq_dir;
+      #delay;
+      finish_item(tr);
+    end
+  endtask
+endclass
+
+% mv ../design/bus_seq_prio.sv ../design/bus_seq_prio.sv.old
+% cp ../design/bus_seq.sv ../design/bus_seq_prio.sv
+% vim ../design/bus_seq_prio.sv
+Understand bus_seq.sv and mnodify bus_seq_prio.sv to support write and read transactions
+Remove all the delay dependencies
+Remove m_sequencer.lock/unlock
+These should be updated, see below
+class high_prio_seq extends bus_seq;
+    seq_type = "high";
+    `uvm_info(get_type_name(), "High Priority Sequence", UVM_MEDIUM)
+      req = bus_tran::type_id::create("req");
+      assert(req.randomize() with { addr[7:4] == 4'hB; write == 1; });
+And all 'tr' will be 'req' in the repeat block
+Duplicate high_prio_seq into low_prio_seq
+These should be updated, see below
+class low_prio_seq extends bus_seq;
+    seq_type = "low";
+    `uvm_info(get_type_name(), "LOw Priority Sequence", UVM_MEDIUM)
+      assert(req.randomize() with { addr[7:4] == 4'hF; write == 1; });
+
+
+% mv ../design/bus_tb.sv ../design/bus_tb.sv.old
+% cp ../../lab16/design/fa_tb.sv ../design/bus_tb.sv
+% vim ../design/bus_tb.sv
+Use fa_tb.sv as reference
+Make changes accordignly, mostly replacement
+
+% vim ../design/bus_test.sv
+Reduce all the delay values to 0
+Comment out the wait
+
+% vim ../design/bus_tran.sv
+Add these, see below
+  int tran_count;
+  int tran_index;
+  int tran_ready;
+  string seq_dir;
+  string tran_type;
+  string tran_dir;
+
+% echo $ASSERT
+Ensure it is set to 1
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab17/lab17/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% grep ERROR bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab17/lab17/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% grep DRIVER bus_sim.log
+% grep MONITOR bus_sim.log
+% grep SCORE bus_sim.log
+% grep VAL bus_sim.log
+% grep VAL bus_sim.log | grep ERROR
+% grep VAL bus_sim.log | grep '\/8'
+% grep FIFO_P bus_sim.log
+% grep CONSUMER_REPORT bus_sim.log
+% grep Error bus_sim.log 
+Please share the issues as observed by you
+Why there are FAIL in scb?
+Any idea to ensure all the transactions are processed in FIFO?
+Is the scb doing the proper checks?
+
+% vim bus_sim.log
+Note that there is the assertions report at the end
+Note the 1 assertion error
+
+% vim ../design/bus_scb.sv
+Add these before the 'report_phase' line, see below
+  real pass_rate;
+  real fail_rate;
+  bit test_passed;
+  string test_summary;
+
+  function void extract_phase(uvm_phase phase);
+    // Calculate derived metrics
+    int total_transactions = passed_count + failed_count;
+
+    if (total_transactions > 0) begin
+      // real' is a casting syntax, creates a temporary real (floating-point) version of the value
+      // ' is called the cast operator
+      pass_rate = (real'(passed_count) / real'(total_transactions)) * 100;
+      fail_rate = (real'(failed_count) / real'(total_transactions)) * 100;
+    end else begin
+      pass_rate = 0;
+      fail_rate = 0;
+    end
+
+    // Determine overall test status
+    test_passed = (failed_count == 0);  // If failed_count is 0, return true or 1, meaning test_passed is true or 1
+    test_summary = test_passed ? "TEST PASSED" : "TEST FAILED";
+  endfunction
+
+  function void check_phase(uvm_phase phase);
+    // Final verification of test results
+    if (failed_count > 0) begin
+        `uvm_error("CHECK", $sformatf("Scoreboard detected %0d failures", failed_count))
+    end
+
+    // Additional checks could be added here, for example:
+    // - Minimum transaction count requirements
+    // - Specific pattern requirements
+    // - Protocol violation checks
+  endfunction
+Add these after the 'report_phase' line, see below
+    `uvm_info("SCOREBOARD", test_summary, UVM_NONE)
+    `uvm_info("SCOREBOARD", $sformatf("Pass Rate: %.2f%%", pass_rate), UVM_NONE)
+Note that the extract and check phases can be added into bus_con and bus_cov classes too
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% grep ERROR bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab17/lab17/' > diff3
+% diff diff3 diff3.orig
+There should be no discrepency
+
+% urg -full64 -dir bus_simv.vdb -report bus_cov
+% \ls -l `echo $ROOT/sim/bus_cov/dashboard.html`
+Copy and paste the full path of dashboard.html to the web browser

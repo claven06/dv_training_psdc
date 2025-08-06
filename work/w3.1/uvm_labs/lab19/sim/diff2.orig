@@ -1,0 +1,44 @@
+UVM_INFO @ 0: reporter [RNTST] Running test fa_test_t...
+UVM_INFO lab19/design/fa_test_t.sv @ 0: uvm_test_top [TEST] Starting target sequences with config: count=8, delay=0-0
+UVM_INFO lab19/design/fa_seq_t.sv @ 0: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sequence: target
+UVM_INFO lab19/design/fa_drv.sv @ 5000: uvm_test_top.env.agt.drv [DRIVER] Drive 1/8 target tran to DUT: a=0, b=0, cin=0
+UVM_INFO lab19/design/fa_seq_t.sv @ 5000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 1/8 target sequences: a=0, b=0, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 15000: uvm_test_top.env.agt.mon [MONITOR] Observe 1/8 target tran from DUT: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 15000: uvm_test_top.env.scb [SCOREBOARD] PASS 1/8 target tran: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 15000: uvm_test_top.env.agt.drv [DRIVER] Drive 2/8 target tran to DUT: a=0, b=0, cin=1
+UVM_INFO lab19/design/fa_seq_t.sv @ 15000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 2/8 target sequences: a=0, b=0, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 25000: uvm_test_top.env.agt.mon [MONITOR] Observe 2/8 target tran from DUT: a_tb=0, b_tb=0, cin_tb=1 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 25000: uvm_test_top.env.scb [SCOREBOARD] PASS 2/8 target tran: a_tb=0, b_tb=0, cin_tb=1 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 25000: uvm_test_top.env.agt.drv [DRIVER] Drive 3/8 target tran to DUT: a=0, b=1, cin=0
+UVM_INFO lab19/design/fa_seq_t.sv @ 25000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 3/8 target sequences: a=0, b=1, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 35000: uvm_test_top.env.agt.mon [MONITOR] Observe 3/8 target tran from DUT: a_tb=0, b_tb=1, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 35000: uvm_test_top.env.scb [SCOREBOARD] PASS 3/8 target tran: a_tb=0, b_tb=1, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 35000: uvm_test_top.env.agt.drv [DRIVER] Drive 4/8 target tran to DUT: a=0, b=1, cin=1
+UVM_INFO lab19/design/fa_seq_t.sv @ 35000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 4/8 target sequences: a=0, b=1, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 45000: uvm_test_top.env.agt.mon [MONITOR] Observe 4/8 target tran from DUT: a_tb=0, b_tb=1, cin_tb=1 > sum_tb=0, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 45000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 4/8 target tran: a_tb=0, b_tb=1, cin_tb=1 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_drv.sv @ 45000: uvm_test_top.env.agt.drv [DRIVER] Drive 5/8 target tran to DUT: a=1, b=0, cin=0
+UVM_INFO lab19/design/fa_seq_t.sv @ 45000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 5/8 target sequences: a=1, b=0, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 55000: uvm_test_top.env.agt.mon [MONITOR] Observe 5/8 target tran from DUT: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 55000: uvm_test_top.env.scb [SCOREBOARD] PASS 5/8 target tran: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 55000: uvm_test_top.env.agt.drv [DRIVER] Drive 6/8 target tran to DUT: a=1, b=0, cin=1
+UVM_INFO lab19/design/fa_seq_t.sv @ 55000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 6/8 target sequences: a=1, b=0, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 65000: uvm_test_top.env.agt.mon [MONITOR] Observe 6/8 target tran from DUT: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 65000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 6/8 target tran: a_tb=1, b_tb=0, cin_tb=1 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_drv.sv @ 65000: uvm_test_top.env.agt.drv [DRIVER] Drive 7/8 target tran to DUT: a=1, b=1, cin=0
+UVM_INFO lab19/design/fa_seq_t.sv @ 65000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 7/8 target sequences: a=1, b=1, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 75000: uvm_test_top.env.agt.mon [MONITOR] Observe 7/8 target tran from DUT: a_tb=1, b_tb=1, cin_tb=0 > sum_tb=0, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 75000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 7/8 target tran: a_tb=1, b_tb=1, cin_tb=0 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_drv.sv @ 75000: uvm_test_top.env.agt.drv [DRIVER] Drive 8/8 target tran to DUT: a=1, b=1, cin=1
+UVM_INFO lab19/design/fa_seq_t.sv @ 75000: uvm_test_top.env.agt.sqr@@seq_t [fa_seq_t] Sent 8/8 target sequences: a=1, b=1, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 85000: uvm_test_top.env.agt.mon [MONITOR] Observe 8/8 target tran from DUT: a_tb=1, b_tb=1, cin_tb=1 > sum_tb=1, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 85000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 8/8 target tran: a_tb=1, b_tb=1, cin_tb=1 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage fa_cg   : 91.67%
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage a_cp    : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage b_cp    : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage cin_cp  : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage sum_cp  : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage cout_cp : 50.00%
+UVM_INFO lab19/design/fa_cov.sv @ 85000: uvm_test_top.env.cov [COVERAGE] Coverage abcin_cp: 100.00%
+UVM_INFO lab19/design/fa_scb.sv @ 85000: uvm_test_top.env.scb [SCOREBOARD] Test Complete. Passed: 4 Failed: 4
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 85000: reporter [UVM/REPORT/SERVER] 

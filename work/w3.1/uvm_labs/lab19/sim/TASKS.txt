@@ -1,0 +1,198 @@
+fa/
+├── fadder.sv       // Full adder module
+├── fadder_if.sv    // full adder interface
+├── fa_tran.sv      // Transaction class
+├── fa_seq_r.sv     // Sequence class - random
+├── fa_seq_t.sv     // Sequence class - target
+├── fa_sqr.sv       // Sequencer class
+├── fa_drv.sv       // Driver class
+├── fa_mon.sv       // Monitor class
+├── fa_agt.sv       // Agent class
+├── fa_scb.sv       // Scoreboard class
+├── fa_cov.sv       // Coverage class
+├── fa_env.sv       // Env class
+├── fa_test.sv      // Test class
+├── fa_test_r.sv    // Test class - random
+├── fa_test_t.sv    // Test class - target
+└── fa_tb.sv        // Testbench top
+
+Full Adder
+──────────
+This is a combinational design
+    // Sum calculation: a XOR b XOR cin
+    assign sum = a ^ b ^ cin;
+    // Carry-out calculation: (a AND b) OR (cin AND (a XOR b))
+    assign cout = (a & b) | (cin & (a ^ b));
+
+% cp ../../lab16/design/* ../design
+
+% cp ../../lab14/design/bus_cov.sv ../design/fa_cov.sv
+% vim ../design/fa_cov.sv
+Make changes accordignly, mostly replacement
+Remove all option.weight and bins
+Make modifications to have these coverpoint, see below
+    a_cp:
+    b_cp:
+    cin_cp:
+    sum_cp:
+    cout_cp:
+    abcin_cp:
+
+% vim ../design/fadder_if.sv
+Add in these right before the endinterface line, see below
+  task automatic init_tb();
+    a_tb = 0;
+    b_tb = 0;
+    cin_tb = 0;
+  endtask
+
+% vim ../design/fa_drv.sv
+Make changes accordignly, mostly replacement
+Use clocking block instead of modports so that the clock skew can be tuned
+
+% vim ../design/fa_env.sv
+Add in fa_cov
+
+% vim ../design/fa_mon.sv
+Make changes accordignly, mostly replacement
+Use clocking block instead of modports so that the clock skew can be tuned
+
+% cp ../design/fa_seq.sv ../design/fa_seq_r.sv
+% cp ../design/fa_seq.sv ../design/fa_seq_t.sv
+
+% vim ../design/fa_seq_r.sv
+Make changes accordignly, mostly replacement
+Remove this, see below
+    seq_type = "normal";
+Replace the uvm_info with this, see below
+    `uvm_info(get_type_name(), $sformatf("Sequence: %s", seq_type), UVM_MEDIUM)
+
+% vim ../design/fa_seq_t.sv
+Make changes accordignly, mostly replacement
+Remove this, see below
+    seq_type = "normal";
+      seq_index++;
+Replace the uvm_info with this, see below
+    `uvm_info(get_type_name(), $sformatf("Sequence: %s", seq_type), UVM_MEDIUM)
+Add in these before the new function line, see below
+  bit [2:0] bits;
+Replace with these from the repeat to the assert lines, see below
+    for (seq_index = 1; seq_index <= seq_count; seq_index++) begin
+      tr = fa_tran::type_id::create("tr");
+      bits = seq_index - 1;
+      start_item(tr);
+      tr.a = bits[2]; tr.b = bits[1]; tr.cin = bits[0];
+      assert(tr.a inside {0,1} && tr.b inside {0,1} && tr.cin inside {0,1})
+
+% vim ../design/fa_tb.sv
+Add in these, see below
+  `include "fa_seq_r.sv"
+  `include "fa_seq_t.sv"
+  `include "fa_cov.sv"
+  `include "fa_test_r.sv"
+  `include "fa_test_t.sv"
+Remove this, see below
+  `include "fa_seq.sv"
+Replace with this, see below
+    run_test();
+
+% cp ../design/fa_test.sv ../design/fa_test_r.sv
+% cp ../design/fa_test.sv ../design/fa_test_t.sv
+
+% vim ../design/fa_test.sv
+Make changes accordignly, mostly replacement
+Remove these, see below
+  fa_seq seq;
+  int seq_count = 10;
+  int seq_min_delay = 0,  seq_max_delay = 0;
+Remove the whole task
+
+% vim ../design/fa_test_r.sv
+Make changes accordignly, mostly replacement
+Add in this, see below
+  string seq_type = "random";
+Add in this right after the 'seq.seq_type' line, see below
+    seq.seq_type = this.seq_type;
+Remove this, see below
+  fa_env env;
+Remove the whole build phase, see below
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    env = fa_env::type_id::create("env", this);
+  endfunction
+Replace the uvm_info with this, see below
+    `uvm_info("TEST", $sformatf("Starting %s sequences with config: count=%0d, delay=%0d-%0d",
+                                seq.seq_type, seq.seq_count, seq.min_delay, seq.max_delay),
+                                UVM_MEDIUM)
+
+% vim ../design/fa_test_t.sv
+Make changes accordignly, mostly replacement
+Do the same as ../design/fa_test_r.sv
+Replace seq_type with this, see below
+  string seq_type = "target";
+Change this, see below
+  int seq_count = 8;
+
+% export NR=1
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% cp qrun qrun_r
+% vim qrun_r
+Add in this to the last of fa_simv command, see below
++UVM_TESTNAME=fa_test_r
+
+% cp qrun qrun_t
+% vim qrun_t
+Add in this to the last of fa_simv command, see below
++UVM_TESTNAME=fa_test_t
+
+% qrun_r
+% qgrep
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab19/lab19/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% qrun_t
+% qgrep
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab19/lab19/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% urg -full64 -dir fa_simv.vdb -report fa_cov
+% \ls -l `echo $ROOT/sim/fa_cov/dashboard.html`
+Copy and paste the full path of dashboard.html to the web browser
+
+% verdi &
+Load the fsdb file to check out the waveform
+Debug the FAIL COUT by the SCOREBOARD
+
+Data Flow Diagram
+─────────────────
++----------------+       +----------------+       +----------------+       +----------------+
+|                |       |                |       |                |       |                |
+|   fa_test      |       |    fa_seq      |       |    fa_sqr      |       |    fa_drv      |
+|   (test)       |------>|   (sequence)   |------>| (sequencer)    |------>|  (driver)      |
+|                |       |                |       |                |       |                |
++----------------+       +----------------+       +----------------+       +----------------+
+       |                                                           |              |
+       |                                                           |              |
+       v                                                           |              v
++----------------+                                          +----------------+  +----------------+
+|                |                                          |                |  |                |
+|   fa_env       |                                          |    fa_agt      |  |   fadder_if    |
+|   (environment)|<---------------------------------------->|   (agent)      |<-| (interface)    |
+|                |                                          |                |  |                |
++----------------+                                          +----------------+  +----------------+
+       ^                                                                              |
+       |                                                                              |
+       v                                                                              v
++----------------+       +----------------+       +----------------+       +----------------+
+|                |       |                |       |                |       |                |
+|   fa_scb       |<------|    fa_mon      |<------|   fadder       |<------|   fa_tran      |
+| (scoreboard)   |       |  (monitor)     |       | (DUT)          |       | (transaction)  |
+|                |       |                |       |                |       |                |
++----------------+       +----------------+       +----------------+       +----------------+

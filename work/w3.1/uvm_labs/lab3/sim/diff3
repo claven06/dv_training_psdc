@@ -1,0 +1,22 @@
+UVM_INFO lab3/design/ptop_tb.sv @ 0: reporter [PTOP/TB] Starting testbench
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 0: uvm_test_top [PTOP/TEST/NEW] Creating uvm_test_top
+UVM_INFO @ 0: reporter [RNTST] Running test ptop_test...
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 0: uvm_test_top [PTOP/TEST/BUILD] Start of build_phase
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 0: uvm_test_top.parent [PTOP/PARENT/NEW] Creating parent
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 0: uvm_test_top [PTOP/TEST/BUILD] End of build_phase
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 0: uvm_test_top.parent [PTOP/PARENT/BUILD] Start of build_phase
+UVM_INFO lab3/design/ptop_child_pkg.sv @ 0: uvm_test_top.parent.child [PTOP/CHILD/NEW] Creating child
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 0: uvm_test_top.parent [PTOP/PARENT/BUILD] End of build_phase
+UVM_INFO lab3/design/ptop_child_pkg.sv @ 0: uvm_test_top.parent.child [PTOP/CHILD/BUILD] Executing build_phase
+UVM_INFO lab3/design/ptop_child_pkg.sv @ 0: uvm_test_top.parent.child [PTOP/CHILD/CONNECT] Executing connect_phase
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 0: uvm_test_top.parent [PTOP/PARENT/CONNECT] Start of connect_phase
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 0: uvm_test_top.parent [PTOP/PARENT/CONNECT] End of connect_phase
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 0: uvm_test_top [PTOP/TEST/ENDOFELAB] Printing test topology
+UVM_INFO lab3/design/ptop_child_pkg.sv @ 0: uvm_test_top.parent.child [PTOP/CHILD/RUN] Child run phase started
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 0: uvm_test_top.parent [PTOP/PARENT/RUN] Parent run phase started
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 0: uvm_test_top [PTOP/TEST/RUN] Test run phase started
+UVM_INFO lab3/design/ptop_parent_pkg.sv @ 10000: uvm_test_top.parent [PTOP/PARENT/RUN] Parent run phase completed
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 15000: uvm_test_top [PTOP/TEST/RUN] Test run phase completed
+UVM_INFO lab3/design/ptop_child_pkg.sv @ 50000: uvm_test_top.parent.child [PTOP/CHILD/RUN] Child run phase completed
+UVM_INFO lab3/design/ptop_test_pkg.sv @ 50000: uvm_test_top [PTOP/TEST/EXTRACT] In the extract phase
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 50000: reporter [UVM/REPORT/SERVER] 

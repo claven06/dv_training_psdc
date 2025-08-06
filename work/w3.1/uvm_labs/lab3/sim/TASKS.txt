@@ -1,0 +1,128 @@
+ptop/
+├── ptop_uvm_pkg.sv     // Master package (aggregates all others)
+├── ptop_child_pkg.sv   // Child component package
+├── ptop_parent_pkg.sv  // Parent component package  
+├── ptop_test_pkg.sv    // Test class package
+└── ptop_tb.sv          // Testbench top
+
+% cp ../../lab2/design/* ../design
+% vim ../design/ptop_child_pkg.sv
+% vim ../design/ptop_parent_pkg.sv
+% vim ../design/ptop_test_pkg.sv
+For each of these files, please add in the right contents into it from the three contents below, see below
+Remember to add the content right before the 'endclass' line
+
+Content1
+────────
+    // Objection
+    task run_phase(uvm_phase phase);
+      `uvm_info("PTOP/PARENT/RUN", "Parent run phase started", UVM_MEDIUM)
+
+      #10ns; // Simulate some parent activity
+
+      `uvm_info("PTOP/PARENT/RUN", "Parent run phase completed", UVM_MEDIUM)
+    endtask
+
+Content2
+────────
+    function void extract_phase(uvm_phase phase);
+      super.extract_phase(phase);
+      `uvm_info("PTOP/TEST/EXTRACT", "In the extract phase", UVM_MEDIUM)
+    endfunction
+
+    // Objection
+    task run_phase(uvm_phase phase);
+      `uvm_info("PTOP/TEST/RUN", "Test run phase started", UVM_MEDIUM)
+
+      #100ns; // Simulate some test activity
+
+      `uvm_info("PTOP/TEST/RUN", "Test run phase completed", UVM_MEDIUM)
+    endtask
+
+Content3
+────────
+    // Objection
+    task run_phase(uvm_phase phase);
+      `uvm_info("PTOP/CHILD/RUN", "Child run phase started", UVM_MEDIUM)
+
+      #50ns; // Simulate some child activity
+
+      `uvm_info("PTOP/CHILD/RUN", "Child run phase completed", UVM_MEDIUM)
+    endtask
+
+% vim ../design/ptop.f
+For ease of compilation use -f <file_name.f> option
+Add in all the sv files, line by line, see below
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/$MODULE_TB.$TYPE
+
+% echo $FLIST
+Ensure FLIST is set to 1
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that run_phase will only be executed after the build_phase is completed
+However none of the run_phase or simulation was executed
+The following messages were not printed, see below
+Child run phase completed
+Parent run phase completed
+Test run phase completed
+
+% vim ../design/ptop_child_pkg.sv
+% vim ../design/ptop_parent_pkg.sv
+% vim ../design/ptop_test_pkg.sv
+For each of these files, please add this right after the 'task run_phase...' line, see below
+      phase.raise_objection(this);
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that the child/parent/test run_phase was executed
+However the simulation did not proceed to the subsequent phases e.g. the test extract_phase
+The simulation continued to run until timeout
+The following messages was not printed, see below
+In the extract phase
+
+% vim ../design/ptop_child_pkg.sv
+% vim ../design/ptop_parent_pkg.sv
+% vim ../design/ptop_test_pkg.sv
+Add this right before the 'endtask' line, see below
+      phase.drop_objection(this);
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that the child/parent/test run_phase and the test extract_phase were executed
+
+% grep UVM_ ptop_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab3/lab3/' > diff1
+% grep 'ns;' ../design/* > diff2
+% diff diff1 diff1.orig
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% vim ../design/ptop_test_pkg.sv
+Change #100ns; to #15ns;
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that run_phase tasks run concurrently
+Note that extract_phase task only starts right after the completion of all run_Phase tasks
+
+% grep UVM_ ptop_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab3/lab3/' > diff3
+% grep 'ns;' ../design/* > diff4
+% diff diff3 diff3.orig
+% diff diff4 diff4.orig
+There should be no discrepency

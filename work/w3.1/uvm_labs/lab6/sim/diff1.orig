@@ -1,0 +1,9 @@
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO lab6/design/bus_test.sv @ 0: uvm_test_top [BTOP/TEST] Launching the sequence
+UVM_INFO lab6/design/bus_sequence.sv @ 0: uvm_test_top.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO lab6/design/bus_driver.sv @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xad, data = 0xf7d75ac8, write = 1
+UVM_INFO lab6/design/bus_driver.sv @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0x33, data = 0xbc462b4b, write = 1
+UVM_INFO lab6/design/bus_driver.sv @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xc4, data = 0xfec6c96b, write = 1
+UVM_INFO lab6/design/bus_driver.sv @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xd6, data = 0x051ec8fa, write = 1
+UVM_INFO lab6/design/bus_driver.sv @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xd7, data = 0x79c431ba, write = 1
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 0: reporter [UVM/REPORT/SERVER] 

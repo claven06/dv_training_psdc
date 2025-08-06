@@ -1,0 +1,186 @@
+fa/
+├── fadder.sv       // Full adder module
+├── fadder_if.sv    // full adder interface
+├── fa_tran.sv      // Transaction class
+├── fa_seq.sv       // Sequence class
+├── fa_sqr.sv       // Sequencer class
+├── fa_drv.sv       // Driver class
+├── fa_mon.sv       // Monitor class
+├── fa_agt.sv       // Agent class
+├── fa_scb.sv       // Scoreboard class
+├── fa_env.sv       // Env class
+├── fa_test.sv      // Test class
+└── fa_tb.sv        // Testbench top
+
+Full Adder
+──────────
+This is a combinational design
+    // Sum calculation: a XOR b XOR cin
+    assign sum = a ^ b ^ cin;
+    // Carry-out calculation: (a AND b) OR (cin AND (a XOR b))
+    assign cout = (a & b) | (cin & (a ^ b));
+
+% cp ../../lab15/design/* ../design
+% cp ../design/fadder_if.sv ../design/fadder_if.sv.old
+% vim ../design/fadder_if.sv
+Add in these right before the clocking drv_cb line, see below
+  // Modport for driver
+  modport drv_mp (
+    output a_tb, b_tb, cin_tb,  // Driver drives DUT inputs
+    input  sum, cout,           // Driver reads DUT outputs
+    input  clk_tb               // Driver needs clock for timing
+  );
+
+  // Modport for monitor
+  modport mon_mp (
+    input a_tb, b_tb, cin_tb, sum, cout, clk_tb  // Monitor only reads
+  );
+
+% vim ../design/fa_tb.sv
+Please add these into the initial block, see below
+    uvm_config_db#(virtual fadder_if.drv_mp)::set(null, "*drv*", "vif", fa_if.drv_mp);
+    uvm_config_db#(virtual fadder_if.mon_mp)::set(null, "*mon*", "vif", fa_if.mon_mp);
+
+% vim ../design/fa_mon.sv
+Use this instead, see below
+  virtual fadder_if.mon_mp vif;  // Use mon_mp
+Use this instead in the build phase, see below
+    if(!uvm_config_db#(virtual fadder_if.mon_mp)::get(this, "", "vif", vif)) begin
+      `uvm_error("MONITOR", "Virtual interface (mon_mp) not found in config db")
+    end
+se this instead in the run phase, see below
+    @(posedge vif.clk_tb);  // Direct clock access
+      @(posedge vif.clk_tb);  // Direct clock access
+Replace vif.mon in the forever block, see below
+      tr_dut.a = vif.a_tb;
+      ...
+
+% vim ../design/fa_drv.sv
+Use this instead, see below
+  virtual fadder_if.drv_mp vif;  // Use drv_mp
+Use this instead in the build phase, see below
+    if(!uvm_config_db#(virtual fadder_if.drv_mp)::get(this, "", "vif", vif)) begin
+      `uvm_error("DRIVER", "Virtual interface (drv_mp) not found in config db")
+    end
+Use this instead in the run phase, see below
+      @(posedge vif.clk_tb);  // Wait for the posedge clock
+Use these instead, see below
+      vif.a_tb <= tr.a;      // Drive 'a' from transaction (tr) to DUT
+      ...
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim fa_sim.log or qgrep
+
+% grep '\[fa_seq\]' fa_sim.log
+Note that there are 10 transactions
+
+% grep 'DRIVER' fa_sim.log
+Note that the driver sees 10 transactions
+At 5ns DRIVER was about to drive 1/10 transaction to DUT
+
+% grep 'MONITOR' fa_sim.log
+Bear in mind the MONITOR is 1 clock lagging the DRIVER
+
+% grep 'SCORE' fa_sim.log
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab16/lab16/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% vim ../design/fadder.sv
+Change the cout equation to this, see below
+    assign cout = (a & b) & (cin & (a ^ b));
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim fa_sim.log or qgrep
+Note that there are COUT failures as reported
+
+% grep 'SCORE' fa_sim.log
+Also note that there are 7 failed transaction on COUT
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab16/lab16/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% verdi &
+Load the fsdb file to check out the waveform
+
+% grep 'MONITOR' fa_sim.log
+% grep 'SCORE' fa_sim.log
+Need to fix the issue about the total transaction number is 0, and the transaction type was omitted
+
+% vim ../design/fa_drv.sv
+Use these to save seq_count and seq_type in the forever block, see below
+      uvm_config_db#(int)::set(null, "*", "tran_count", tr.seq_count);
+      uvm_config_db#(int)::set(null, "*", "tran_index", tr.seq_index);
+      uvm_config_db#(string)::set(null, "*", "tran_type", tr.seq_type);
+
+% vim ../design/fa_mon.sv
+Use these to check if the saved information is retrieveable in the forever block, see below
+      if(!uvm_config_db#(int)::get(null, "", "tran_count", tran_count)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_count from fa_drv")
+      end
+      if(!uvm_config_db#(int)::get(null, "", "tran_index", tran_index)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_index from fa_drv")
+      end
+      if(!uvm_config_db#(string)::get(null, "", "tran_type", tran_type)) begin
+        `uvm_warning("MONITOR", "Unable to retrieve tran_type from fa_drv")
+      end
+Remember to remove these, see below
+    tran_index = 1;
+      tran_index++;
+
+% vim ../design/fa_scb.sv
+Remove these, see below
+    tran_index = 1;
+    tran_index++;
+Add in this right after the 'exp_cout' line, see below
+    tran_index = tr_dut.tran_index;
+
+% vim ../design/fa_test.sv
+Replace the wait with this, see below
+    wait(env.scb.tran_index == seq.seq_count);
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim fa_sim.log or qgrep
+Note the issue is fixed
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab16/lab16/' > diff3
+% diff diff3 diff3.orig
+There should be no discrepency
+
+Data Flow Diagram
+─────────────────
++----------------+       +----------------+       +----------------+       +----------------+
+|                |       |                |       |                |       |                |
+|   fa_test      |       |    fa_seq      |       |    fa_sqr      |       |    fa_drv      |
+|   (test)       |------>|   (sequence)   |------>| (sequencer)    |------>|  (driver)      |
+|                |       |                |       |                |       |                |
++----------------+       +----------------+       +----------------+       +----------------+
+       |                                                           |              |
+       |                                                           |              |
+       v                                                           |              v
++----------------+                                          +----------------+  +----------------+
+|                |                                          |                |  |                |
+|   fa_env       |                                          |    fa_agt      |  |   fadder_if    |
+|   (environment)|<---------------------------------------->|   (agent)      |<-| (interface)    |
+|                |                                          |                |  |                |
++----------------+                                          +----------------+  +----------------+
+       ^                                                                              |
+       |                                                                              |
+       v                                                                              v
++----------------+       +----------------+       +----------------+       +----------------+
+|                |       |                |       |                |       |                |
+|   fa_scb       |<------|    fa_mon      |<------|   fadder       |<------|   fa_tran      |
+| (scoreboard)   |       |  (monitor)     |       | (DUT)          |       | (transaction)  |
+|                |       |                |       |                |       |                |
++----------------+       +----------------+       +----------------+       +----------------+

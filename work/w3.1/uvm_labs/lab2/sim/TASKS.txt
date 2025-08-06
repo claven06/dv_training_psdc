@@ -1,0 +1,180 @@
+ptop/
+├── ptop_uvm_pkg.sv     // Master package (aggregates all others)
+├── ptop_child_pkg.sv   // Child component package
+├── ptop_parent_pkg.sv  // Parent component package  
+├── ptop_test_pkg.sv    // Test class package
+└── ptop_tb.sv          // Testbench top
+
+% vim ../design/ptop_uvm_pkg.sv
+% vim ../design/ptop_child_pkg.sv
+% vim ../design/ptop_parent_pkg.sv
+% vim ../design/ptop_test_pkg.sv
+% vim ../design/ptop_tb.sv
+For each of these files, please copy the right contents into it from the five contents below, see below
+Remember to <fill_in_the_name_here>
+
+Content1
+────────
+package <fill_in_the_name_here>;
+
+  // Re-export all sub-packages
+  import ptop_child_pkg::*;
+  import ptop_parent_pkg::*;
+  import ptop_test_pkg::*;
+
+endpackage
+
+Content2
+────────
+`include "uvm_macros.svh"
+
+module <fill_in_the_name_here>;
+
+  import uvm_pkg::*;
+  import ptop_uvm_pkg::*;  // Single import for everything
+
+  initial begin
+    `uvm_info("PTOP/TB", "Starting testbench", UVM_LOW)
+    run_test("ptop_test");
+    `uvm_info("PTOP/TB", "Testbench complete", UVM_LOW)
+  end
+
+endmodule
+
+Content3
+────────
+`include "uvm_macros.svh"
+
+package <fill_in_the_name_here>;
+
+  import uvm_pkg::*;
+  import ptop_child_pkg::*;  // Parent depends on child
+
+  class ptop_parent extends uvm_component;
+    `uvm_component_utils(ptop_parent)
+
+    ptop_child child;
+
+    function new(string name, uvm_component parent);
+      super.new(name, parent);
+      `uvm_info("PTOP/PARENT/NEW", $sformatf("Creating %s", name), UVM_LOW)
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      `uvm_info("PTOP/PARENT/BUILD", "Start of build_phase", UVM_MEDIUM)
+      child = ptop_child::type_id::create("child", this);
+      `uvm_info("PTOP/PARENT/BUILD", "End of build_phase", UVM_MEDIUM)
+    endfunction
+
+    function void connect_phase(uvm_phase phase);
+      super.connect_phase(phase);
+      `uvm_info("PTOP/PARENT/CONNECT", "Start of connect_phase", UVM_MEDIUM)
+      `uvm_info("PTOP/PARENT/CONNECT", "End of connect_phase", UVM_MEDIUM)
+    endfunction
+  endclass
+
+endpackage
+
+Content4
+────────
+`include "uvm_macros.svh"
+
+package <fill_in_the_name_here>;
+
+  import uvm_pkg::*;
+  import ptop_parent_pkg::*;  // Test depends on parent
+
+  class ptop_test extends uvm_test;
+    `uvm_component_utils(ptop_test)
+
+    ptop_parent parent;
+
+    function new(string name, uvm_component parent);
+      super.new(name, parent);
+      `uvm_info("PTOP/TEST/NEW", $sformatf("Creating %s", name), UVM_LOW)
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      `uvm_info("PTOP/TEST/BUILD", "Start of build_phase", UVM_MEDIUM)
+      parent = ptop_parent::type_id::create("parent", this);
+      `uvm_info("PTOP/TEST/BUILD", "End of build_phase", UVM_MEDIUM)
+    endfunction
+
+    function void end_of_elaboration_phase(uvm_phase phase);
+      super.end_of_elaboration_phase(phase);
+      `uvm_info("PTOP/TEST/ENDOFELAB", "Printing test topology", UVM_MEDIUM)
+      print();
+    endfunction
+  endclass
+
+endpackage
+
+Content5
+────────
+`include "uvm_macros.svh"
+
+package <fill_in_the_name_here>;
+
+  import uvm_pkg::*;
+
+  class ptop_child extends uvm_component;
+    `uvm_component_utils(ptop_child)
+
+    function new(string name, uvm_component parent);
+      super.new(name, parent);
+      `uvm_info("PTOP/CHILD/NEW", $sformatf("Creating %s", name), UVM_LOW)
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      `uvm_info("PTOP/CHILD/BUILD", "Executing build_phase", UVM_MEDIUM)
+    endfunction
+
+    function void connect_phase(uvm_phase phase);
+      super.connect_phase(phase);
+      `uvm_info("PTOP/CHILD/CONNECT", "Executing connect_phase", UVM_MEDIUM)
+    endfunction
+  endclass
+
+endpackage
+
+% vim ../design/ptop.f
+For ease of compilation use -f <file_name.f> option
+Add in all the sv files, line by line, see below
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/<file_name>.sv
+$UVM_DESIGN/$MODULE_TB.$TYPE
+
+% echo $FLIST
+Ensure FLIST is set to 1
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ../design/ptop.f
+Arrange the files to ensure ptop_uvm_pkg.sv is right before $MODULE_TB.$TYPE
+Note that compilation sequence is important
+
+% vim ptop_sim.log
+--------------------------------------
+Name          Type         Size  Value
+--------------------------------------
+uvm_test_top  ptop_test    -     @147 
+  parent      ptop_parent  -     @221 
+    child     ptop_child   -     @236 
+--------------------------------------
+These values are memory address references where that component instance is stored
+For example, @147 means ptop_test instance is stored at memory address 147 (hex)
+
+% grep UVM_INFO ptop_sim.log | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab2/lab2/' > diff1
+% grep class ../design/* > diff2
+% grep package ../design/* > diff3
+% diff diff1 diff1.orig
+% diff diff2 diff2.orig
+% diff diff3 diff3.orig
+There should be no discrepency

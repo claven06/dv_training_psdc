@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1754452202.756906960, "rt":13.77, "ut":13.86, "st":0.49}}
+{"vcselab":{"timestamp_begin":1754452216.603624077, "rt":0.14, "ut":0.11, "st":0.02}}
+{"link":{"timestamp_begin":1754452216.799143937, "rt":0.88, "ut":0.64, "st":0.26}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1754452202.079567782}
+{"VCS_COMP_START_TIME": 1754452202.079567782}
+{"VCS_COMP_END_TIME": 1754452217.811943956}
+{"VCS_USER_OPTIONS": "-full64 -l bus_comp.log -sverilog +v2k +vcs+lic+wait +vcs+flush+all -debug_access+all -kdb -debug_report -top bus_tb -o bus_simv -ntb_opts uvm-ieee-2020-2.0 +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR -file /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus.f -timescale=1ns/1ps"}
+{"vcs1": {"peak_mem": 536288}}
+{"vcselab": {"peak_mem": 162424}}

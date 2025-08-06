@@ -1,0 +1,58 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/sim/./bus_simv -l bus_sim.log +UVM_NO_RELNOTES
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  6 11:50 2025
+>>>>>>>> SIM TIME START: 0
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_test.sv(31) @ 0: uvm_test_top [BTOP/TEST] Launching the sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_sequence.sv(10) @ 0: uvm_test_top.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_sequence_prio.sv(10) @ 0: uvm_test_top.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_sequence_prio.sv(31) @ 0: uvm_test_top.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 0: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xf5, data=0x83ed6dec, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 0: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xf5, data = 0x83ed6dec, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 10000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xf5, data=0xcffde2ff, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 10000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xf5, data = 0xcffde2ff, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 20000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xfd, data=0x4fd22442, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 20000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0x4fd22442, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 30000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xac, data=0x4728c1ad, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 30000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xac, data = 0x4728c1ad, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 40000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xe3, data=0x8fa734ed, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 40000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xe3, data = 0x8fa734ed, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 50000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xa5, data=0x2f989233, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 50000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xa5, data = 0x2f989233, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 60000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xe5, data=0x6862a4b0, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 60000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xe5, data = 0x6862a4b0, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 70000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xae, data=0x55e426c4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 70000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xae, data = 0x55e426c4, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 80000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xae, data=0x1c4db6d6, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 80000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xae, data = 0x1c4db6d6, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 90000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xa8, data=0x439292d7, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 90000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xa8, data = 0x439292d7, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 100000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xa6, data=0x03cd9d9d, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 100000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xa6, data = 0x3cd9d9d, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_monitor.sv(13) @ 110000: uvm_test_top.mon [MONITOR] Observed transaction: addr=0xaf, data=0x7e4182d8, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab8/design/bus_driver.sv(17) @ 110000: uvm_test_top.drv [DRIVER] Driving transaction: addr = 0xaf, data = 0x7e4182d8, write = 1
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 120000: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :   29
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[BTOP/TEST]     1
+[DRIVER]    12
+[MONITOR]    12
+[RNTST]     1
+[bus_sequence]     1
+[high_prio_seq]     1
+[low_prio_seq]     1
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+>>>>>>>> SIM TIME END  : 120000
+$finish at simulation time               120000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 120000 ps
+CPU Time:      0.210 seconds;       Data structure size:   0.6Mb
+Wed Aug  6 11:50:18 2025

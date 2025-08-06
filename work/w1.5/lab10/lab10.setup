@@ -1,0 +1,9 @@
+# For csh
+#setenv ROOT `pwd`
+
+# For bash
+export ROOT=`pwd`
+export TYPE="sv"
+export MODULE="fsm_short"
+export MODULE_TB="fsm_short_tb"
+export FLIST=1

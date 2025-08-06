@@ -1,0 +1,52 @@
+UVM_INFO @ 0: reporter [RNTST] Running test fa_test_r...
+UVM_INFO lab19/design/fa_test_r.sv @ 0: uvm_test_top [TEST] Starting random sequences with config: count=10, delay=0-0
+UVM_INFO lab19/design/fa_seq_r.sv @ 0: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sequence: random
+UVM_INFO lab19/design/fa_drv.sv @ 5000: uvm_test_top.env.agt.drv [DRIVER] Drive 1/10 random tran to DUT: a=1, b=0, cin=0
+UVM_INFO lab19/design/fa_seq_r.sv @ 5000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 1/10 random sequences: a=1, b=0, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 15000: uvm_test_top.env.agt.mon [MONITOR] Observe 1/10 random tran from DUT: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 15000: uvm_test_top.env.scb [SCOREBOARD] PASS 1/10 random tran: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 15000: uvm_test_top.env.agt.drv [DRIVER] Drive 2/10 random tran to DUT: a=0, b=0, cin=1
+UVM_INFO lab19/design/fa_seq_r.sv @ 15000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 2/10 random sequences: a=0, b=0, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 25000: uvm_test_top.env.agt.mon [MONITOR] Observe 2/10 random tran from DUT: a_tb=0, b_tb=0, cin_tb=1 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 25000: uvm_test_top.env.scb [SCOREBOARD] PASS 2/10 random tran: a_tb=0, b_tb=0, cin_tb=1 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 25000: uvm_test_top.env.agt.drv [DRIVER] Drive 3/10 random tran to DUT: a=1, b=0, cin=0
+UVM_INFO lab19/design/fa_seq_r.sv @ 25000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 3/10 random sequences: a=1, b=0, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 35000: uvm_test_top.env.agt.mon [MONITOR] Observe 3/10 random tran from DUT: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 35000: uvm_test_top.env.scb [SCOREBOARD] PASS 3/10 random tran: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 35000: uvm_test_top.env.agt.drv [DRIVER] Drive 4/10 random tran to DUT: a=0, b=1, cin=0
+UVM_INFO lab19/design/fa_seq_r.sv @ 35000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 4/10 random sequences: a=0, b=1, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 45000: uvm_test_top.env.agt.mon [MONITOR] Observe 4/10 random tran from DUT: a_tb=0, b_tb=1, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 45000: uvm_test_top.env.scb [SCOREBOARD] PASS 4/10 random tran: a_tb=0, b_tb=1, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 45000: uvm_test_top.env.agt.drv [DRIVER] Drive 5/10 random tran to DUT: a=1, b=1, cin=1
+UVM_INFO lab19/design/fa_seq_r.sv @ 45000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 5/10 random sequences: a=1, b=1, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 55000: uvm_test_top.env.agt.mon [MONITOR] Observe 5/10 random tran from DUT: a_tb=1, b_tb=1, cin_tb=1 > sum_tb=1, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 55000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 5/10 random tran: a_tb=1, b_tb=1, cin_tb=1 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_drv.sv @ 55000: uvm_test_top.env.agt.drv [DRIVER] Drive 6/10 random tran to DUT: a=1, b=0, cin=1
+UVM_INFO lab19/design/fa_seq_r.sv @ 55000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 6/10 random sequences: a=1, b=0, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 65000: uvm_test_top.env.agt.mon [MONITOR] Observe 6/10 random tran from DUT: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 65000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 6/10 random tran: a_tb=1, b_tb=0, cin_tb=1 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_drv.sv @ 65000: uvm_test_top.env.agt.drv [DRIVER] Drive 7/10 random tran to DUT: a=0, b=1, cin=0
+UVM_INFO lab19/design/fa_seq_r.sv @ 65000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 7/10 random sequences: a=0, b=1, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 75000: uvm_test_top.env.agt.mon [MONITOR] Observe 7/10 random tran from DUT: a_tb=0, b_tb=1, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 75000: uvm_test_top.env.scb [SCOREBOARD] PASS 7/10 random tran: a_tb=0, b_tb=1, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 75000: uvm_test_top.env.agt.drv [DRIVER] Drive 8/10 random tran to DUT: a=1, b=1, cin=0
+UVM_INFO lab19/design/fa_seq_r.sv @ 75000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 8/10 random sequences: a=1, b=1, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 85000: uvm_test_top.env.agt.mon [MONITOR] Observe 8/10 random tran from DUT: a_tb=1, b_tb=1, cin_tb=0 > sum_tb=0, cout_tb=0
+UVM_ERROR lab19/design/fa_scb.sv @ 85000: uvm_test_top.env.scb [SCOREBOARD] FAIL COUT 8/10 random tran: a_tb=1, b_tb=1, cin_tb=0 > cout_tb=0 (exp 1) <<<<<<<<<<<<<<<<
+UVM_INFO lab19/design/fa_drv.sv @ 85000: uvm_test_top.env.agt.drv [DRIVER] Drive 9/10 random tran to DUT: a=0, b=0, cin=1
+UVM_INFO lab19/design/fa_seq_r.sv @ 85000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 9/10 random sequences: a=0, b=0, cin=1 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 95000: uvm_test_top.env.agt.mon [MONITOR] Observe 9/10 random tran from DUT: a_tb=0, b_tb=0, cin_tb=1 > sum_tb=1, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 95000: uvm_test_top.env.scb [SCOREBOARD] PASS 9/10 random tran: a_tb=0, b_tb=0, cin_tb=1 > sum_tb=1 cout_tb=0
+UVM_INFO lab19/design/fa_drv.sv @ 95000: uvm_test_top.env.agt.drv [DRIVER] Drive 10/10 random tran to DUT: a=0, b=0, cin=0
+UVM_INFO lab19/design/fa_seq_r.sv @ 95000: uvm_test_top.env.agt.sqr@@seq_r [fa_seq_r] Sent 10/10 random sequences: a=0, b=0, cin=0 Next sequence after 0
+UVM_INFO lab19/design/fa_mon.sv @ 105000: uvm_test_top.env.agt.mon [MONITOR] Observe 10/10 random tran from DUT: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0, cout_tb=0
+UVM_INFO lab19/design/fa_scb.sv @ 105000: uvm_test_top.env.scb [SCOREBOARD] PASS 10/10 random tran: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0 cout_tb=0
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage fa_cg   : 89.58%
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage a_cp    : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage b_cp    : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage cin_cp  : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage sum_cp  : 100.00%
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage cout_cp : 50.00%
+UVM_INFO lab19/design/fa_cov.sv @ 105000: uvm_test_top.env.cov [COVERAGE] Coverage abcin_cp: 87.50%
+UVM_INFO lab19/design/fa_scb.sv @ 105000: uvm_test_top.env.scb [SCOREBOARD] Test Complete. Passed: 7 Failed: 3
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh @ 105000: reporter [UVM/REPORT/SERVER] 

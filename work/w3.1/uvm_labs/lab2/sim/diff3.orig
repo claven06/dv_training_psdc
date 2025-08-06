@@ -1,0 +1,9 @@
+../design/ptop_child_pkg.sv:package ptop_child_pkg;
+../design/ptop_child_pkg.sv:endpackage
+../design/ptop_parent_pkg.sv:package ptop_parent_pkg;
+../design/ptop_parent_pkg.sv:endpackage
+../design/ptop_test_pkg.sv:package ptop_test_pkg;
+../design/ptop_test_pkg.sv:endpackage
+../design/ptop_uvm_pkg.sv:package ptop_uvm_pkg;
+../design/ptop_uvm_pkg.sv:  // Re-export all sub-packages
+../design/ptop_uvm_pkg.sv:endpackage

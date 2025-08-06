@@ -1,0 +1,362 @@
+fa/
+├── fadder.sv       // Full adder module
+├── fadder_if.sv    // full adder interface
+├── fa_tran.sv      // Transaction class
+├── fa_seq.sv       // Sequence class
+├── fa_sqr.sv       // Sequencer class
+├── fa_drv.sv       // Driver class
+├── fa_mon.sv       // Monitor class
+├── fa_agt.sv       // Agent class
+├── fa_scb.sv       // Scoreboard class
+├── fa_env.sv       // Env class
+├── fa_test.sv      // Test class
+└── fa_tb.sv        // Testbench top
+
+Full Adder
+──────────
+This is a combinational design
+    // Sum calculation: a XOR b XOR cin
+    assign sum = a ^ b ^ cin;
+    // Carry-out calculation: (a AND b) OR (cin AND (a XOR b))
+    assign cout = (a & b) | (cin & (a ^ b));
+
+% ls -l ../design/*
+The full adder: fadder.sv
+
+% vim ../design/fadder_if.sv
+Please add these, see below
+interface fadder_if;
+  logic a_tb;     // Input to DUT (driven by testbench)
+  ...
+  ...
+
+  clocking drv_cb @(posedge clk_tb);
+    default input #1step output #1;
+    ...
+    ...
+  endclocking
+
+  clocking mon_cb @(posedge clk_tb);
+    default input #1step;
+    ...
+  endclocking
+endinterface
+
+% vim ../design/fa_tb.sv
+Please add these, see below
+`include "fadder_if.sv"
+`include "fadder.sv"
+
+module fa_tb;
+  import uvm_pkg::*;
+  `include "uvm_macros.svh"
+
+  // $time is a built-in system function
+  initial $display(">>>>>>>> SIM TIME START: %0t", $time);
+  final   $display(">>>>>>>> SIM TIME END  : %0t", $time);
+
+  // Include all required files
+  `include "fa_tran.sv"
+  ...
+  ...
+
+  fadder_if fa_if();
+
+  fadder dut(
+    .a(fa_if.a_tb),
+    ...
+    ...
+  );
+
+  initial begin
+    fa_if.clk_tb = 0;
+    forever #5 fa_if.clk_tb = ~fa_if.clk_tb;
+  end
+
+  initial begin
+    uvm_config_db#(virtual fadder_if)::set(null, "*", "vif", fa_if);
+    run_test("fa_test");
+  end
+
+  initial begin
+    $fsdbDumpfile("fa_sim.fsdb");
+    $fsdbDumpSVA(0, fa_tb);
+    $fsdbDumpvars(0, fa_tb);
+  end
+endmodule
+
+% cp ../../lab14/design/bus_test.sv ../design/fa_test.sv
+% vim ../design/fa_test.sv
+Make changes accordignly, mostly replacement
+Remove high_prio_seq dependencies
+Remove low_prio_seq dependencies
+Reduce all the delay to 0
+Set the seq_count to 10
+Use this wait, see below
+    wait(env.scb.tran_index - 1 == seq.seq_count);
+
+% cp ../../lab14/design/bus_tran.sv ../design/fa_tran.sv
+% vim ../design/fa_tran.sv
+Make changes accordignly, mostly replacement
+Use these instead, see below
+  rand bit a;
+  rand bit b;
+  rand bit cin;
+  bit sum;
+  bit cout;
+  int seq_count;
+  int seq_index;
+  int tran_count;
+  int tran_index;
+  string seq_type;
+  string tran_type;
+
+% cp ../../lab14/design/bus_seq.sv ../design/fa_seq.sv
+% vim ../design/fa_seq.sv
+Make changes accordignly, mostly replacement
+Remove the constraint for the tr.random
+Use this instead, and after the 'finish_item' line, see below
+      `uvm_info(get_type_name(), $sformatf("Sent %0d/%0d %s sequences: a=%0b, b=%0b, cin=%0b Next sequence after %0d",
+                                           seq_index, seq_count, seq_type, tr.a, tr.b, tr.cin, delay),
+                                           UVM_MEDIUM)
+
+
+% cp ../../lab14/design/bus_sqr.sv ../design/fa_sqr.sv
+% vim ../design/fa_sqr.sv
+Make changes accordignly, mostly replacement
+
+% vim ../design/fa_scb.sv
+Please copy the Content1 into it, see below
+
+Content1
+────────
+class fa_scb extends uvm_scoreboard;
+  `uvm_component_utils(fa_scb)
+  
+  // Use implementation port to receive transactions
+  uvm_analysis_imp #(fa_tran, fa_scb) scb_imp;
+  
+  int passed_count = 0;
+  int failed_count = 0;
+  int tran_count;
+  int tran_index;
+  string tran_type;
+
+  function new(string name, uvm_component parent);
+    super.new(name, parent);
+    tran_index = 1;
+    scb_imp = new("scb_imp", this);
+  endfunction
+
+  function void write(fa_tran tr_dut);
+    bit exp_sum = tr_dut.a ^ tr_dut.b ^ tr_dut.cin;
+    bit exp_cout = (tr_dut.a & tr_dut.b) & (tr_dut.cin & (tr_dut.a ^ tr_dut.b));
+
+    if(tr_dut.sum == exp_sum && tr_dut.cout == exp_cout) begin
+      passed_count++;
+      `uvm_info("SCOREBOARD", $sformatf("PASS %0d/%0d %s tran: a_tb=%b, b_tb=%b, cin_tb=%b > sum_tb=%b cout_tb=%b", 
+                                        tran_index, tr_dut.tran_count, tr_dut.tran_type, tr_dut.a, tr_dut.b, tr_dut.cin, tr_dut.sum, tr_dut.cout),
+				       	UVM_MEDIUM)
+    end
+    else if(tr_dut.sum != exp_sum) begin
+      failed_count++;
+      `uvm_error("SCOREBOARD", $sformatf("FAIL SUM %0d/%0d %s tran: a_tb=%b, b_tb=%b, cin_tb=%b > sum_tb=%b (exp %b) <<<<<<<<<<<<<<<<", 
+                                         tran_index, tr_dut.tran_count, tr_dut.tran_type, tr_dut.a, tr_dut.b, tr_dut.cin, tr_dut.sum, exp_sum))
+    end
+    else if(tr_dut.cout != exp_cout) begin
+      failed_count++;
+      `uvm_error("SCOREBOARD", $sformatf("FAIL COUT %0d/%0d %s tran: a_tb=%b, b_tb=%b, cin_tb=%b > cout_tb=%b (exp %b) <<<<<<<<<<<<<<<<",
+                                         tran_index, tr_dut.tran_count, tr_dut.tran_type, tr_dut.a, tr_dut.b, tr_dut.cin, tr_dut.cout, exp_cout))
+    end
+    tran_index++;
+  endfunction
+
+  function void report_phase(uvm_phase phase);
+    `uvm_info("SCOREBOARD", $sformatf("Test Complete. Passed: %0d Failed: %0d", passed_count, failed_count), UVM_NONE)
+  endfunction
+endclass
+
+% vim ../design/fa_mon.sv
+Please copy the Content2 into it, see below
+
+Content2
+────────
+class fa_mon extends uvm_monitor;
+  `uvm_component_utils(fa_mon)
+
+  int tran_count;
+  int tran_index;
+  string tran_type;
+  
+  virtual fadder_if vif;
+  uvm_analysis_port #(fa_tran) mon_ap;
+
+  function new(string name, uvm_component parent);
+    super.new(name, parent);
+    tran_index = 1;
+    mon_ap = new("mon_ap", this);
+  endfunction
+
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual fadder_if)::get(this, "", "vif", vif)) begin
+      `uvm_error("MONITOR", "Virtual interface (mon_cb) not found in config db")
+    end
+  endfunction
+
+  task run_phase(uvm_phase phase);
+    fa_tran tr_dut;
+
+    @(vif.mon_cb);
+
+    forever begin
+      @(vif.mon_cb);
+      tr_dut = fa_tran::type_id::create("tr_dut");
+      tr_dut.a = vif.mon_cb.a_tb;
+      tr_dut.b = vif.mon_cb.b_tb;
+      tr_dut.cin = vif.mon_cb.cin_tb;
+      tr_dut.sum = vif.mon_cb.sum;
+      tr_dut.cout = vif.mon_cb.cout;
+
+      `uvm_info("MONITOR", $sformatf("Observe %0d/%0d %s tran from DUT: a_tb=%b, b_tb=%b, cin_tb=%b > sum_tb=%b, cout_tb=%b",
+                                     tran_index, tran_count, tran_type, tr_dut.a, tr_dut.b, tr_dut.cin, tr_dut.sum, tr_dut.cout),
+				     UVM_MEDIUM)
+
+      tran_index++;
+      tr_dut.tran_count = this.tran_count;
+      tr_dut.tran_index = this.tran_index;
+      tr_dut.tran_type = this.tran_type;
+      mon_ap.write(tr_dut);
+    end
+  endtask
+endclass
+
+cp ../../lab14/design/bus.f ../design/fa.f
+% vim ../design/fa.f
+Make changes accordignly, mostly replacement
+
+cp ../../lab14/design/bus_env.sv ../design/fa_env.sv
+% vim ../design/fa_env.sv
+Make changes accordignly, mostly replacement
+Keep only these, see below
+  fa_agt agt;
+  fa_scb scb;
+
+% vim ../design/fa_drv.sv
+Please copy the Content3 into it, see below
+
+Content3
+────────
+class fa_drv extends uvm_driver #(fa_tran);
+  `uvm_component_utils(fa_drv)
+
+  virtual fadder_if vif;
+  uvm_analysis_port #(fa_tran) drv_ap;
+
+  function new(string name, uvm_component parent);
+    super.new(name, parent);
+    drv_ap = new("drv_ap", this);
+  endfunction
+
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual fadder_if)::get(this, "", "vif", vif)) begin
+      `uvm_error("DRIVER", "Virtual interface (drv_cb) not found in config db")
+    end
+  endfunction
+
+  task run_phase(uvm_phase phase);
+    fa_tran tr;
+    forever begin
+      seq_item_port.get_next_item(tr);
+
+      @(vif.drv_cb);                // Wait for the posedge clock
+
+      `uvm_info("DRIVER", $sformatf("Drive %0d/%0d %s tran to DUT: a=%0b, b=%0b, cin=%0b",
+                                    tr.seq_index, tr.seq_count, tr.seq_type, tr.a, tr.b, tr.cin),
+                                    UVM_MEDIUM)
+
+      vif.drv_cb.a_tb <= tr.a;      // Drive 'a' from transaction (tr) to DUT
+      vif.drv_cb.b_tb <= tr.b;      // Drive 'b' from transaction (tr) to DUT
+      vif.drv_cb.cin_tb <= tr.cin;  // Drive 'cin' from transaction (tr) to DUT
+
+      seq_item_port.item_done();
+    end
+  endtask
+endclass
+
+cp ../../lab14/design/bus_agt.sv ../design/fa_agt.sv
+% vim ../design/fa_agt.sv
+Make changes accordignly, mostly replacement
+Remember to remove the last connection that was meant for demo purpose
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim fa_sim.log or qgrep
+Note that there are COUT failures as reported by scb
+
+% verdi &
+Load the fsdb file to check out the waveform
+
+% grep '\[fa_seq\]' fa_sim.log
+Note that there are 10 transactions
+
+% grep 'DRIVER' fa_sim.log
+Note that the driver sees 10 transactions
+At 5ns DRIVER was about to drive 1/10 transaction to DUT
+
+% grep 'MONITOR' fa_sim.log
+Bear in mind the MONITOR is 1 clock lagging the DRIVER
+
+% grep 'SCORE' fa_sim.log
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab15/lab15/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% vim ../design/fa_scb.sv
+Change the exp_cout equation to this, see below
+bit exp_cout = (tr_dut.a & tr_dut.b) | (tr_dut.cin & (tr_dut.a ^ tr_dut.b));
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim fa_sim.log or qgrep
+No more failure
+
+% grep UVM_ fa_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab15/lab15/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% verdi &
+Load the fsdb file to check out the waveform
+
+Data Flow Diagram
+─────────────────
++----------------+       +----------------+       +----------------+       +----------------+
+|                |       |                |       |                |       |                |
+|   fa_test      |       |    fa_seq      |       |    fa_sqr      |       |    fa_drv      |
+|   (test)       |------>|   (sequence)   |------>| (sequencer)    |------>|  (driver)      |
+|                |       |                |       |                |       |                |
++----------------+       +----------------+       +----------------+       +----------------+
+       |                                                           |              |
+       |                                                           |              |
+       v                                                           |              v
++----------------+                                          +----------------+  +----------------+
+|                |                                          |                |  |                |
+|   fa_env       |                                          |    fa_agt      |  |   fadder_if    |
+|   (environment)|<---------------------------------------->|   (agent)      |<-| (interface)    |
+|                |                                          |                |  |                |
++----------------+                                          +----------------+  +----------------+
+       ^                                                                              |
+       |                                                                              |
+       v                                                                              v
++----------------+       +----------------+       +----------------+       +----------------+
+|                |       |                |       |                |       |                |
+|   fa_scb       |<------|    fa_mon      |<------|   fadder       |<------|   fa_tran      |
+| (scoreboard)   |       |  (monitor)     |       | (DUT)          |       | (transaction)  |
+|                |       |                |       |                |       |                |
++----------------+       +----------------+       +----------------+       +----------------+

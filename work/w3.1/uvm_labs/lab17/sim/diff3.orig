@@ -1,0 +1,13 @@
+UVM_ERROR lab17/design/bus_con.sv @ 104000: uvm_test_top.env.con [FIFO_VAL] FAIL RD: 1/2 high tran addr=0xba, data=0x00000bad (rdata!=waddr, status reg 0xA0-0xAF)
+UVM_ERROR lab17/design/bus_scb.sv @ 125000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 1/5 low tran: addr=0xfd, data=0x5042abda, write=1, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_con.sv @ 163000: uvm_test_top.env.con [FIFO_VAL] FAIL RD: 2/2 high tran addr=0xb4, data=0x00000bad (rdata!=waddr, status reg 0xA0-0xAF)
+UVM_ERROR lab17/design/bus_scb.sv @ 165000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 1/5 low tran: addr=0xfd, data=0x0335b994, write=0, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 205000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 2/5 low tran: addr=0xfd, data=0x39e24a42, write=1, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 245000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 2/5 low tran: addr=0xfd, data=0x2d3808dd, write=0, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 285000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 3/5 low tran: addr=0xff, data=0xe0dc6647, write=1, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 325000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 3/5 low tran: addr=0xff, data=0x3f242f2b, write=0, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 365000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 4/5 low tran: addr=0xf3, data=0x929e22f6, write=1, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 405000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 4/5 low tran: addr=0xf3, data=0xd27078ea, write=0, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 445000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 5/5 low tran: addr=0xf5, data=0x8d832df4, write=1, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 485000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 5/5 low tran: addr=0xf5, data=0x9066d95d, write=0, reserved 0xF0-0xFF
+UVM_ERROR lab17/design/bus_scb.sv @ 944000: uvm_test_top.env.scb [CHECK] Scoreboard detected 10 failures

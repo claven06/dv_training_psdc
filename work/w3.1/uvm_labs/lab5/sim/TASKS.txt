@@ -1,0 +1,87 @@
+ptop/
+├── ptop_uvm_pkg.sv     // Master package (aggregates all others)
+├── ptop_child_pkg.sv   // Child component package
+├── ptop_parent_pkg.sv  // Parent component package  
+├── ptop_test_pkg.sv    // Test class package
+└── ptop_tb.sv          // Testbench top
+
+% cp ../../lab2/design/* ../design
+% vim ../design/ptop_test_pkg.sv
+Please add content 1 right after the 'parent = ptop_parent..." line in the build phase
+Please add content 2 right before the 'endclass' line
+Remember to create the object handles right after 'ptop_parent parent;' line, see below
+    uvm_phase run_ph, extract_ph, check_ph, report_ph, final_ph;    // Phase jump
+
+Content1
+────────
+      // Phase jump: get phase handles
+      run_ph = uvm_run_phase::get();
+      extract_ph = uvm_extract_phase::get();
+      check_ph = uvm_check_phase::get();
+      report_ph = uvm_report_phase::get();
+      final_ph = uvm_final_phase::get();
+
+Content2
+────────
+    // Phase jump
+    task run_phase(uvm_phase phase);
+      phase.raise_objection(this);
+      `uvm_info("PTOP/TEST/RUN", "Start of run_phase", UVM_MEDIUM)
+
+      #50ns; // Simulate some test activity
+
+      // Proper phase jump through the correct sequence
+      `uvm_info("PTOP/TEST/PHASE", "Initiating controlled phase jump", UVM_HIGH)
+      phase.jump(extract_ph); // Must go through extract->check->report->final
+
+      `uvm_info("PTOP/TEST/RUN", "End of run_phase", UVM_MEDIUM)
+      phase.drop_objection(this);
+    endtask
+
+    virtual function void extract_phase(uvm_phase phase);
+      `uvm_info("PTOP/TEST/EXTRACT", "In extract phase", UVM_MEDIUM)
+    endfunction
+
+    virtual function void check_phase(uvm_phase phase);
+      `uvm_info("PTOP/TEST/CHECK", "In check phase", UVM_MEDIUM)
+    endfunction
+
+    virtual function void report_phase(uvm_phase phase);
+      `uvm_info("PTOP/TEST/REPORT", "In report phase", UVM_MEDIUM)
+    endfunction
+
+    virtual function void final_phase(uvm_phase phase);
+      `uvm_info("PTOP/TEST/FINAL", "In final phase", UVM_MEDIUM)
+      `uvm_info("PTOP/TEST/FINAL", "End of final phase", UVM_MEDIUM)
+    endfunction
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that UVM will automatically cycle thru the phases in the predefined order extract->check->report->final
+
+% grep UVM_ ptop_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab5/lab5/' > diff1
+% grep 'ns;' ../design/* > diff2
+% diff diff1 diff1.orig
+% diff diff2 diff2.orig
+There should be no discrepency
+
+% ptop\_simv -l ptop\_sim.log +UVM_NO_RELNOTES +UVM_VERBOSITY=UVM_HIGH
+This will display `uvm_info with UVM_HIGH
+Search for 'Initiating controlled phase jump' in ptop_sim.log
+
+% vim ../design/ptop_test_pkg.sv
+Change the jump to report phase
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim ptop_sim.log
+Note that UVM will automatically cycle thru the phases in the predefined order report->final
+
+% grep UVM_ ptop_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab5/lab5/' > diff3
+% diff diff3 diff3.orig
+There should be no discrepency

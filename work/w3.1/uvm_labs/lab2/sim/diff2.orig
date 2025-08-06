@@ -1,0 +1,6 @@
+../design/ptop_child_pkg.sv:  class ptop_child extends uvm_component;
+../design/ptop_child_pkg.sv:  endclass
+../design/ptop_parent_pkg.sv:  class ptop_parent extends uvm_component;
+../design/ptop_parent_pkg.sv:  endclass
+../design/ptop_test_pkg.sv:  class ptop_test extends uvm_test;
+../design/ptop_test_pkg.sv:  endclass

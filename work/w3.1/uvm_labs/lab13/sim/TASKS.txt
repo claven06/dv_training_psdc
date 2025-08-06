@@ -1,0 +1,395 @@
+bus/
+├── bus_transaction.sv      // Transaction class
+├── bus_sequence.sv         // Sequence class
+├── bus_sequence_prio.sv    // Additional Sequence class
+├── bus_sequencer.sv        // Sequencer class
+├── bus_driver.sv           // Driver class
+├── bus_monitor.sv          // Monitor class
+├── bus_agent.sv            // Agent class
+├── bus_consumer.sv         // Consumer class
+├── bus_scoreboard.sv       // Scoreboard class
+├── bus_coverage.sv         // Coverage class
+├── bus_env.sv              // Env class
+├── bus_test.sv             // Test class
+└── bus_tb.sv               // Testbench top
+
+Data Flow
+─────────
+1. bus_tb - Simulation begins and runs bus_test class
+2. bus_test::build_phase() - The test creates only the environment. All components (drv, mon, sqr) are now built inside the bus_env.
+3. bus_test::run_phase() - Three sequence objects are created: bus_sequence, high_prio_seq and low_prio_seq. Uses fork...join to run all 3 sequences in parallel. The test's objection is raised
+4. bus_env - It instantiates bus_agent, bus_consumer, bus_scoreboard and bus_coverage. The bus_driver, bus_monitor and bus_sequencer are now moved into the new bus_agent
+5. bus_env::build_phase() - Instantiate agent, consumer, scb, cov. Use UVM factory to create these components
+6. bus_env::connect_phase() - It keeps things simple, env analysis port connects to consumer's analysis export and the analysis implementation of both scoreboard and coverage.
+7. bus_agent - Instantiate monitor, driver and sequencer. Driver’s seq_item_port connects to sequencer’s seq_item_export. Driver's analysis port connected to monitor's analysis implementation. Monitor's analysis port connects to agent's analysis port
+8. bus_sequence::body() - Transactions are created. Each transaction is randomized. There are three sequences: bus_sequence creates 7 transactions, high_prio_seq creates 3 transactions and prevents others from accessing sequencer while locked, low_prio_seq creates 3 transactions. All sequences are done using start_item() and finish_item()
+9. Sequencer Arbitration - Sequencer env.sqr receives requests from all 3 sequences. Since high_prio_seq locks the sequencer, it gets exclusive access while locked. Normal and low priority sequences compete for access after lock is released
+10. bus_driver::run_phase() - The driver dequeues transactions. Prints the transaction data. Waits for 10 time units (simulating DUT interaction). Acknowledges transaction completion (item_done()). It also writes each received transaction to the analysis port: ap.write(tr). Now transactions are sent to both the DUT simulation (not implemented) and also broadcast via analysis port
+11. bus_monitor - It is connected to environment's ap_export via its own ap_implementation. When driver sends a transaction on analysis port, monitor's write() method receives it and prints the observed transaction. It simply observes and prints all transactions that the driver has handled. In fact, the agent's analysis port enables all the subscribers
+12. bus_consumer - A simple FIFO implementation by using uvm_tlm_fifo. This replaces the manual FIFO write and read operations by using the built-in functions. Consumer is connected to agent's analysis export. The receives transactions via data_fifo.try_put(tr) function if the FIFO is not full. The data_fifo.get(tr) function process the FIFO transactions
+13. bus_scoreboard - Scoreboard is connected to agent's analysis port. The write function performs actual vs expected write and address values comparison. The report_phase displays the comparison results
+14. bus_coverage - Coverage is connected to agent's analysis port. Coverage group is defined with several coverage points and bins. The function write samples the transaction data tr.
+
+% cp ../../lab12/design/* ../design
+% mv ../design/bus_consumer.sv ../design/bus_consumer.sv.old2
+
+% vim ../design/bus_consumer.sv
+Please copy the Content1 into it, see below
+
+Content1
+────────
+class bus_consumer extends uvm_component;
+   `uvm_component_utils(bus_consumer)
+
+   // Analysis implementation port for receiving transactions
+   uvm_analysis_imp #(bus_transaction, bus_consumer) analysis_export;
+   
+   // TLM FIFO for storing transactions
+   uvm_tlm_fifo #(bus_transaction) data_fifo;
+   
+   // Processing time setting
+   local int fifo_process_time = 13;  // Processing delay per transaction
+   
+   // Counters and metrics
+   int num_received = 0;
+   int num_processed = 0;
+   int num_errors = 0;
+   int fifo_size = 4;  // Set your desired FIFO size
+   int fifo_overflows = 0;
+   int fifo_max_utilization = 0;
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+      // Create FIFO with size 4
+      data_fifo = new("data_fifo", this, fifo_size);
+      analysis_export = new("analysis_export", this);
+
+      `uvm_info("FIFO_INFO", $sformatf("FIFO Size: %0d", fifo_size), UVM_MEDIUM)
+      `uvm_info("FIFO_INFO", $sformatf("FIFO Process Time: %0d", fifo_process_time), UVM_MEDIUM)
+   endfunction
+
+   // Analysis port write implementation
+   function void write(bus_transaction tr);
+      num_received++;
+      update_fifo_stats();
+
+      // Try to put into FIFO
+      if (!data_fifo.try_put(tr)) begin
+         fifo_overflows++;
+         `uvm_error("FIFO_OVERFLOW",
+                    $sformatf("FIFO overflow! Discarding transaction: addr=0x%2h, data=0x%8h, write=%0b >>>>>>>>>>>>>>>>",
+                    tr.addr, tr.data, tr.write))
+      end
+      else begin
+         `uvm_info("FIFO_ADD",
+                  $sformatf("Added to FIFO (size=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                            data_fifo.used(), tr.addr, tr.data, tr.write), UVM_MEDIUM)
+      end
+   endfunction
+
+   // Main processing task
+   virtual task run_phase(uvm_phase phase);
+      bus_transaction tr;
+      forever begin
+	 // Simulate processing delay
+         #fifo_process_time;
+
+         // Blocking get from FIFO
+         data_fifo.get(tr);
+         num_processed++;
+         
+         `uvm_info("FIFO_PROCESS",
+                  $sformatf("Processing transaction (remaining=%0d): addr=0x%2h, data=0x%8h, write=%0b",
+                           data_fifo.used(), tr.addr, tr.data, tr.write),
+                  UVM_MEDIUM)
+         
+         // Transaction validation check
+         if (tr.write == 0) begin
+            num_errors++;
+            `uvm_error("CONSUMER_CHECK",
+                      $sformatf("Invalid transaction! addr=0x%2h, data=0x%8h, write=%0b <<<<<<<<<<<<<<<<",
+                      tr.addr, tr.data, tr.write))
+         end
+      end
+   endtask
+
+   // Helper function to update FIFO statistics
+   function void update_fifo_stats();
+      int current_used = data_fifo.used();
+      if (current_used + 1 >= fifo_max_utilization) begin
+         fifo_max_utilization = current_used + 1;
+      end
+   endfunction
+
+   // Report phase for summary
+   function void report_phase(uvm_phase phase);
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Total received transactions: %0d", num_received),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Total processed transactions: %0d", num_processed),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Total errors detected: %0d", num_errors),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("FIFO overflows: %0d", fifo_overflows),
+                UVM_NONE)
+      `uvm_info("CONSUMER_REPORT",
+                $sformatf("Maximum FIFO utilization: %0d/%0d", fifo_max_utilization, fifo_size),
+                UVM_NONE)
+   endfunction
+endclass
+
+% vim ../design/bus_agent.sv
+Please copy the Content2 into it, see below
+
+Content2
+────────
+class bus_agent extends uvm_agent;
+   `uvm_component_utils(bus_agent)
+
+   uvm_analysis_port #(bus_transaction) ap_port;
+
+   bus_driver    drv;
+   bus_monitor   mon;
+   bus_sequencer sqr;
+
+   function new(string name, uvm_component parent);
+      super.new(name, parent);
+      ap_port = new("ap_port", this);
+   endfunction
+
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      mon = bus_monitor::type_id::create("mon", this);
+      
+      // Only create driver and sequencer if agent is active
+      if (get_is_active() == UVM_ACTIVE) begin
+         drv = bus_driver::type_id::create("drv", this);
+         sqr = bus_sequencer::type_id::create("sqr", this);
+      end
+   endfunction
+
+   function void connect_phase(uvm_phase phase);
+      super.connect_phase(phase);
+
+      // Connect driver's analysis port to monitor's implementation
+      if (get_is_active() == UVM_ACTIVE) begin
+         drv.ap.connect(mon.ap_implementation);
+      end
+      
+      // Connect driver to sequencer if active
+      if (get_is_active() == UVM_ACTIVE) begin
+         drv.seq_item_port.connect(sqr.seq_item_export);
+      end
+      
+      // Connect monitor's analysis port to agent's analysis port
+      mon.ap_port.connect(ap_port);
+   endfunction
+endclass
+
+% vim ../design/bus_env.sv
+Add and comment out these, see below
+   //bus_driver drv;  // Lab 13
+   //bus_monitor mon;  // Lab 13
+   //bus_sequencer sqr;  // Lab13
+   bus_agent agent;  // Lab 13
+Add and comment out these in the build_phase, see below
+      //drv = bus_driver::type_id::create("drv", this);  // Lab 13
+      //mon = bus_monitor::type_id::create("mon", this);  // Lab 13
+      //sqr = bus_sequencer::type_id::create("sqr", this);  // Lab 13
+      agent = bus_agent::type_id::create("agent", this);  // Lab 13
+Comment out everything in the connect phase first. Then add these, see below
+      super.connect_phase(phase);  // Lab 13
+
+      // Lab 13 Connect agent's analysis port to consumer, scoreboard and coverage
+      agent.ap_port.connect(consumer.analysis_export);
+      agent.ap_port.connect(scb.scb_imp);
+      agent.ap_port.connect(cov.cov_imp);
+
+% vim ../design/bus_monitor.sv
+Comnment out these, see below
+   //uvm_put_port #(bus_transaction) put_port;  // Lab 10  // Lab 13
+      //put_port = new("put_port", this);  // Lab 10  // Lab 13
+      // Lab 13
+      //fork  // Lab 10
+      //   do_put(tr);
+      //join_none
+   // Lab 13
+   //task do_put(bus_transaction tr);  // Lab 10
+   //   put_port.put(tr);
+   //endtask
+
+% vim ../design/bus_tb.sv
+Include the new bus_agent.sv right before bus_consumer.sv, see below
+   `include "bus_agent.sv"  // Lab 13
+
+% vim ../design/bus_test.sv
+Comment out these, see below
+   //bus_sequencer sqr;  // Lab 13
+   //bus_driver drv;  // Lab 13
+   //bus_monitor mon;  // Lab 8  // Lab 13
+Change these to use agent, see below
+        seq.start(env.agent.sqr); // Lab 9 Launch the sequence  // Lab 13
+        hseq.start(env.agent.sqr); // Lab 7 Lab 9 Launch the sequence  // Lab 13        
+        lseq.start(env.agent.sqr); // Lab 7 Lab 9 Launch the sequence  // Lab 13
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log
+Note that there are scoreboard errors reported
+Note that there are coverage % reported at the end of the simulation
+Overall coverage is 58.33%
+
+% grep UVM_ bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab13/lab13/' > diff1
+% diff diff1 diff1.orig
+There should be no discrepency
+
+% grep ERROR bus_sim.log | grep ']' | sed 's/([0-9]*)//' | sed 's/\/home.*\/lab13/lab13/' > diff2
+% diff diff2 diff2.orig
+There should be no discrepency
+Note that bus_scoreboard and bus_consumer report error if write=0 (mainly from high_prio_seq and low_prio_seq)
+
+% urg -full64 -dir bus_simv.vdb -report bus_cov
+% \ls -l `echo $ROOT/sim/bus_cov/dashboard.html`
+Copy and paste the full path of dashboard.html to the web browser
+
+% vim ../design/bus_coverage.sv
+Add this right after the coverpoint tr.addr line, see below
+            option.weight = 2;
+Add this right after the coverpoint tr.data line, see below
+            option.weight = 3;
+
+% make dv
+Observe STDOUT
+Observe the UVM messages
+
+% vim bus_sim.log
+Note that there are scoreboard errors reported
+Note that there are coverage % reported at the end of the simulation
+Overall coverage is 50.00%
+
+% urg -full64 -dir bus_simv.vdb -report bus_cov
+% \ls -l `echo $ROOT/sim/bus_cov/dashboard.html`
+Copy and paste the full path of dashboard.html to the web browser
+
+Data Flow Diagram
+─────────────────
++------------------------------------------------------+
+|                  bus_tb (Top Module)                 |
+|  - run_test("bus_test")                              |
++------------------------------------------------------+
+                           |
+                           v
++------------------------------------------------------+
+|                  bus_test (UVM Test)                 |
+|  - build_phase: creates env                          |
+|  - run_phase: raises objection                       |
+|  - run_phase: launches sequences in parallel:        |
+|      * bus_sequence (7 transactions)                 |
+|      * high_prio_seq (3 transactions, locked)        |
+|      * low_prio_seq (2 transactions)                 |
++------------------------------------------------------+
+                           |
+                           v
++-----------------------------------------------------------+
+|                   bus_env (Environment)                   |
+|  - build_phase: creates agent, consumer, scb, cov         |
+|  - connect_phase:                                         |
+|      * agent.ap_port <-> consumer.analysis_export         |
+|      * agent.ap_port <-> scb.scb_imp                      |
+|      * agent.ap_port <-> cov.cov_imp                      |
++-----------------------------------------------------------+
+                           |
+                           v
++-----------------------------------------------------------+
+|                   bus_agent (Agent)                       |
+|  - build_phase: creates drv, mon, sqr                     |---------------------------------------------------------+
+|  - connect_phase:                                         |                                                         |
+|      * drv.seq_item_port <-> sqr.seq_item_export          |-----------------------------------------------------+   |
+|      * drv.ap <-> mon.ap_implementation                   |                                                     |   |
+|      * mon.ap_port <-> agent.ap_port                      |---------------------------+                         |   |
++-----------------------------------------------------------+                           |                         |   |
+                           |   |   |                                                    |                         |   |
+                           |   |   |                                                    |                         |   |
+                           |   |   +-----------------------------+                      |                         |   |
+                           |   |                                 |                      |                         |   |
+                           |   +-----------------------------+   |                      |                         |   |
+                           |                                 |   |                      |                         |   |
+                           +-----------------------------+   |   |                      |                         |   |
+                                                         |   |   |                      |                         |   |
+                                                         |   |   |                      |                         |   |
++----------------------------------------------------+   |   |   |                      |                         |   |
+|                bus_sequence (Sequence)             |   |   |   |                      |                         |   |
+|  - Creates the three sequences                     |   |   |   |                      |                         |   |
+|  - Randomizes: addr[7:4]=A, write=1 bus_sequence   |   |   |   |                      |                         |   |
+|  - Randomizes: addr[7:4]=F, write=0 high_prio_seq  |   |   |   |                      |                         |   |
+|  - Randomizes: addr[7:4]=E, write=0 low_prio_seq   |   |   |   |                      |                         |   |
+|  - start_item() / finish_item() for each sequence  |   |   |   |                      |                         |   |
++----------------------------------------------------+   |   |   |                      |                         |   |
+                           |                             |   |   |                      |                         |   |
+                           v                             |   |   |                      |                         |   |
++----------------------------------------------------+   |   |   |                      |                         |   |
+|                bus_sequencer (Sequencer)           |   |   |   |                      |                         |   |
+|  - Handles sequence priority:                      |   |   |   |                      |                         |   |
+|      * Processes high_prio_seq first (due to lock) |<--+   |   |                      |                         |   |
+|      * Then processes bus_sequence and low_prio_seq|       |   |                      |                         |   |
+|  - Forwards transactions to driver via TLM port    |       |   |                      |                         |   |
++----------------------------------------------------+       |   |                      |                         |   |
+                           |                                 |   |                      |                         |   |
+                           v                                 |   |                      |                         |   |
++----------------------------------------------------+       |   |                      |                         |   |
+|                 bus_driver (Driver)                |       |   |                      |                         |   |
+|  - get_next_item(tr)                               |       |   |                      |                         |   |
+|  - Prints transaction info:                        |       |   |                      |                         |   |
+|     * High priority: addr[7:4]=F, write=0          |       |   |                      |                         |   |
+|     * Normal: addr[7:4]=A, write=1                 |<------+   |                      |                         |   |
+|     * Low priority: addr[7:4]=E, write=0           |           |                      |                         |   |
+|  - Sends transaction to monitor via ap.write(tr)   |           |                      |                         |   |
+|  - Simulates DUT interaction (delay)               |           |                      |                         |   |
+|  - item_done()                                     |           |                      |                         |   |
++----------------------------------------------------+           |                      |                         |   |
+                           |       | (via analysis port)         |                      |                         |   |
+                           |       v                             v                      |                         |   |
+                           |   +----------------------------------------------------+   |                         |   |
+                           |   |                 bus_monitor (Monitor)              |   |                         |   |
+                           |   |  - Receives transactions via write() method        |   |                         |   |
+                           |   |  - Prints observed transaction info                |   |                         |   |
+                           |   +----------------------------------------------------+   |                         |   |
+                           |       ^                                                    |                         |   |
+                           v       |                                                    v                         |   |
++----------------------------------------------------+   +----------------------------------------------------+   |   |
+|      (DUT - Not present)                           |   |                bus_consumer (Consumer)             |   |   |
++----------------------------------------------------+   |  - Receives transactions via data_fifo.try_put(tr) |   |   |
+                           |                             |  - If FIFO is full, log overflow                   |   |   |
+                           |                             |  - FIFO retrieve transaction, data_fifo.get(tr)    |   |   |
+                           |                             |  - Process delay added to demo FIFO overflow       |   |   |
+                           |                             |  - Checks transactions (write must be 1)           |   |   |
+                           |                             |  - Counts received transactions and errors         |   |   |
+                           |             +---------------|  - Reports summary at end of simulation            |   |   |
+                           |             |               +----------------------------------------------------+   |   |
+                           |             |                                                                        |   |
+                           |             |                                                                        |   |
+                           |             |               +----------------------------------------------------+   |   |
+                           |             |               |              bus_scoreboard (Scoreboard)           |<--+   |
+                           |             |               |  - The write function performs values comparison   |       |
+                           |             |   +-----------|  - Report generated                                |       |
+                           |             |   |           +----------------------------------------------------+       |
+                           |             |   |                                                                        |
+                           |             |   |                                                                        |
+                           |             |   |           +----------------------------------------------------+       |
+                           |             |   |           |                bus_coverage (Coverage)             |<------+
+                           |             |   |           |  - Coverage group is defined                       |
+                           |             |   |           |  - Bins established                                |
+                           |             |   |   +-------|  - The write function samples tr                   |
+                           |             |   |   |       +----------------------------------------------------+
+                           |             |   |   |
+                           |             |   |   |
+                           v             v   v   v
++----------------------------------------------------+
+|                  bus_test (UVM Test)               |
+|  - run_phase: drops objection                      |
++----------------------------------------------------+

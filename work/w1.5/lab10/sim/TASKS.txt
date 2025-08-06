@@ -1,0 +1,28 @@
+If you're reading this, it means you've successfully completed all the previous exercises and labs.
+Well done on reaching this milestone!
+
+Please take on this micro project as your challenge to become an Iron DV Engineer.
+
+The requirements are:
+Reset asserts/de-asserts fine
+Reset puts the system in RED state
+Full cycle state transistion test: RED, GREEN and YELLOW
+  Timer correctness at each of the states
+  Timer resets during the transistion
+Light outputs are mutually exclusive, and correct for each of the states
+Timeout safety
+Waveform generation in fsdb
+Clear PASS/FAIL report
+
+% cp ../design/fsm_short.v ../design/fsm_short.sv
+% vim ../design/fsm_short.sv
+Make updates to reflect SV
+
+% vim ../deign/fsm_short_tb.sv
+Please come up at the least the base framework
+Feel free to proceed and come up the rest
+A sample testbench shall be provided as a reference
+
+% vim ../design/fsm_short.f
+
+% make dv

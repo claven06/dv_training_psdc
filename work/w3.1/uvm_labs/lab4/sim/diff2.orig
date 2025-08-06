@@ -1,0 +1,4 @@
+../design/ptop_parent_pkg.sv:          #150ns;
+../design/ptop_parent_pkg.sv:          #100ns;
+../design/ptop_test_pkg.sv:          #400ns;
+../design/ptop_test_pkg.sv:          #300ns;
