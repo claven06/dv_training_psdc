@@ -1,0 +1,80 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/sim/./bus_simv -l bus_sim.log +UVM_NO_RELNOTES
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  6 14:19 2025
+>>>>>>>> SIM TIME START: 0
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_test.sv(33) @ 0: uvm_test_top [BTOP/TEST] Launching the sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_sequence.sv(10) @ 0: uvm_test_top.env.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_sequence_prio.sv(10) @ 0: uvm_test_top.env.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_sequence_prio.sv(31) @ 0: uvm_test_top.env.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 0: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0xb41701ed, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 0: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0xb41701ed, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 0: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xfd, data=0xb41701ed, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(39) @ 0: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0xb41701ed, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 10000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0x6242ebf8, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 10000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0x6242ebf8, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 10000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xfd, data=0x6242ebf8, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(39) @ 10000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0x6242ebf8, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 20000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0x1c4f121b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 20000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xfd, data = 0x1c4f121b, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 20000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xfd, data=0x1c4f121b, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(39) @ 20000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0x1c4f121b, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 30000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 30000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xab, data = 0xd62a4d9b, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 30000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 40000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe1, data=0x144d9ab2, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 40000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xe1, data = 0x144d9ab2, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 40000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xe1, data=0x144d9ab2, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(39) @ 40000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe1, data=0x144d9ab2, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 50000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 50000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa4, data = 0xdb3b2ae3, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 50000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 60000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe9, data=0xeba177d5, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 60000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xe9, data = 0xeba177d5, write = 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 60000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xe9, data=0xeba177d5, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(39) @ 60000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe9, data=0xeba177d5, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 70000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 70000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa6, data = 0xe7ccad2a, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 70000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 80000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 80000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa5, data = 0xbd7cc6ff, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 80000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 90000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 90000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xac, data = 0x3b02ed13, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 90000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 100000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 100000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xac, data = 0x2432d2a1, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 100000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_monitor.sv(15) @ 110000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa7, data=0x54802abe, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_driver.sv(17) @ 110000: uvm_test_top.env.drv [DRIVER] Driving transaction: addr = 0xa7, data = 0x54802abe, write = 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(31) @ 110000: uvm_test_top.env.consumer [CONSUMER] Received transaction: addr=0xa7, data=0x54802abe, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(47) @ 120000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total received transactions: 12
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab10/design/bus_consumer.sv(50) @ 120000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total errors detected: 5
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 120000: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :   43
+UVM_WARNING :    0
+UVM_ERROR :    5
+UVM_FATAL :    0
+** Report counts by id
+[BTOP/TEST]     1
+[CONSUMER]    12
+[CONSUMER_CHECK]     5
+[CONSUMER_REPORT]     2
+[DRIVER]    12
+[MONITOR]    12
+[RNTST]     1
+[bus_sequence]     1
+[high_prio_seq]     1
+[low_prio_seq]     1
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+>>>>>>>> SIM TIME END  : 120000
+$finish at simulation time               120000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 120000 ps
+CPU Time:      0.220 seconds;       Data structure size:   0.6Mb
+Wed Aug  6 14:19:49 2025

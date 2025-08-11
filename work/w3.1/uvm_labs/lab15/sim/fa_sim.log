@@ -1,0 +1,93 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/sim/./fa_simv -l fa_sim.log +UVM_NO_RELNOTES -cm line+tgl+cond+fsm+branch+assert -assert summary
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  8 09:24 2025
+>>>>>>>> SIM TIME START: 0
+UVM_INFO @ 0: reporter [RNTST] Running test fa_test...
+*Verdi* Loading libsscore_vcs202409.so
+FSDB Dumper for VCS, Release Verdi_W-2024.09-SP2, Linux x86_64/64bit, 03/03/2025
+(C) 1996 - 2025 by Synopsys, Inc.
+*Verdi* : Create FSDB file 'fa_sim.fsdb'
+*Verdi* : Begin traversing the SVA assertions under scope (fa_tb), layer (0).
+*Verdi* : End of traversing the SVA assertions.
+*Verdi* : Begin traversing the scope (fa_tb), layer (0).
+*Verdi* : End of traversing.
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_test.sv(26) @ 0: uvm_test_top [TEST] Starting sequences with config:
+                                Normal: count=10, delay=0-0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(23) @ 0: uvm_test_top.env.agt.sqr@@seq [fa_seq] Normal Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 5000: uvm_test_top.env.agt.drv [DRIVER] Drive 1/10 normal tran to DUT: a=0, b=0, cin=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 5000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 1/10 normal sequences: a=0, b=0, cin=0 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 15000: uvm_test_top.env.agt.mon [MONITOR] Observe 1/0  tran from DUT: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0, cout_tb=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 15000: uvm_test_top.env.scb [SCOREBOARD] PASS 1/0  tran: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0 cout_tb=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 15000: uvm_test_top.env.agt.drv [DRIVER] Drive 2/10 normal tran to DUT: a=0, b=1, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 15000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 2/10 normal sequences: a=0, b=1, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 25000: uvm_test_top.env.agt.mon [MONITOR] Observe 2/0  tran from DUT: a_tb=0, b_tb=1, cin_tb=1 > sum_tb=0, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 25000: uvm_test_top.env.scb [SCOREBOARD] PASS 2/0  tran: a_tb=0, b_tb=1, cin_tb=1 > sum_tb=0 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 25000: uvm_test_top.env.agt.drv [DRIVER] Drive 3/10 normal tran to DUT: a=1, b=1, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 25000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 3/10 normal sequences: a=1, b=1, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 35000: uvm_test_top.env.agt.mon [MONITOR] Observe 3/0  tran from DUT: a_tb=1, b_tb=1, cin_tb=1 > sum_tb=1, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 35000: uvm_test_top.env.scb [SCOREBOARD] PASS 3/0  tran: a_tb=1, b_tb=1, cin_tb=1 > sum_tb=1 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 35000: uvm_test_top.env.agt.drv [DRIVER] Drive 4/10 normal tran to DUT: a=1, b=1, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 35000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 4/10 normal sequences: a=1, b=1, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 45000: uvm_test_top.env.agt.mon [MONITOR] Observe 4/0  tran from DUT: a_tb=1, b_tb=1, cin_tb=1 > sum_tb=1, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 45000: uvm_test_top.env.scb [SCOREBOARD] PASS 4/0  tran: a_tb=1, b_tb=1, cin_tb=1 > sum_tb=1 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 45000: uvm_test_top.env.agt.drv [DRIVER] Drive 5/10 normal tran to DUT: a=1, b=0, cin=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 45000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 5/10 normal sequences: a=1, b=0, cin=0 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 55000: uvm_test_top.env.agt.mon [MONITOR] Observe 5/0  tran from DUT: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1, cout_tb=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 55000: uvm_test_top.env.scb [SCOREBOARD] PASS 5/0  tran: a_tb=1, b_tb=0, cin_tb=0 > sum_tb=1 cout_tb=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 55000: uvm_test_top.env.agt.drv [DRIVER] Drive 6/10 normal tran to DUT: a=0, b=0, cin=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 55000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 6/10 normal sequences: a=0, b=0, cin=0 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 65000: uvm_test_top.env.agt.mon [MONITOR] Observe 6/0  tran from DUT: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0, cout_tb=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 65000: uvm_test_top.env.scb [SCOREBOARD] PASS 6/0  tran: a_tb=0, b_tb=0, cin_tb=0 > sum_tb=0 cout_tb=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 65000: uvm_test_top.env.agt.drv [DRIVER] Drive 7/10 normal tran to DUT: a=1, b=0, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 65000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 7/10 normal sequences: a=1, b=0, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 75000: uvm_test_top.env.agt.mon [MONITOR] Observe 7/0  tran from DUT: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 75000: uvm_test_top.env.scb [SCOREBOARD] PASS 7/0  tran: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 75000: uvm_test_top.env.agt.drv [DRIVER] Drive 8/10 normal tran to DUT: a=1, b=0, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 75000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 8/10 normal sequences: a=1, b=0, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 85000: uvm_test_top.env.agt.mon [MONITOR] Observe 8/0  tran from DUT: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 85000: uvm_test_top.env.scb [SCOREBOARD] PASS 8/0  tran: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 85000: uvm_test_top.env.agt.drv [DRIVER] Drive 9/10 normal tran to DUT: a=1, b=0, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 85000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 9/10 normal sequences: a=1, b=0, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 95000: uvm_test_top.env.agt.mon [MONITOR] Observe 9/0  tran from DUT: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 95000: uvm_test_top.env.scb [SCOREBOARD] PASS 9/0  tran: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_drv.sv(26) @ 95000: uvm_test_top.env.agt.drv [DRIVER] Drive 10/10 normal tran to DUT: a=1, b=0, cin=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_seq.sv(35) @ 95000: uvm_test_top.env.agt.sqr@@seq [fa_seq] Sent 10/10 normal sequences: a=1, b=0, cin=1 Next sequence after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_mon.sv(38) @ 105000: uvm_test_top.env.agt.mon [MONITOR] Observe 10/0  tran from DUT: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0, cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(26) @ 105000: uvm_test_top.env.scb [SCOREBOARD] PASS 10/0  tran: a_tb=1, b_tb=0, cin_tb=1 > sum_tb=0 cout_tb=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa_scb.sv(44) @ 105000: uvm_test_top.env.scb [SCOREBOARD] Test Complete. Passed: 10 Failed: 0
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 105000: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :   44
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[DRIVER]    10
+[MONITOR]    10
+[RNTST]     1
+[SCOREBOARD]    11
+[TEST]     1
+[fa_seq]    11
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+>>>>>>>> SIM TIME END  : 105000
+$finish at simulation time               105000
+
+=========== Generating Assertion Summary ==========
+
+"fa_tb.\fa_seq::body .unnamed$$_1", 10 attempts, 10 successes, 0 failures, 0 incompletes
+Summary: 1 assertions, 1 with attempts, 0 with failures
+
+===========     End Assertion Summary    ==========
+
+
+---------------------------------------------------------------------------
+VCS Coverage Metrics: during simulation line, cond, FSM, branch, tgl was monitored
+---------------------------------------------------------------------------
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 105000 ps
+CPU Time:      0.310 seconds;       Data structure size:   0.6Mb
+Fri Aug  8 09:24:59 2025

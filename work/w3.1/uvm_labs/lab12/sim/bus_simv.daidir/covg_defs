@@ -1,0 +1,112 @@
+global coverage_group 0 0 bus_tb::bus_coverage::bus_cg __coverage_bus_coverage.bus_cg unused_bus_coverage_bus_cg_loop_label bus_tb 0 1 0 0 0  ( 0 
+)
+ 1 1
+ 0 75 /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab12/design/bus_coverage.sv
+ 8 0 0 0 1 0 0 0 0  1
+0
+0
+0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0 0
+ 0 0
+ 0
+ 0
+ 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_f
+ 0
+ 0
+ 0
+ 50 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_10
+ 0
+ 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_e
+ 0
+0
+0
+0
+64
+0
+ 0
+
+3
+0
+1
+0
+ 7 addr_cp 13 0 0 0 0 0 0 47 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn 47 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 -1 2 8 0 0 1 0 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_4
+ 0
+ 2 1 1 0 0 1 1 8 low_addr 15 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_0 0 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_1 0 0 0 0 0
+ 0
+ 1 1 0 0 1 1 9 high_addr 16 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_2 0 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_3 0 0 0 0 0
+ 0
+
+ 7 data_cp 19 0 0 0 0 0 0 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_5 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_5 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 -1 2 32 0 0 1 0 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_a
+ 0
+ 3 1 1 0 0 1 1 9 zero_data 21 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_0 0 0 0 0 0 0 0
+ 0
+ 1 1 0 0 1 1 10 small_data 22 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_6 0 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_7 0 0 0 0 0
+ 0
+ 1 1 0 0 1 1 10 large_data 23 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_8 0 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_9 0 0 0 0 0
+ 0
+
+ 8 write_cp 26 0 0 0 0 0 0 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_b 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_b 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 -1 2 1 0 0 1 0 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_c
+ 0
+ 0
+ 12 addr_x_write 0 30 0 0 -1 0 0 0 0 2 0 2 0 -1 0 0 0
+ 0
+ 0
+ 0
+ 0 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 49 bus_coverage_0::bus_tb_bus_coverage_0_bus_cg_fn_d
+ 0
+ 0
+end_coverage_group

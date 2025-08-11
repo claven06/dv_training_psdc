@@ -1,0 +1,112 @@
+global coverage_group 0 0 bus_tb::bus_cov::bus_cg __coverage_bus_cov.bus_cg unused_bus_cov_bus_cg_loop_label bus_tb 0 1 0 0 0  ( 0 
+)
+ 1 1
+ 0 70 /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab14/design/bus_cov.sv
+ 19 0 0 0 1 0 0 0 0  1
+0
+0
+0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0 0
+ 0 0
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_7
+ 0
+ 0
+ 0
+ 40 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_11
+ 0
+ 40 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_10
+ 0
+0
+0
+0
+64
+0
+ 0
+
+3
+0
+1
+0
+ 7 addr_cp 24 0 0 0 0 0 0 37 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn 37 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 -1 2 8 0 0 1 0 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_5
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_4
+ 0
+ 2 1 1 0 0 1 1 8 low_addr 27 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_0 0 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_1 0 0 0 0 0
+ 0
+ 1 1 0 0 1 1 9 high_addr 28 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_2 0 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_3 0 0 0 0 0
+ 0
+
+ 7 data_cp 30 0 0 0 0 0 0 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_6 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_6 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 -1 2 32 0 0 1 0 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_c
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_b
+ 0
+ 3 1 1 0 0 1 1 9 zero_data 33 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_0 0 0 0 0 0 0 0
+ 0
+ 1 1 0 0 1 1 10 small_data 34 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_7 0 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_8 0 0 0 0 0
+ 0
+ 1 1 0 0 1 1 10 large_data 35 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_9 0 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_a 0 0 0 0 0
+ 0
+
+ 8 write_cp 37 0 0 0 0 0 0 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_d 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_d 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 -1 2 1 0 0 1 0 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_e
+ 0
+ 0
+ 12 addr_x_write 0 40 0 0 -1 0 0 0 0 2 0 2 0 -1 0 0 0
+ 0
+ 0
+ 0
+ 0 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 39 bus_cov_0::bus_tb_bus_cov_0_bus_cg_fn_f
+ 0
+ 0
+end_coverage_group

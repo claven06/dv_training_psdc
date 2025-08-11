@@ -1,0 +1,24 @@
+rc file Version 1.0
+
+[Design]
+COMPILE_PATH=/home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab13/sim
+VCS_HOME=/home/synopsys/vcs/W-2024.09-SP2
+VERDI_HOME=/home/synopsys/verdi/W-2024.09-SP2
+SystemC=FALSE
+UUM=FALSE
+KDB=TRUE
+USE_NOVAS_HOME=FALSE
+COSIM=FALSE
+SYNOPSYS_SIM_SETUP=/home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab13/sim/synopsys_sim.setup 
+TOP=uvm_custom_install_verdi_recording bus_tb 
+OPTION=-ssv -ssy 
+ELAB_OPTION=-ssv -ssy 
+ELAB=TRUE
+COMMON_ELAB=TRUE
+SIMV_WRAPPER=FALSE
+[Value]
+WREALX=ffff534e50535f58
+WREALZ=ffff534e50535f5a
+
+[CompInfo]
+FLOW_OPTS=-kdb=common_elab -ssv -ssy 

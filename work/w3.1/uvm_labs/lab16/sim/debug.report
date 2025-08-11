@@ -1,0 +1,45 @@
+Here is the union of all individual -debug_access options:  -debug_access+all+class+line+drivers+r+w+wn+f+fn+cbk+cbkd+cbks+thread+dmpt+dmpf+idents_db
+
+Global                                                Source                      FileID
+--------------------------------------------------    ------------------------    ------
+debug_access+all                                      vcs compile command
++vcsd                                                 -debug_access
+acc+=s:*                                              tab file                    1
+acc+=s:*                                              tab file                    2
++vcsd                                                 Coverage Metrics
+acc+=r,rw,wn,frcr,frcn,cbk:*                          -debug_access
+acc+=s:*                                              applyOnDesign               1
+acc+=s:*                                              applyOnDesign               2
+acc+=r,rw,cbk,frcr,frcn,wn:*                          applyOnDesign
+
+
+Module                                                Source
+--------------------------------------------------    ------------------------
+acc+=vcsd:_vcs_DPI_package                            from Design Caps
+acc+=vcsd:vcs_paramclassrepository                    from Design Caps
+acc+=vcsd:_vcs_unit__3017553692                       from Design Caps
+acc+=vcsd:std                                         from Design Caps
+acc+=vcsd:uvm_pkg                                     from Design Caps
+acc+=vcsd:_vcs_msglog                                 from Design Caps
+acc+=vcsd:uvm_custom_install_verdi_recording          from Design Caps
+acc+=vcsd:fadder_if                                   from Design Caps
+acc+=vcsd:fadder                                      from Design Caps
+acc+=vcsd:fa_tb                                       from Design Caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:_vcs_DPI_package     update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:vcs_paramclassrepository    update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:_vcs_unit__3017553692    update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:std                  update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:uvm_pkg              update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:_vcs_msglog          update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:uvm_custom_install_verdi_recording    update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:fadder_if            update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:fadder               update due to needs caps
+acc=r,rw,cbk,s,frcr,frcn,wn,vcsd:fa_tb                update due to needs caps
+
+
+FileID                                                FileName
+--------------------------------------------------    ------------------------
+1                                                     /home/synopsys/vcs/W-2024.09-SP2/linux64/lib/vcsdp_lite.tab
+2                                                     /home/synopsys/verdi/W-2024.09-SP2/share/PLI/VCS/LINUX64/verdi.tab
+
+Modules with -debug_access caps disabled due to cell module debug caps turned off by default:

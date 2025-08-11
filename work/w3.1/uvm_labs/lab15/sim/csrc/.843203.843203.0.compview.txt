@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1754616283.341405375, "rt":14.86, "ut":14.87, "st":0.55}}
+{"vcselab":{"timestamp_begin":1754616298.267750822, "rt":0.22, "ut":0.15, "st":0.06}}
+{"link":{"timestamp_begin":1754616298.541063242, "rt":0.87, "ut":0.63, "st":0.26}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1754616282.642348324}
+{"VCS_COMP_START_TIME": 1754616282.642348324}
+{"VCS_COMP_END_TIME": 1754616299.537051420}
+{"VCS_USER_OPTIONS": "-full64 -l fa_comp.log -sverilog +v2k +vcs+lic+wait +vcs+flush+all -debug_access+all -kdb -debug_report -top fa_tb -o fa_simv -ntb_opts uvm-ieee-2020-2.0 +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR -file /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab15/design/fa.f -timescale=1ns/1ps -cm line+tgl+cond+fsm+branch+assert -assert enable_diag"}
+{"vcs1": {"peak_mem": 540088}}
+{"vcselab": {"peak_mem": 178904}}

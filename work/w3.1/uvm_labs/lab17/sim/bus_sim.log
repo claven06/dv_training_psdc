@@ -1,0 +1,269 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/sim/./bus_simv -l bus_sim.log +UVM_NO_RELNOTES -cm line+tgl+cond+fsm+branch+assert -assert summary
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  8 15:06 2025
+>>>>>>>> SIM TIME START: 0
+          1
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+*Verdi* Loading libsscore_vcs202409.so
+FSDB Dumper for VCS, Release Verdi_W-2024.09-SP2, Linux x86_64/64bit, 03/03/2025
+(C) 1996 - 2025 by Synopsys, Inc.
+*Verdi* : Create FSDB file 'bus_sim.fsdb'
+*Verdi* : Begin traversing the SVA assertions under scope (bus_tb), layer (0).
+*Verdi* : End of traversing the SVA assertions.
+*Verdi* : Begin traversing the scope (bus_tb), layer (0).
+*Verdi* : End of traversing.
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(43) @ 0: uvm_test_top.env.con [FIFO_INFO] WR FIFO Size: 10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(44) @ 0: uvm_test_top.env.con [FIFO_INFO] WR FIFO Process Time: 60
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(46) @ 0: uvm_test_top.env.con [FIFO_INFO] RD FIFO Size: 9
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(47) @ 0: uvm_test_top.env.con [FIFO_INFO] RD FIFO Process Time: 59
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_test.sv(38) @ 0: uvm_test_top [TEST] Starting sequences with config:
+                                Normal: count=8, delay=0-0
+                                High: count=2, delay=0-0
+                                Low: count=5, delay=0-0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(26) @ 0: uvm_test_top.env.agt.sqr@@seq [bus_seq] Normal Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(22) @ 0: uvm_test_top.env.agt.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(82) @ 0: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(33) @ 0: uvm_test_top.env.agt.sqr@@hseq [high_prio_seq] Sent WR 1/2 high seq: addr=0xba, data=0x7a4b337e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 0: uvm_test_top.env.agt.drv [DRIVER] Drive WR 1/2 high tran to DUT: addr=0xba, wdata=0x7a4b337e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(47) @ 15000: uvm_test_top.env.agt.sqr@@hseq [high_prio_seq] Sent RD 1/2 high seq: addr=0xba, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 15000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 1/2 high tran to DUT: addr=0xba, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 25000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 1/2 high tran from DUT: addr=0xba, data=0x7a4b337e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 25000: uvm_test_top.env.con [FIFO_ADD] WR: 1/2 high tran (size=0): addr=0xba, data=0x7a4b337e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(36) @ 25000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 1/2 high tran: addr=0xba, data=0x7a4b337e, write=1, status reg 0xB0-0xBF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(33) @ 35000: uvm_test_top.env.agt.sqr@@hseq [high_prio_seq] Sent WR 2/2 high seq: addr=0xb4, data=0xaf183947, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 35000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 2/2 high tran to DUT: addr=0xb4, wdata=0xaf183947, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 45000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 1/2 high tran from DUT: addr=0xba, data=0x00000bad, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 45000: uvm_test_top.env.con [FIFO_ADD] RD: 1/2 high tran (size=0): addr=0xba, data=0x00000bad, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(36) @ 45000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 1/2 high tran: addr=0xba, data=0x00000bad, write=0, status reg 0xB0-0xBF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(47) @ 55000: uvm_test_top.env.agt.sqr@@hseq [high_prio_seq] Sent RD 2/2 high seq: addr=0xb4, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 55000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 2/2 high tran to DUT: addr=0xb4, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 65000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 2/2 high tran from DUT: addr=0xb4, data=0xaf183947, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 65000: uvm_test_top.env.con [FIFO_ADD] WR: 2/2 high tran (size=1): addr=0xb4, data=0xaf183947, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(36) @ 65000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 2/2 high tran: addr=0xb4, data=0xaf183947, write=1, status reg 0xB0-0xBF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 75000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 1/8 normal seq: addr=0xac, data=0x0335b994, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 75000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 1/8 normal tran to DUT: addr=0xac, wdata=0x0335b994, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 85000: uvm_test_top.env.con [FIFO_PROCESS] WR: 1/2 high tran (remaining=1): addr=0xba, data=0x7a4b337e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 85000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 2/2 high tran from DUT: addr=0xb4, data=0x00000bad, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 85000: uvm_test_top.env.con [FIFO_ADD] RD: 2/2 high tran (size=1): addr=0xb4, data=0x00000bad, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(36) @ 85000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 2/2 high tran: addr=0xb4, data=0x00000bad, write=0, status reg 0xB0-0xBF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(92) @ 95000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent WR 1/5 low seq: addr=0xfd, data=0x5042abda, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 95000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 1/5 low tran to DUT: addr=0xfd, wdata=0x5042abda, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 104000: uvm_test_top.env.con [FIFO_PROCESS] RD: 1/2 high tran (remaining=1): addr=0xba, data=0x00000bad, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(141) @ 104000: uvm_test_top.env.con [FIFO_VAL] FAIL RD: 1/2 high tran addr=0xba, data=0x00000bad (rdata!=waddr, status reg 0xA0-0xAF)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 105000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 1/8 normal tran from DUT: addr=0xac, data=0x0335b994, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 105000: uvm_test_top.env.con [FIFO_ADD] WR: 1/8 normal tran (size=1): addr=0xac, data=0x0335b994, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 105000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 1/8 normal tran: addr=0xac, data=0x0335b994, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 115000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 1/8 normal seq: addr=0xac, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 115000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 1/8 normal tran to DUT: addr=0xac, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 125000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 1/5 low tran from DUT: addr=0xfd, data=0x5042abda, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 125000: uvm_test_top.env.con [FIFO_ADD] WR: 1/5 low tran (size=2): addr=0xfd, data=0x5042abda, write=1
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 125000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 1/5 low tran: addr=0xfd, data=0x5042abda, write=1, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(106) @ 135000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent RD 1/5 low seq: addr=0xfd, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 135000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 1/5 low tran to DUT: addr=0xfd, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 145000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 1/8 normal tran from DUT: addr=0xac, data=0x0335b994, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 145000: uvm_test_top.env.con [FIFO_ADD] RD: 1/8 normal tran (size=1): addr=0xac, data=0x0335b994, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 145000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 1/8 normal tran: addr=0xac, data=0x0335b994, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 155000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 2/8 normal seq: addr=0xa5, data=0x2d3808dd, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 155000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 2/8 normal tran to DUT: addr=0xa5, wdata=0x2d3808dd, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 163000: uvm_test_top.env.con [FIFO_PROCESS] RD: 2/2 high tran (remaining=1): addr=0xb4, data=0x00000bad, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(141) @ 163000: uvm_test_top.env.con [FIFO_VAL] FAIL RD: 2/2 high tran addr=0xb4, data=0x00000bad (rdata!=waddr, status reg 0xA0-0xAF)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 164000: uvm_test_top.env.con [FIFO_PROCESS] WR: 2/2 high tran (remaining=2): addr=0xb4, data=0xaf183947, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 165000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 1/5 low tran from DUT: addr=0xfd, data=0x0335b994, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 165000: uvm_test_top.env.con [FIFO_ADD] RD: 1/5 low tran (size=1): addr=0xfd, data=0x0335b994, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 165000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 1/5 low tran: addr=0xfd, data=0x0335b994, write=0, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(92) @ 175000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent WR 2/5 low seq: addr=0xfd, data=0x39e24a42, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 175000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 2/5 low tran to DUT: addr=0xfd, wdata=0x39e24a42, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 185000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 2/8 normal tran from DUT: addr=0xa5, data=0x2d3808dd, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 185000: uvm_test_top.env.con [FIFO_ADD] WR: 2/8 normal tran (size=2): addr=0xa5, data=0x2d3808dd, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 185000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 2/8 normal tran: addr=0xa5, data=0x2d3808dd, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 195000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 2/8 normal seq: addr=0xa5, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 195000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 2/8 normal tran to DUT: addr=0xa5, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 205000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 2/5 low tran from DUT: addr=0xfd, data=0x39e24a42, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 205000: uvm_test_top.env.con [FIFO_ADD] WR: 2/5 low tran (size=3): addr=0xfd, data=0x39e24a42, write=1
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 205000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 2/5 low tran: addr=0xfd, data=0x39e24a42, write=1, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(106) @ 215000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent RD 2/5 low seq: addr=0xfd, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 215000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 2/5 low tran to DUT: addr=0xfd, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 223000: uvm_test_top.env.con [FIFO_PROCESS] RD: 1/8 normal tran (remaining=1): addr=0xac, data=0x0335b994, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(120) @ 223000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 1/8 normal tran addr=0xac, data=0x0335b994 (rdata==wdata, control reg 0xA0-0xAF)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 224000: uvm_test_top.env.con [FIFO_PROCESS] WR: 1/8 normal tran (remaining=3): addr=0xac, data=0x0335b994, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 225000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 2/8 normal tran from DUT: addr=0xa5, data=0x2d3808dd, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 225000: uvm_test_top.env.con [FIFO_ADD] RD: 2/8 normal tran (size=1): addr=0xa5, data=0x2d3808dd, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 225000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 2/8 normal tran: addr=0xa5, data=0x2d3808dd, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 235000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 3/8 normal seq: addr=0xa0, data=0x3f242f2b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 235000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 3/8 normal tran to DUT: addr=0xa0, wdata=0x3f242f2b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 245000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 2/5 low tran from DUT: addr=0xfd, data=0x2d3808dd, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 245000: uvm_test_top.env.con [FIFO_ADD] RD: 2/5 low tran (size=2): addr=0xfd, data=0x2d3808dd, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 245000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 2/5 low tran: addr=0xfd, data=0x2d3808dd, write=0, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(92) @ 255000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent WR 3/5 low seq: addr=0xff, data=0xe0dc6647, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 255000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 3/5 low tran to DUT: addr=0xff, wdata=0xe0dc6647, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 265000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 3/8 normal tran from DUT: addr=0xa0, data=0x3f242f2b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 265000: uvm_test_top.env.con [FIFO_ADD] WR: 3/8 normal tran (size=3): addr=0xa0, data=0x3f242f2b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 265000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 3/8 normal tran: addr=0xa0, data=0x3f242f2b, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 275000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 3/8 normal seq: addr=0xa0, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 275000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 3/8 normal tran to DUT: addr=0xa0, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 283000: uvm_test_top.env.con [FIFO_PROCESS] RD: 1/5 low tran (remaining=2): addr=0xfd, data=0x0335b994, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(150) @ 283000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 1/5 low tran addr=0xfd, data=0x0335b994 (rdata==last_rdata, reserved 0xF0-0xFF, wdata 0x5042abda dropped)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 284000: uvm_test_top.env.con [FIFO_PROCESS] WR: 1/5 low tran (remaining=3): addr=0xfd, data=0x5042abda, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 285000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 3/5 low tran from DUT: addr=0xff, data=0xe0dc6647, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 285000: uvm_test_top.env.con [FIFO_ADD] WR: 3/5 low tran (size=3): addr=0xff, data=0xe0dc6647, write=1
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 285000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 3/5 low tran: addr=0xff, data=0xe0dc6647, write=1, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(106) @ 295000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent RD 3/5 low seq: addr=0xff, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 295000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 3/5 low tran to DUT: addr=0xff, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 305000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 3/8 normal tran from DUT: addr=0xa0, data=0x3f242f2b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 305000: uvm_test_top.env.con [FIFO_ADD] RD: 3/8 normal tran (size=2): addr=0xa0, data=0x3f242f2b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 305000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 3/8 normal tran: addr=0xa0, data=0x3f242f2b, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 315000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 4/8 normal seq: addr=0xa5, data=0xd27078ea, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 315000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 4/8 normal tran to DUT: addr=0xa5, wdata=0xd27078ea, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 325000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 3/5 low tran from DUT: addr=0xff, data=0x3f242f2b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 325000: uvm_test_top.env.con [FIFO_ADD] RD: 3/5 low tran (size=3): addr=0xff, data=0x3f242f2b, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 325000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 3/5 low tran: addr=0xff, data=0x3f242f2b, write=0, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(92) @ 335000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent WR 4/5 low seq: addr=0xf3, data=0x929e22f6, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 335000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 4/5 low tran to DUT: addr=0xf3, wdata=0x929e22f6, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 343000: uvm_test_top.env.con [FIFO_PROCESS] RD: 2/8 normal tran (remaining=3): addr=0xa5, data=0x2d3808dd, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(120) @ 343000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 2/8 normal tran addr=0xa5, data=0x2d3808dd (rdata==wdata, control reg 0xA0-0xAF)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 344000: uvm_test_top.env.con [FIFO_PROCESS] WR: 2/8 normal tran (remaining=3): addr=0xa5, data=0x2d3808dd, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 345000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 4/8 normal tran from DUT: addr=0xa5, data=0xd27078ea, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 345000: uvm_test_top.env.con [FIFO_ADD] WR: 4/8 normal tran (size=3): addr=0xa5, data=0xd27078ea, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 345000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 4/8 normal tran: addr=0xa5, data=0xd27078ea, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 355000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 4/8 normal seq: addr=0xa5, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 355000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 4/8 normal tran to DUT: addr=0xa5, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 365000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 4/5 low tran from DUT: addr=0xf3, data=0x929e22f6, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 365000: uvm_test_top.env.con [FIFO_ADD] WR: 4/5 low tran (size=4): addr=0xf3, data=0x929e22f6, write=1
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 365000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 4/5 low tran: addr=0xf3, data=0x929e22f6, write=1, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(106) @ 375000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent RD 4/5 low seq: addr=0xf3, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 375000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 4/5 low tran to DUT: addr=0xf3, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 385000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 4/8 normal tran from DUT: addr=0xa5, data=0xd27078ea, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 385000: uvm_test_top.env.con [FIFO_ADD] RD: 4/8 normal tran (size=3): addr=0xa5, data=0xd27078ea, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 385000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 4/8 normal tran: addr=0xa5, data=0xd27078ea, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 395000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 5/8 normal seq: addr=0xaf, data=0x9066d95d, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 395000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 5/8 normal tran to DUT: addr=0xaf, wdata=0x9066d95d, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 403000: uvm_test_top.env.con [FIFO_PROCESS] RD: 2/5 low tran (remaining=3): addr=0xfd, data=0x2d3808dd, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(150) @ 403000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 2/5 low tran addr=0xfd, data=0x2d3808dd (rdata==last_rdata, reserved 0xF0-0xFF, wdata 0x39e24a42 dropped)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 404000: uvm_test_top.env.con [FIFO_PROCESS] WR: 2/5 low tran (remaining=4): addr=0xfd, data=0x39e24a42, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 405000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 4/5 low tran from DUT: addr=0xf3, data=0xd27078ea, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 405000: uvm_test_top.env.con [FIFO_ADD] RD: 4/5 low tran (size=3): addr=0xf3, data=0xd27078ea, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 405000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 4/5 low tran: addr=0xf3, data=0xd27078ea, write=0, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(92) @ 415000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent WR 5/5 low seq: addr=0xf5, data=0x8d832df4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 415000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 5/5 low tran to DUT: addr=0xf5, wdata=0x8d832df4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 425000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 5/8 normal tran from DUT: addr=0xaf, data=0x9066d95d, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 425000: uvm_test_top.env.con [FIFO_ADD] WR: 5/8 normal tran (size=4): addr=0xaf, data=0x9066d95d, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 425000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 5/8 normal tran: addr=0xaf, data=0x9066d95d, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 435000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 5/8 normal seq: addr=0xaf, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 435000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 5/8 normal tran to DUT: addr=0xaf, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 445000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 5/5 low tran from DUT: addr=0xf5, data=0x8d832df4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 445000: uvm_test_top.env.con [FIFO_ADD] WR: 5/5 low tran (size=5): addr=0xf5, data=0x8d832df4, write=1
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 445000: uvm_test_top.env.scb [SCOREBOARD] FAIL WR 5/5 low tran: addr=0xf5, data=0x8d832df4, write=1, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq_prio.sv(106) @ 455000: uvm_test_top.env.agt.sqr@@lseq [low_prio_seq] Sent RD 5/5 low seq: addr=0xf5, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 455000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 5/5 low tran to DUT: addr=0xf5, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 463000: uvm_test_top.env.con [FIFO_PROCESS] RD: 3/8 normal tran (remaining=3): addr=0xa0, data=0x3f242f2b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(120) @ 463000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 3/8 normal tran addr=0xa0, data=0x3f242f2b (rdata==wdata, control reg 0xA0-0xAF)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 464000: uvm_test_top.env.con [FIFO_PROCESS] WR: 3/8 normal tran (remaining=5): addr=0xa0, data=0x3f242f2b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 465000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 5/8 normal tran from DUT: addr=0xaf, data=0x9066d95d, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 465000: uvm_test_top.env.con [FIFO_ADD] RD: 5/8 normal tran (size=3): addr=0xaf, data=0x9066d95d, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 465000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 5/8 normal tran: addr=0xaf, data=0x9066d95d, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 475000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 6/8 normal seq: addr=0xaa, data=0x44271852, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 475000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 6/8 normal tran to DUT: addr=0xaa, wdata=0x44271852, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 485000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 5/5 low tran from DUT: addr=0xf5, data=0x9066d95d, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 485000: uvm_test_top.env.con [FIFO_ADD] RD: 5/5 low tran (size=4): addr=0xf5, data=0x9066d95d, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(43) @ 485000: uvm_test_top.env.scb [SCOREBOARD] FAIL RD 5/5 low tran: addr=0xf5, data=0x9066d95d, write=0, reserved 0xF0-0xFF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 495000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 6/8 normal seq: addr=0xaa, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 495000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 6/8 normal tran to DUT: addr=0xaa, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 505000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 6/8 normal tran from DUT: addr=0xaa, data=0x44271852, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 505000: uvm_test_top.env.con [FIFO_ADD] WR: 6/8 normal tran (size=5): addr=0xaa, data=0x44271852, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 505000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 6/8 normal tran: addr=0xaa, data=0x44271852, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 515000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 7/8 normal seq: addr=0xa0, data=0xc3bae4a4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 515000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 7/8 normal tran to DUT: addr=0xa0, wdata=0xc3bae4a4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 523000: uvm_test_top.env.con [FIFO_PROCESS] RD: 3/5 low tran (remaining=4): addr=0xff, data=0x3f242f2b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(150) @ 523000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 3/5 low tran addr=0xff, data=0x3f242f2b (rdata==last_rdata, reserved 0xF0-0xFF, wdata 0xe0dc6647 dropped)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 524000: uvm_test_top.env.con [FIFO_PROCESS] WR: 3/5 low tran (remaining=5): addr=0xff, data=0xe0dc6647, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 525000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 6/8 normal tran from DUT: addr=0xaa, data=0x44271852, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 525000: uvm_test_top.env.con [FIFO_ADD] RD: 6/8 normal tran (size=4): addr=0xaa, data=0x44271852, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 525000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 6/8 normal tran: addr=0xaa, data=0x44271852, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 535000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 7/8 normal seq: addr=0xa0, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 535000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 7/8 normal tran to DUT: addr=0xa0, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 545000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 7/8 normal tran from DUT: addr=0xa0, data=0xc3bae4a4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 545000: uvm_test_top.env.con [FIFO_ADD] WR: 7/8 normal tran (size=5): addr=0xa0, data=0xc3bae4a4, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 545000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 7/8 normal tran: addr=0xa0, data=0xc3bae4a4, write=1, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(36) @ 555000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent WR 8/8 normal seq: addr=0xaf, data=0x13ece66e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 555000: uvm_test_top.env.agt.drv [DRIVER] Drive WR 8/8 normal tran to DUT: addr=0xaf, wdata=0x13ece66e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 565000: uvm_test_top.env.agt.mon [MONITOR] Observe RD 7/8 normal tran from DUT: addr=0xa0, data=0xc3bae4a4, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(82) @ 565000: uvm_test_top.env.con [FIFO_ADD] RD: 7/8 normal tran (size=5): addr=0xa0, data=0xc3bae4a4, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 565000: uvm_test_top.env.scb [SCOREBOARD] PASS RD 7/8 normal tran: addr=0xa0, data=0xc3bae4a4, write=0, control reg 0xA0-0xAF
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_seq.sv(51) @ 575000: uvm_test_top.env.agt.sqr@@seq [bus_seq] Sent RD 8/8 normal seq: addr=0xaf, data=0x00000000, write=0 Next seq after 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_drv.sv(28) @ 575000: uvm_test_top.env.agt.drv [DRIVER] Drive RD 8/8 normal tran to DUT: addr=0xaf, wdata=0x00000000, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(111) @ 583000: uvm_test_top.env.con [FIFO_PROCESS] RD: 4/8 normal tran (remaining=5): addr=0xa5, data=0xd27078ea, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(120) @ 583000: uvm_test_top.env.con [FIFO_VAL] PASS RD: 4/8 normal tran addr=0xa5, data=0xd27078ea (rdata==wdata, control reg 0xA0-0xAF)
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(101) @ 584000: uvm_test_top.env.con [FIFO_PROCESS] WR: 4/8 normal tran (remaining=5): addr=0xa5, data=0xd27078ea, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_mon.sv(55) @ 585000: uvm_test_top.env.agt.mon [MONITOR] Observe WR 8/8 normal tran from DUT: addr=0xaf, data=0x13ece66e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(64) @ 585000: uvm_test_top.env.con [FIFO_ADD] WR: 8/8 normal tran (size=5): addr=0xaf, data=0x13ece66e, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(28) @ 585000: uvm_test_top.env.scb [SCOREBOARD] PASS WR 8/8 normal tran: addr=0xaf, data=0x13ece66e, write=1, control reg 0xA0-0xAF
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(83) @ 595000: uvm_test_top.env.scb [CHECK] Scoreboard detected 10 failures
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(198) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Total WR received transactions: 15
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(201) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Total WR processed transactions: 9
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(204) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] WR FIFO overflows: 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(207) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Maximum WR FIFO utilization: 5/10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(210) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Total RD received transactions: 14
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(213) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Total RD processed transactions: 9
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(216) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Total RD pass detected: 7
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(219) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Total RD fail detected: 2
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(222) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] RD FIFO overflows: 0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_con.sv(225) @ 595000: uvm_test_top.env.con [CONSUMER_REPORT] Maximum RD FIFO utilization: 5/9
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_cov.sv(46) @ 595000: uvm_test_top.env.cov [COVERAGE] Coverage bus_cg      : 58.33%
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_cov.sv(47) @ 595000: uvm_test_top.env.cov [COVERAGE] Coverage addr_cp     : 50.00%
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_cov.sv(48) @ 595000: uvm_test_top.env.cov [COVERAGE] Coverage data_cp     : 33.33%
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_cov.sv(49) @ 595000: uvm_test_top.env.cov [COVERAGE] Coverage write_cp    : 100.00%
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_cov.sv(50) @ 595000: uvm_test_top.env.cov [COVERAGE] Coverage addr_x_write: 50.00%
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(93) @ 595000: uvm_test_top.env.scb [SCOREBOARD] TEST FAILED
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(94) @ 595000: uvm_test_top.env.scb [SCOREBOARD] Pass Rate: 65.52%
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(96) @ 595000: uvm_test_top.env.scb [SCOREBOARD] Passed Tran: Passed=19 Passed(WR)=10 Passed(RD)=9
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_scb.sv(98) @ 595000: uvm_test_top.env.scb [SCOREBOARD] Failed Tran: Failed=10 Failed(WR_RES)=5 Failed(RD_RES)=5
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 595000: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :  190
+UVM_WARNING :    0
+UVM_ERROR :   13
+UVM_FATAL :    0
+** Report counts by id
+[CHECK]     1
+[CONSUMER_REPORT]    10
+[COVERAGE]     5
+[DRIVER]    30
+[FIFO_ADD]    29
+[FIFO_INFO]     4
+[FIFO_PROCESS]    18
+[FIFO_VAL]     9
+[MONITOR]    29
+[RNTST]     1
+[SCOREBOARD]    33
+[TEST]     1
+[bus_seq]    17
+[high_prio_seq]     5
+[low_prio_seq]    11
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+>>>>>>>> SIM TIME END  : 595000
+$finish at simulation time               595000
+"/home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_ctrl_if.sv", 38: bus_tb.bus_if.unnamed$$_0: started at 595000ps not finished
+"/home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab17/design/bus_ctrl_if.sv", 38: bus_tb.bus_if.unnamed$$_0: started at 575000ps not finished
+
+=========== Generating Assertion Summary ==========
+
+"bus_tb.\low_prio_seq::body .unnamed$$_1", 5 attempts, 5 successes, 0 failures, 0 incompletes
+"bus_tb.\high_prio_seq::body .unnamed$$_1", 2 attempts, 2 successes, 0 failures, 0 incompletes
+"bus_tb.\bus_seq::body .unnamed$$_1", 8 attempts, 8 successes, 0 failures, 0 incompletes
+"bus_tb.bus_if.unnamed$$_0", 60 attempts, 58 successes, 0 failures, 2 incompletes
+Summary: 4 assertions, 4 with attempts, 0 with failures
+
+===========     End Assertion Summary    ==========
+
+
+---------------------------------------------------------------------------
+VCS Coverage Metrics: during simulation line, cond, FSM, branch, tgl was monitored
+---------------------------------------------------------------------------
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 595000 ps
+CPU Time:      0.350 seconds;       Data structure size:   0.7Mb
+Fri Aug  8 15:06:51 2025

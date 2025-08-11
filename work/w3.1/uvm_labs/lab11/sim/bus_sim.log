@@ -1,0 +1,131 @@
+Command: /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/sim/./bus_simv -l bus_sim.log +UVM_NO_RELNOTES
+Chronologic VCS simulator copyright 1991-2024
+Contains Synopsys proprietary information.
+Compiler version W-2024.09-SP2_Full64; Runtime version W-2024.09-SP2_Full64;  Aug  6 16:01 2025
+>>>>>>>> SIM TIME START: 0
+UVM_INFO @ 0: reporter [RNTST] Running test bus_test...
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(27) @ 0: uvm_test_top.env.consumer [FIFO_INFO] FIFO Size: 2
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(28) @ 0: uvm_test_top.env.consumer [FIFO_INFO] FIFO Process Time: 10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_test.sv(49) @ 0: uvm_test_top [TEST] Starting sequences with config:
+                                    Normal: count=8, delay=10-15
+                                    High: count=2, delay=0-5
+                                    Low: count=5, delay=5-10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_test.sv(58) @ 0: uvm_test_top [TEST] Launching the sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(20) @ 0: uvm_test_top.env.sqr@@seq [bus_sequence] Normal Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(13) @ 0: uvm_test_top.env.sqr@@hseq [high_prio_seq] High Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(39) @ 0: uvm_test_top.env.sqr@@lseq [low_prio_seq] Low Priority Sequence
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(22) @ 0: uvm_test_top.env.sqr@@hseq [high_prio_seq] Sent 1/2 high sequences, next sequence after 3
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 3000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0xb41701ed, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 3000: uvm_test_top.env.drv [DRIVER] Driving high transaction: addr=0xfd, data=0xb41701ed, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 3000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=1): addr=0xfd, data=0xb41701ed, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(22) @ 3000: uvm_test_top.env.sqr@@hseq [high_prio_seq] Sent 2/2 high sequences, next sequence after 3
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 6000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xfd, data=0x6242ebf8, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 6000: uvm_test_top.env.drv [DRIVER] Driving high transaction: addr=0xfd, data=0x6242ebf8, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 6000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xfd, data=0x6242ebf8, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 6000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 1/8 normal sequences, next sequence after 13
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 13000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xfd, data=0xb41701ed, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(89) @ 13000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0xb41701ed, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 19000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 19000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 19000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(47) @ 19000: uvm_test_top.env.sqr@@lseq [low_prio_seq] Sent 1/5 low sequences, next sequence after 5
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 23000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xfd, data=0x6242ebf8, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(89) @ 23000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0x6242ebf8, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 24000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe1, data=0x144d9ab2, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 24000: uvm_test_top.env.drv [DRIVER] Driving low transaction: addr=0xe1, data=0x144d9ab2, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 24000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xe1, data=0x144d9ab2, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 24000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 2/8 normal sequences, next sequence after 10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 33000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xab, data=0xd62a4d9b, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 34000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 34000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 34000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(47) @ 34000: uvm_test_top.env.sqr@@lseq [low_prio_seq] Sent 2/5 low sequences, next sequence after 10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 43000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xe1, data=0x144d9ab2, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(89) @ 43000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe1, data=0x144d9ab2, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 44000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe9, data=0xeba177d5, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 44000: uvm_test_top.env.drv [DRIVER] Driving low transaction: addr=0xe9, data=0xeba177d5, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 44000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xe9, data=0xeba177d5, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 44000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 3/8 normal sequences, next sequence after 15
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 53000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xa4, data=0xdb3b2ae3, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 59000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 59000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 59000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(47) @ 59000: uvm_test_top.env.sqr@@lseq [low_prio_seq] Sent 3/5 low sequences, next sequence after 6
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 63000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xe9, data=0xeba177d5, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(89) @ 63000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe9, data=0xeba177d5, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 65000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xe3, data=0x21d820a6, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 65000: uvm_test_top.env.drv [DRIVER] Driving low transaction: addr=0xe3, data=0x21d820a6, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 65000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xe3, data=0x21d820a6, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 65000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 4/8 normal sequences, next sequence after 10
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 73000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xa6, data=0xe7ccad2a, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 75000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 75000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 75000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(47) @ 75000: uvm_test_top.env.sqr@@lseq [low_prio_seq] Sent 4/5 low sequences, next sequence after 8
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 83000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xe3, data=0x21d820a6, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(89) @ 83000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe3, data=0x21d820a6, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 83000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xeb, data=0x832110b4, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 83000: uvm_test_top.env.drv [DRIVER] Driving low transaction: addr=0xeb, data=0x832110b4, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 83000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xeb, data=0x832110b4, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 83000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 5/8 normal sequences, next sequence after 12
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 93000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xa5, data=0xbd7cc6ff, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 95000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 95000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 95000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=2): addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence_prio.sv(47) @ 95000: uvm_test_top.env.sqr@@lseq [low_prio_seq] Sent 5/5 low sequences, next sequence after 6
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 101000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xeb, data=0xb1bc693b, write=0
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 101000: uvm_test_top.env.drv [DRIVER] Driving low transaction: addr=0xeb, data=0xb1bc693b, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(54) @ 101000: uvm_test_top.env.consumer [FIFO_OVERFLOW] FIFO overflow! Discarding transaction: addr=0xeb, data=0xb1bc693b, write=0 >>>>>>>>>>>>>>>>
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 101000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 6/8 normal sequences, next sequence after 14
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 103000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=1): addr=0xeb, data=0x832110b4, write=0
+UVM_ERROR /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(89) @ 103000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xeb, data=0x832110b4, write=0 <<<<<<<<<<<<<<<<
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 113000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=0): addr=0xac, data=0x3b02ed13, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 115000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 115000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 115000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=1): addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 115000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 7/8 normal sequences, next sequence after 15
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 125000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=0): addr=0xac, data=0x2432d2a1, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 130000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xa7, data=0x54802abe, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 130000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xa7, data=0x54802abe, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 130000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=1): addr=0xa7, data=0x54802abe, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_sequence.sv(28) @ 130000: uvm_test_top.env.sqr@@seq [bus_sequence] Sent 8/8 normal sequences, next sequence after 13
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 140000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=0): addr=0xa7, data=0x54802abe, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_monitor.sv(15) @ 143000: uvm_test_top.env.mon [MONITOR] Observed transaction: addr=0xac, data=0x39e69ad0, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_driver.sv(17) @ 143000: uvm_test_top.env.drv [DRIVER] Driving normal transaction: addr=0xac, data=0x39e69ad0, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(60) @ 143000: uvm_test_top.env.consumer [FIFO_ADD] Added to FIFO (size=1): addr=0xac, data=0x39e69ad0, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(81) @ 153000: uvm_test_top.env.consumer [FIFO_PROCESS] Processing from FIFO (remaining=0): addr=0xac, data=0x39e69ad0, write=1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(98) @ 153000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total received transactions: 15
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(101) @ 153000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total processed transactions: 14
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(104) @ 153000: uvm_test_top.env.consumer [CONSUMER_REPORT] Total errors detected: 6
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(107) @ 153000: uvm_test_top.env.consumer [CONSUMER_REPORT] FIFO overflows: 1
+UVM_INFO /home/user17/qylim/repo/own/work/w3.1/uvm_labs/lab11/design/bus_consumer.sv(110) @ 153000: uvm_test_top.env.consumer [CONSUMER_REPORT] Maximum FIFO utilization: 3/2
+UVM_INFO /home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_report_server.svh(945) @ 153000: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO :   86
+UVM_WARNING :    0
+UVM_ERROR :    7
+UVM_FATAL :    0
+** Report counts by id
+[CONSUMER_CHECK]     6
+[CONSUMER_REPORT]     5
+[DRIVER]    15
+[FIFO_ADD]    14
+[FIFO_INFO]     2
+[FIFO_OVERFLOW]     1
+[FIFO_PROCESS]    14
+[MONITOR]    15
+[RNTST]     1
+[TEST]     2
+[bus_sequence]     9
+[high_prio_seq]     3
+[low_prio_seq]     6
+
+$finish called from file "/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/base/uvm_root.svh", line 599.
+>>>>>>>> SIM TIME END  : 153000
+$finish at simulation time               153000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 153000 ps
+CPU Time:      0.220 seconds;       Data structure size:   0.6Mb
+Wed Aug  6 16:01:33 2025

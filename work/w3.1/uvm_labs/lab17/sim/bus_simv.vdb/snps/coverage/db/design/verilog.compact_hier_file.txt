@@ -1,0 +1,3 @@
+\$unit::/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/macros/snps_macros.svp::/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0/macros/uvm_callback_defines.svh...@3591747862 02
+bus_tb4070
+uvm_custom_install_verdi_recording4070

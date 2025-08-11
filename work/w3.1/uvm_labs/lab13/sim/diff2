@@ -1,0 +1,14 @@
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 3000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xfb, data=0x848803b1, write=0 ================
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 6000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xf4, data=0xfb0e1d7b, write=0 ================
+UVM_ERROR lab13/design/bus_consumer.sv @ 13000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfb, data=0x848803b1, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 24000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xef, data=0x38ceeae4, write=0 ================
+UVM_ERROR lab13/design/bus_consumer.sv @ 26000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xf4, data=0xfb0e1d7b, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 44000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xed, data=0xc5fe5ebe, write=0 ================
+UVM_ERROR lab13/design/bus_consumer.sv @ 52000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xef, data=0x38ceeae4, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 65000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe7, data=0xc6dd871e, write=0 ================
+UVM_ERROR lab13/design/bus_consumer.sv @ 78000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xed, data=0xc5fe5ebe, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 83000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe5, data=0xb90c1e32, write=0 ================
+UVM_ERROR lab13/design/bus_consumer.sv @ 101000: uvm_test_top.env.consumer [FIFO_OVERFLOW] FIFO overflow! Discarding transaction: addr=0xe4, data=0x4f65b8ee, write=0 >>>>>>>>>>>>>>>>
+UVM_ERROR lab13/design/bus_scoreboard.sv @ 101000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe4, data=0x4f65b8ee, write=0 ================
+UVM_ERROR lab13/design/bus_consumer.sv @ 104000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe7, data=0xc6dd871e, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab13/design/bus_consumer.sv @ 130000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe5, data=0xb90c1e32, write=0 <<<<<<<<<<<<<<<<

@@ -1,0 +1,14 @@
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 3000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xfd, data=0xb41701ed, write=0 ================
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 6000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xfd, data=0x6242ebf8, write=0 ================
+UVM_ERROR lab12/design/bus_consumer.sv @ 13000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0xb41701ed, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab12/design/bus_consumer.sv @ 23000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xfd, data=0x6242ebf8, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 24000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe1, data=0x144d9ab2, write=0 ================
+UVM_ERROR lab12/design/bus_consumer.sv @ 43000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe1, data=0x144d9ab2, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 44000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe9, data=0xeba177d5, write=0 ================
+UVM_ERROR lab12/design/bus_consumer.sv @ 63000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe9, data=0xeba177d5, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 65000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xe3, data=0x21d820a6, write=0 ================
+UVM_ERROR lab12/design/bus_consumer.sv @ 83000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xe3, data=0x21d820a6, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 83000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xeb, data=0x832110b4, write=0 ================
+UVM_ERROR lab12/design/bus_scoreboard.sv @ 101000: uvm_test_top.env.scb [SCOREBOARD] FAIL: addr=0xeb, data=0xb1bc693b, write=0 ================
+UVM_ERROR lab12/design/bus_consumer.sv @ 103000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xeb, data=0x832110b4, write=0 <<<<<<<<<<<<<<<<
+UVM_ERROR lab12/design/bus_consumer.sv @ 123000: uvm_test_top.env.consumer [CONSUMER_CHECK] Invalid transaction! addr=0xeb, data=0xb1bc693b, write=0 <<<<<<<<<<<<<<<<

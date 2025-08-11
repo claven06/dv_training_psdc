@@ -60,3 +60,4 @@ class bus_seq extends uvm_sequence #(bus_tran);
     end
   endtask
 endclass
+

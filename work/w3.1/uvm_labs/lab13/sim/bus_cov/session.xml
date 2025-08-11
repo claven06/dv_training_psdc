@@ -1,0 +1,36 @@
+<session version="1.1" release="W-2024.09-SP2" timestp="2025-08-07 02:45:47 GMT">
+  <info>
+    <attr name="datetime" value="Thu Aug  7 10:45:50 2025
+"/>
+    <attr name="command" value="urg -full64 -dir bus_simv.vdb -report bus_cov"/>
+    <attr name="top_instance" value="uvm_custom_install_verdi_recording,bus_tb"/>
+  </info>
+  <hvp>
+    <datadef>
+      <metdef name="Line" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Cond" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Toggle" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="FSM" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Branch" type="ratio" aggregator="average" builtin="1" />
+      <metdef name="Group" type="percent" aggregator="average" builtin="1" />
+    </datadef>
+  </hvp>
+  <old_coverage>
+  <scope type="top" name="top">
+    <metric name="Line" value="24/420" />
+    <metric name="Cond" value="3/99" />
+    <metric name="Toggle" value="0/12" />
+    <metric name="Branch" value="9/193" />
+    <metric name="Group" value="58.3333%" />
+  </scope>
+  <scope type="instance" name="top">
+  </scope>
+  <scope type="group" name="top">
+    <scope type="group" name="bus_tb::bus_coverage::bus_cg">
+      <metric name="Group" value="58.3333%" />
+    </scope>
+  </scope>
+  <scope type="assert" name="Statistics">
+  </scope>
+  </old_coverage>
+</session>
