@@ -3,30 +3,33 @@ export ROOT
 SEED = 5
 
 #variables
-VCS_OPTS = -sverilog -kdb -debug_access+all 
+VCS_OPTS = -sverilog -kdb -debug_access+all
 SV_DESIGN = $(ROOT)/spi_design
 SV_TESTBENCH = $(ROOT)/spi_tb_sv
 INCLUDE = +incdir+$(SV_DESIGN)+$(SV_TESTBENCH)
 TIMESCALE = -timescale=1ns/1ps
 RANDOM_SEED = +ntb_random_seed=$(SEED)
-RUN_OPTS = -R 
+RUN_OPTS = -R
 FUNC_CVR = -cm line+cond+tgl+fsm+branch+assert
 FILE_TO_DEL = csrc simv simv.daidir ucli.key libnz4w_r.soLog verdiLog \
 verdi_config_file inter.fsdb dump.vcd novas* cm.log simv.vdb urgReport \
-vdCov.conf vdCovLog build.log sim.log 
+vdCov.conf vdCovLog build.log sim.log
 
 #Grab the second word in the make command (e.g., the .sv file)
 #SRC      = $(filter %.sv, $(MAKECMDGOALS))
 SRC		  = -f ./build.f
 
+TEST      = +define+TEST_1 \
+			+define+TEST_2
+
 #target
 all: build run
 
 build:
-	vcs $(SRC) $(VCS_OPTS) $(FUNC_CVR) $(INCLUDE) $(TIMESCALE) | tee build.log 
+	vcs $(SRC) $(VCS_OPTS) $(FUNC_CVR) $(INCLUDE) $(TIMESCALE) $(TEST) | tee build.log
 
 run:
-	./simv $(FUNC_CVR) | tee sim.log 
+	./simv $(FUNC_CVR) | tee sim.log
 	@if grep -i "mismatch" sim.log; then \
 		grep --color=always -nH -i "mismatch" sim.log; \
 	else \
@@ -37,7 +40,7 @@ wave:
 	verdi -ssf fsdbdump.fsdb &
 
 #To generate coverage reports and analyze the results
-#using Unified Report Generator 
+#using Unified Report Generator
 urgcov:
 	urg -dir simv.vdb
 
@@ -46,7 +49,7 @@ verdicov:
 	verdi -cov -covdir simv.vdb &
 
 clean:
-	rm -rf $(FILE_TO_DEL) 
+	rm -rf $(FILE_TO_DEL)
 
 # Dummy target to absorb extra argument (e.g., .sv)
 %:

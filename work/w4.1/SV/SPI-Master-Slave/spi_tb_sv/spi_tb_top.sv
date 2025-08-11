@@ -35,21 +35,29 @@ spi_top #(
     .SPI_TRF_BIT(SPI_TRF_BIT)
 ) dut ( .* );
 
-
-
-
+// FSDB generation
+initial begin
+    $fsdbDumpfile("dump.fsdb");
+    $fsdbDumpvars(0, spi_tb_top);
+    $fsdbDumpMDA();
+    $fsdbDumpSVA();
+end
 
 // Main
 initial begin
     wait_duration = '0;
     din_master = '0;
     din_slave = '0;
+    req = 2'b00;
     rst = 0;
 
     `ifdef TEST_1
+        $display("TEst hihi lol");
     `endif
-end
 
+    repeat (50) @(posedge clk);
+    $finish;
+end
 
 endmodule
 
