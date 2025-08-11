@@ -13,14 +13,17 @@ RUN_OPTS = -R
 FUNC_CVR = -cm line+cond+tgl+fsm+branch+assert
 FILE_TO_DEL = csrc simv simv.daidir ucli.key libnz4w_r.soLog verdiLog \
 verdi_config_file inter.fsdb dump.vcd novas* cm.log simv.vdb urgReport \
-vdCov.conf vdCovLog build.log sim.log
+vdCov.conf vdCovLog build.log sim.log .fsm.sch.verilog.xml
 
 #Grab the second word in the make command (e.g., the .sv file)
 #SRC      = $(filter %.sv, $(MAKECMDGOALS))
 SRC		  = -f ./build.f
 
-TEST      = +define+TEST_1 \
-			+define+TEST_2
+TEST      = +define+RESET_ACTIVE \
+			+define+REQ_01 \
+			+define+REQ_10 \
+			+define+REQ_11 \
+			+define+
 
 #target
 all: build run
@@ -37,6 +40,9 @@ run:
 	fi
 
 wave:
+	verdi -ssf dump.fsdb &
+
+wave_golden:
 	verdi -ssf fsdbdump.fsdb &
 
 #To generate coverage reports and analyze the results
