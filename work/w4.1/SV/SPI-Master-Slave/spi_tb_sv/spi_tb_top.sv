@@ -1,7 +1,7 @@
 module spi_tb_top;
 
 localparam MASTER_FREQ = 100_000_000;
-localparam SLAVE_FREQ = 3_700_000;
+localparam SLAVE_FREQ = 3_700_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
 localparam SPI_TRF_BIT = 8;
 
@@ -68,23 +68,21 @@ initial begin
     `ifdef RESET_ACTIVE
         repeat (5) @(posedge clk);
         req <= 2'b11;
-        din_master <= $urandom();
-        din_slave <= $urandom();
 
-        fork
-            @(done_tx);
-            @(done_rx);
-        join
-
-        repeat (5) @(posedge clk);
-        rst <= 1;
-
+        // No checkers, covered by AST_RST_ALL_OUTPUT_ZERO assertion
         for (int i = 0; i < TEST_ITERATION; i++) begin
+            rst <= 0;
+            din_master <= $urandom();
+            din_slave <= $urandom();
+            fork
+                @(done_tx);
+                @(done_rx);
+            join
+            repeat (5) @(posedge clk);
+            rst <= 1;
+            $display("%0t: RESET_ACTIVE_TEST [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
             repeat (1) @(posedge clk);
-            if (dout_master == 0 && dout_slave == 0 && done_tx == 0 && done_rx == 0)
-                $display("%0t: [PASS] rst = 1, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, dout_master, dout_slave, done_tx, done_rx);
-            else
-                $display("%0t: [FAIL] rst = 1, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, dout_master, dout_slave, done_tx, done_rx);
+            $display("%0t: RESET_ACTIVE_TEST [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
         end
 
         rst <= 0;
@@ -101,9 +99,9 @@ initial begin
 
             @(done_tx);
             if (dout_slave == din_master)
-                $display("%0t: [PASS] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                $display("%0t: REQ_01 [PASS] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
             else
-                $display("%0t: [FAIL] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                $display("%0t: REQ_01 [FAIL] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
             repeat (10) @(posedge clk);
         end
     `endif
@@ -117,9 +115,9 @@ initial begin
 
             @(done_rx);
             if (dout_master == din_slave)
-                $display("%0t: [PASS] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                $display("%0t: REQ_10 [PASS] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
             else
-                $display("%0t: [FAIL] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                $display("%0t: REQ_10 [FAIL] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
             repeat (10) @(posedge clk);
         end
     `endif
@@ -136,16 +134,16 @@ initial begin
                 begin
                     @(done_rx);
                     if (dout_master == din_slave)
-                        $display("%0t: [PASS] req = 11, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                        $display("%0t: REQ_11 [PASS] req = 11, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
                     else
-                $display("%0t: [FAIL] req = 11, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
-                end
-                begin
+                        $display("%0t: REQ_11 [FAIL] req = 11, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                    end
+                    begin
                     @(done_tx);
                     if (dout_slave == din_master)
-                        $display("%0t: [PASS] req = 11, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                        $display("%0t: REQ_11 [PASS] req = 11, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
                     else
-                        $display("%0t: [FAIL] req = 11, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                        $display("%0t: REQ_11 [FAIL] req = 11, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
                 end
             join
             repeat (10) @(posedge clk);
