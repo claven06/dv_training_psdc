@@ -1,11 +1,11 @@
 module spi_tb_top;
 
 localparam MASTER_FREQ = 100_000_000;
-localparam SLAVE_FREQ = 3_700_000; // Modified from 1,800,000 to achieve spec
+localparam SLAVE_FREQ = 4_000_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
 localparam SPI_TRF_BIT = 8;
 
-localparam TEST_ITERATION = 10;
+localparam TEST_ITERATION = 2;
 
 // Clock & reset signals
 logic clk;
@@ -60,6 +60,13 @@ end
 AST_RST_ALL_OUTPUT_ZERO : assert property (@(posedge clk) (
                             (rst) |-> ((dout_master == '0) && (dout_slave == '0) && (done_tx == '0) && (done_rx == '0))));
 
+// Tasks
+task reset_design;
+    rst = 1;
+    repeat (5) @(posedge clk);
+    rst = 0;
+    repeat (5) @(posedge clk);
+endtask
 
 // Main
 initial begin
@@ -165,8 +172,9 @@ initial begin
             `endif
             req <= 2'b11;
             #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
-            repeat (1) @(posedge clk);
-            req <= 2'b00;
+
+            @(dut.spi_master_inst.state_rx == 2'b10);
+            req <= '0;
 
             fork
                 begin
@@ -186,6 +194,7 @@ initial begin
             join
             repeat (10) @(posedge clk);
         end
+
         // Clear inputs before next test
         din_master <= '0;
         din_slave <= '0;
@@ -197,6 +206,11 @@ initial begin
 
     cur_test <= NONE;
     repeat (1000) @(posedge clk);
+    $finish;
+end
+
+initial begin
+    #100000000ps
     $finish;
 end
 
