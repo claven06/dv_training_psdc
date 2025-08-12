@@ -23,6 +23,7 @@ TEST      = +define+RESET_ACTIVE \
 			+define+REQ_01 \
 			+define+REQ_10 \
 			+define+REQ_11 \
+			+define+WAIT_RAND \
 			+define+
 
 #target

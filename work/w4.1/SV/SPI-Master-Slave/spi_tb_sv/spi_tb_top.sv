@@ -24,17 +24,20 @@ logic                       done_tx;
 logic                       done_rx;
 
 // Testbench signals
-logic ref_sclk;
+typedef enum {
+    NONE,
+    RESET_ACTIVE,
+    REQ_01,
+    REQ_10,
+    REQ_11
+} test_t;
+
+test_t cur_test;
 
 // Clock generation
 initial begin
     clk = 0;
     forever #5 clk= ~clk; // 100MHz clock
-end
-
-initial begin
-    ref_sclk = 0;
-    forever #135.135 ref_sclk = ~ref_sclk; // 3.7MHz clock
 end
 
 // DUT instantiation
@@ -64,8 +67,12 @@ initial begin
     din_slave = '0;
     req = 2'b00;
     rst = 0;
+    cur_test <= NONE;
+
+    repeat (5) @(posedge clk);
 
     `ifdef RESET_ACTIVE
+        cur_test <= RESET_ACTIVE;
         repeat (5) @(posedge clk);
         req <= 2'b11;
 
@@ -80,19 +87,26 @@ initial begin
             join
             repeat (5) @(posedge clk);
             rst <= 1;
-            $display("%0t: RESET_ACTIVE_TEST [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
+            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
             repeat (1) @(posedge clk);
-            $display("%0t: RESET_ACTIVE_TEST [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
+            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
         end
 
+        // Clear inputs before next test
         rst <= 0;
         req <= '0;
-        repeat (50) @(posedge clk);
+        din_master <= '0;
+        din_slave <= '0;
+        repeat (100) @(posedge clk);
     `endif
 
     `ifdef REQ_01
+        cur_test <= REQ_01;
         for (int i = 0; i < TEST_ITERATION; i++) begin
             din_master <= $urandom();
+            `ifdef WAIT_RAND
+                wait_duration <= $urandom();
+            `endif
             req <= 2'b01;
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -104,11 +118,21 @@ initial begin
                 $display("%0t: REQ_01 [FAIL] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
             repeat (10) @(posedge clk);
         end
+        // Clear inputs before next test
+        din_master <= '0;
+        `ifdef WAIT_RAND
+            wait_duration <= '0;
+        `endif
+        repeat (100) @(posedge clk);
     `endif
 
     `ifdef REQ_10
+        cur_test <= REQ_10;
         for (int i = 0; i < TEST_ITERATION; i++) begin
             din_slave <= $urandom();
+            `ifdef WAIT_RAND
+                wait_duration <= $urandom();
+            `endif
             req <= 2'b10;
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -120,12 +144,22 @@ initial begin
                 $display("%0t: REQ_10 [FAIL] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
             repeat (10) @(posedge clk);
         end
+        // Clear inputs before next test
+        din_slave <= '0;
+        `ifdef WAIT_RAND
+            wait_duration <= '0;
+        `endif
+        repeat (100) @(posedge clk);
     `endif
 
     `ifdef REQ_11
+        cur_test <= REQ_11;
         for (int i = 0; i < TEST_ITERATION; i++) begin
             din_master <= $urandom();
             din_slave <= $urandom();
+            `ifdef WAIT_RAND
+                wait_duration <= $urandom();
+            `endif
             req <= 2'b11;
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -148,8 +182,16 @@ initial begin
             join
             repeat (10) @(posedge clk);
         end
+        // Clear inputs before next test
+        din_master <= '0;
+        din_slave <= '0;
+        `ifdef WAIT_RAND
+            wait_duration <= '0;
+        `endif
+        repeat (100) @(posedge clk);
     `endif
 
+    cur_test <= NONE;
     repeat (1000) @(posedge clk);
     $finish;
 end
