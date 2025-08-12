@@ -5,7 +5,7 @@ localparam SLAVE_FREQ = 3_700_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
 localparam SPI_TRF_BIT = 8;
 
-localparam TEST_ITERATION = 5;
+localparam TEST_ITERATION = 10;
 
 // Clock & reset signals
 logic clk;
@@ -60,6 +60,7 @@ end
 AST_RST_ALL_OUTPUT_ZERO : assert property (@(posedge clk) (
                             (rst) |-> ((dout_master == '0) && (dout_slave == '0) && (done_tx == '0) && (done_rx == '0))));
 
+
 // Main
 initial begin
     wait_duration = '0;
@@ -87,9 +88,9 @@ initial begin
             join
             repeat (5) @(posedge clk);
             rst <= 1;
-            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
+            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
             repeat (1) @(posedge clk);
-            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %0h, dout_slave = %0h, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
+            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
         end
 
         // Clear inputs before next test
@@ -108,14 +109,15 @@ initial begin
                 wait_duration <= $urandom();
             `endif
             req <= 2'b01;
+            #1ps $display("%0t: REQ_01 [INPUTS] req = %b, wait_duration = %0d, din_master = %b", $time, req, wait_duration, din_master);
             repeat (1) @(posedge clk);
             req <= 2'b00;
 
             @(done_tx);
             if (dout_slave == din_master)
-                $display("%0t: REQ_01 [PASS] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                $display("%0t: REQ_01 [PASS] req = 01, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
             else
-                $display("%0t: REQ_01 [FAIL] req = 01, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                $display("%0t: REQ_01 [FAIL] req = 01, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
             repeat (10) @(posedge clk);
         end
         // Clear inputs before next test
@@ -134,14 +136,15 @@ initial begin
                 wait_duration <= $urandom();
             `endif
             req <= 2'b10;
+            #1ps $display("%0t: REQ_10 [INPUTS] req = %b, wait_duration = %0d, din_slave = %b", $time, req, wait_duration, din_slave);
             repeat (1) @(posedge clk);
             req <= 2'b00;
 
             @(done_rx);
             if (dout_master == din_slave)
-                $display("%0t: REQ_10 [PASS] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                $display("%0t: REQ_10 [PASS] req = 10, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
             else
-                $display("%0t: REQ_10 [FAIL] req = 10, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                $display("%0t: REQ_10 [FAIL] req = 10, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
             repeat (10) @(posedge clk);
         end
         // Clear inputs before next test
@@ -161,6 +164,7 @@ initial begin
                 wait_duration <= $urandom();
             `endif
             req <= 2'b11;
+            #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
             repeat (1) @(posedge clk);
             req <= 2'b00;
 
@@ -168,16 +172,16 @@ initial begin
                 begin
                     @(done_rx);
                     if (dout_master == din_slave)
-                        $display("%0t: REQ_11 [PASS] req = 11, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                        $display("%0t: REQ_11 S->M [PASS] req = 11, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
                     else
-                        $display("%0t: REQ_11 [FAIL] req = 11, din_slave = %0h, dout_master = %0h", $time, din_slave, dout_master);
+                        $display("%0t: REQ_11 S->M [FAIL] req = 11, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
                     end
                     begin
                     @(done_tx);
                     if (dout_slave == din_master)
-                        $display("%0t: REQ_11 [PASS] req = 11, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                        $display("%0t: REQ_11 M->S [PASS] req = 11, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
                     else
-                        $display("%0t: REQ_11 [FAIL] req = 11, din_master = %0h, dout_slave = %0h", $time, din_master, dout_slave);
+                        $display("%0t: REQ_11 M->S [FAIL] req = 11, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
                 end
             join
             repeat (10) @(posedge clk);

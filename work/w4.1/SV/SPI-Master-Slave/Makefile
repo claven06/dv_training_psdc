@@ -34,10 +34,10 @@ build:
 
 run:
 	./simv $(FUNC_CVR) | tee sim.log
-	@if grep -i "mismatch" sim.log; then \
-		grep --color=always -nH -i "mismatch" sim.log; \
+	@if grep -q "FAIL" sim.log; then \
+		grep --color=always -nH "FAIL" sim.log; \
 	else \
-		printf "\033[0;32mTEST PASSED\033[0m: No mismatch in sim.log\n"; \
+		printf "\033[0;32mTEST PASSED\033[0m: No FAIL in sim.log\n"; \
 	fi
 
 wave:
