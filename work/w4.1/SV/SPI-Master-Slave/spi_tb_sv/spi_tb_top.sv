@@ -25,6 +25,8 @@ logic [SPI_TRF_BIT-1:0]     dout_slave;
 logic                       done_tx;
 logic                       done_rx;
 
+logic [3:0]                 cur_state;
+
 time t1;
 time t2;
 real period_ns;
@@ -55,7 +57,6 @@ typedef enum {
     REQ_01,
     REQ_10,
     REQ_11,
-    RESET_ACTIVE_2,
     SCLK_TEST,
     REQ_00_2,
     REQ_01_2,
@@ -92,6 +93,29 @@ end
 AST_RST_ALL_OUTPUT_ZERO : assert property (@(posedge clk) (
                             (rst) |-> ((dout_master == '0) && (dout_slave == '0) && (done_tx == '0) && (done_rx == '0))));
 
+always @(cur_state or rst) begin
+    if (rst)
+        cur_test = RESET_ACTIVE;
+    else if (cur_state == 4'b0)
+        cur_test = NONE;
+    else if (cur_state == 4'b1)
+        cur_test = REQ_01;
+    else if (cur_state == 4'b10)
+        cur_test = REQ_10;
+    else if (cur_state == 4'b11)
+        cur_test = REQ_11;
+    else if (cur_state == 4'b100)
+        cur_test = SCLK_TEST;
+    else if (cur_state == 4'b101)
+        cur_test = REQ_00_2;
+    else if (cur_state == 4'b110)
+        cur_test = REQ_01_2;
+    else if (cur_state == 4'b111)
+        cur_test = REQ_10_2;
+    else if (cur_state == 4'b1000)
+        cur_test = REQ_11_2;
+end
+
 // Main
 initial begin
     rand_input = new();
@@ -101,7 +125,6 @@ initial begin
     din_slave = '0;
     req = 2'b00;
     rst = 0;
-    cur_test = NONE;
 
     for (int i = 0; i < TEST_ITERATION; i++) begin
         rand_input.randomize_and_display();
@@ -109,26 +132,21 @@ initial begin
         wait_duration <= rand_input.wait_duration;
         din_master <= rand_input.din_master;
         din_slave <= rand_input.din_slave;
+        cur_state <= rand_input.req;
 
-        //@(posedge clk);
-        `ifdef RESET_ACTIVE
         @(posedge clk);
+        `ifdef RESET_ACTIVE
         if (reset_num == 1) begin
-
-            cur_test = RESET_ACTIVE;
             rst <= 1;      
             repeat (5) @(posedge clk);
             $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
             rst <= 0;
             reset_num = 0;
         end
-
         `endif
 
         `ifdef REQ_01
-        @(posedge clk);
          if (req == 2'b01) begin
-            cur_test = REQ_01;
             #1ps $display("%0t: REQ_01 [INPUTS] req = %b, wait_duration = %0d, din_master = %b", $time, req, wait_duration, din_master);
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -145,9 +163,7 @@ initial begin
         `endif
 
         `ifdef REQ_10
-        @(posedge clk);
         if (req == 2'b10) begin
-            cur_test = REQ_10;
             #1ps $display("%0t: REQ_10 [INPUTS] req = %b, wait_duration = %0d, din_slave = %b", $time, req, wait_duration, din_slave);
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -162,15 +178,10 @@ initial begin
         `endif
 
         `ifdef REQ_11
-        @(posedge clk);
         if (req == 2'b11) begin        
-            cur_test = REQ_11;
             req <= 2'b00;
             
             #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
-
-            //@(dut.spi_master_inst.state_rx == 2'b10);
-            //req <= '0;
 
             fork
                 begin
@@ -201,25 +212,26 @@ initial begin
     	din_master = 8'hb8;
     	din_slave = 8'ha2;
     	req = 2'b01;
+        cur_state = 4'b110;
 
     	repeat (200) @(posedge clk); // run for 200 cycles
 	$display("[%0t] Applying reset...", $time);
     	rst = 1;
-
-    	@(posedge clk);
-	
+        repeat (20) @(posedge clk) begin // run for 200 cycles
     	// Check reset effect
     	if (dout_master !== '0 || dout_slave !== '0 || done_tx !== 0 || done_rx !== 0) begin
       		$error("[%0t] Reset failed: outputs not cleared", $time);
     	end else begin
       		$display("[%0t] Reset test passed", $time);
     	end
+        end
 
-	// sclk test case
-    cur_test <= SCLK_TEST;
+	// sclk test case 
 	@(posedge clk);
+    //cur_test <= SCLK_TEST;
 	rst = 0;
-	repeat (10) @(posedge clk);
+	repeat (20) @(posedge clk);
+        cur_state = 4'b100;
     	force dut.sclk_en = 1'b1; // or drive via master request flow
     	$display("[%0t] SCLK_en forced HIGH", $time);
 
@@ -260,7 +272,7 @@ initial begin
 	req = 2'b00;
 	@(posedge clk);
 	rst = 0;
-	repeat (100) begin
+	repeat (TEST_ITERATION) begin
 
     //randomize_inputs();
 	rand_input = new();
