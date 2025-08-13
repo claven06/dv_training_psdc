@@ -6,9 +6,13 @@ package rand_input_pkg;
     rand logic [7:0] wait_duration;
     rand logic [SPI_TRF_BIT-1:0] din_master;
     rand logic [SPI_TRF_BIT-1:0] din_slave;
+	rand logic rst;
 
     constraint wait_range { wait_duration inside {[1:256]}; }
     constraint req_range { req inside {[0:3]}; }
+    constraint rst_dist {
+        rst dist { 1 := 2, 0 := 8 }; // 1 weight for rst=1, 9 weight for rst=0
+    }
     //constraint din_master_range { din_master inside {[8'h50:8'h51],[8'h56:8'h57],[8'hAB:8'hAC]}; }
     //constraint din_slave_range { din_slave inside {[8'h50:8'h51],[8'h56:8'h57],[8'hAB:8'hAC]}; }
 
