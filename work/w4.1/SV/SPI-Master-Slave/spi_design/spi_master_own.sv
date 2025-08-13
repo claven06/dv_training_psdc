@@ -70,18 +70,17 @@ module spi_master
             req_temp <= '0;
         end
         else begin
-            case (req_temp)
-                2'b00, 2'b01, 2'b10: begin
-                    req_temp <= req;
+            if (state_tx == IDLE_TX && state_rx == IDLE_RX) begin
+                req_temp <= req;
+            end
+            else begin
+                if (state_tx == SEND_DATA || state_rx == GET_DATA) begin
+                    req_temp <= 2'b00;
                 end
-                2'b11: begin
-                    if (next_state_tx == WAIT_STATE_1 || state_tx == WAIT_STATE_1 || state_tx == SEND_DATA)
-                        req_temp <= 2'b11;
-                    else
-                        req_temp <= req;
+                else begin
+                    req_temp <= req_temp; // latch on to previous req_temp
                 end
-                default: req_temp <= req;
-            endcase
+            end
         end
     end
 
