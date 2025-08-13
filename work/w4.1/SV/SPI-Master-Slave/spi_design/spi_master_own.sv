@@ -70,7 +70,18 @@ module spi_master
             req_temp <= '0;
         end
         else begin
-            req_temp <= req;
+            case (req_temp)
+                2'b00, 2'b01, 2'b10: begin
+                    req_temp <= req;
+                end
+                2'b11: begin
+                    if (next_state_tx == WAIT_STATE_1 || state_tx == WAIT_STATE_1 || state_tx == SEND_DATA)
+                        req_temp <= 2'b11;
+                    else
+                        req_temp <= req;
+                end
+                default: req_temp <= req;
+            endcase
         end
     end
 
