@@ -25,6 +25,8 @@ TEST      = \
 			+define+REQ_10 \
 			+define+REQ_11 \
 			+define+WAIT_RAND \
+			+define+TEST_1 \
+			+define+TEST_2 \
 			+define+
 
 #target

@@ -5,7 +5,7 @@ localparam SLAVE_FREQ = 4_000_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
 localparam SPI_TRF_BIT = 8;
 
-localparam TEST_ITERATION = 2;
+localparam TEST_ITERATION = 4;
 
 // Clock & reset signals
 logic clk;
@@ -48,7 +48,13 @@ typedef enum {
     RESET_ACTIVE,
     REQ_01,
     REQ_10,
-    REQ_11
+    REQ_11,
+    RESET_ACTIVE_2,
+    SCLK_TEST,
+    REQ_00_2,
+    REQ_01_2,
+    REQ_10_2,
+    REQ_11_2
 } test_t;
 
 test_t cur_test;
@@ -136,7 +142,7 @@ initial begin
             `endif
             req <= 2'b01;
             #1ps $display("%0t: REQ_01 [INPUTS] req = %b, wait_duration = %0d, din_master = %b", $time, req, wait_duration, din_master);
-            repeat (1) @(posedge clk);
+            repeat (2) @(posedge clk);
             req <= 2'b00;
 
             @(done_tx);
@@ -163,7 +169,7 @@ initial begin
             `endif
             req <= 2'b10;
             #1ps $display("%0t: REQ_10 [INPUTS] req = %b, wait_duration = %0d, din_slave = %b", $time, req, wait_duration, din_slave);
-            repeat (1) @(posedge clk);
+            repeat (2) @(posedge clk);
             req <= 2'b00;
 
             @(done_rx);
@@ -191,8 +197,7 @@ initial begin
             `endif
             req <= 2'b11;
             #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
-
-            @(dut.spi_master_inst.state_rx == 2'b10);
+            repeat (2) @(posedge clk);
             req <= '0;
 
             fork
@@ -224,6 +229,7 @@ initial begin
     `endif
 
     `ifdef TEST_1
+    cur_test <= RESET_ACTIVE_2;
 	// Apply Reset
 	@(posedge clk);
     	wait_duration = 8'ha;
@@ -236,7 +242,7 @@ initial begin
     	rst = 1;
 
     	@(posedge clk);
-	
+
     	// Check reset effect
     	if (dout_master !== '0 || dout_slave !== '0 || done_tx !== 0 || done_rx !== 0) begin
       		$error("[%0t] Reset failed: outputs not cleared", $time);
@@ -245,6 +251,7 @@ initial begin
     	end
 
 	// sclk test case
+    cur_test <= SCLK_TEST;
 	@(posedge clk);
 	rst = 0;
 	repeat (10) @(posedge clk);
@@ -277,16 +284,17 @@ initial begin
       			$display("SCLK idle when disabled - OK");
 
     	release dut.sclk_en;
-  
+
     `endif
 
     `ifdef TEST_2
 
   	// Initialize
   	@(posedge clk);
-  	
+
 	repeat (10) begin
   	// ---------------- Test case 1: req = 00 ----------------
+    cur_test <= REQ_00_2;
   	randomize_inputs();
   	$display("[%0t] TEST REQ = 00 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
         	$time, wait_duration, din_master, din_slave);
@@ -304,9 +312,10 @@ initial begin
   	end
 
   	// ---------------- Test case 2: req = 01 ----------------
+    cur_test <= REQ_01_2;
   	randomize_inputs();
   	//din_slave = 8'h00; // slave output unused in TX mode
-  	$display("[%0t] TEST REQ = 01 (wait=%0d, din_master=0x%0h)", 
+  	$display("[%0t] TEST REQ = 01 (wait=%0d, din_master=0x%0h)",
            	$time, wait_duration, din_master);
   	req = 2'b01;
 
@@ -340,6 +349,7 @@ initial begin
   	end
 
   	// ---------------- Test case 3: req = 10 ----------------
+    cur_test <= REQ_10_2;
   	randomize_inputs();
   	//din_master = 8'h00; // master output unused in RX mode
   	$display("[%0t] TEST REQ = 10 (wait=%0d, din_slave=0x%0h)",
@@ -348,7 +358,7 @@ initial begin
 
 	// Capture MISO stream for MSB-first check
 	miso_captured = '0;
-	@(posedge dut.sclk); 
+	@(posedge dut.sclk);
 	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
 		@(posedge dut.sclk);
 		miso_captured[bit_idx] = dut.miso;
@@ -376,6 +386,7 @@ initial begin
   	end
 
   	// ---------------- Test case 4: req = 11 ----------------
+    cur_test <= REQ_11_2;
   	randomize_inputs();
   	$display("[%0t] TEST REQ = 11 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
            	$time, wait_duration, din_master, din_slave);
@@ -389,7 +400,7 @@ initial begin
 	@(posedge dut.sclk);
 
 	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
-    	@(posedge dut.sclk); 
+    	@(posedge dut.sclk);
     	mosi_captured[bit_idx] = dut.mosi;
     	miso_captured[bit_idx] = dut.miso;
 	end
@@ -426,7 +437,7 @@ initial begin
     		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
     		fail_count++;
   	end
-	
+
 	end
   	$display("[%0t] TEST SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
   	$finish;
@@ -438,10 +449,10 @@ initial begin
     $finish;
 end
 
-initial begin
-    #100000000ps
-    $finish;
-end
+//initial begin
+//    #100000000ps
+//    $finish;
+//end
 
 endmodule
 

@@ -1,0 +1,190 @@
+diff --git a/SPI-Master-Slave/spi_design/sclk_generator.v b/SPI-Master-Slave/spi_design/sclk_generator.v
+index 0fccfc7..64880af 100644
+--- a/SPI-Master-Slave/spi_design/sclk_generator.v
++++ b/SPI-Master-Slave/spi_design/sclk_generator.v
+@@ -10,9 +10,13 @@ module sclk_generator
+ 	output sclk
+ 	);
+ 
+-	// since sclk is TOGGLING after wait_count number of clk positive edges, frequency of the slave device is multiplied by 2
+-	// so one period of sclk lasts for 2 * wait_count number of clk positive edges which is equal to MASTER_FREQ / SLAVE_FREQ (and that is what is required)
+-	reg[9:0] wait_count = MASTER_FREQ / (SLAVE_FREQ * 2); // max positive edges that can be counted are 1023
++	// since sclk is TOGGLING after wait_count number of clk positive edges, 
++	// frequency of the slave device is multiplied by 2, so one period of 
++	// sclk lasts for 2 * wait_count number of clk positive edges which is 
++	// equal to MASTER_FREQ / SLAVE_FREQ
++
++    // max positive edges that can be counted are 1023
++	reg[9:0] wait_count = MASTER_FREQ / (SLAVE_FREQ * 2);
+ 
+ 	reg sclk_temp = 1'b0;
+ 	reg[10:0] count = 11'd0; // counts clk posedges for sclk generation
+@@ -30,7 +34,8 @@ module sclk_generator
+ 			end
+ 			else begin
+ 				count <= 11'd0;
+-				sclk_temp <= ~sclk_temp; // toggle sclk after half of it's period has passed
++                // toggle sclk after half of it's period has passed
++				sclk_temp <= ~sclk_temp; 
+ 			end
+ 		end
+ 		else begin
+@@ -41,4 +46,4 @@ module sclk_generator
+ 
+ 	assign sclk = sclk_temp;
+ 
+-endmodule
+\ No newline at end of file
++endmodule
+diff --git a/SPI-Master-Slave/spi_design/spi_master.v b/SPI-Master-Slave/spi_design/spi_master.v
+index 79a8e18..ea32044 100644
+--- a/SPI-Master-Slave/spi_design/spi_master.v
++++ b/SPI-Master-Slave/spi_design/spi_master.v
+@@ -32,7 +32,9 @@ module spi_master
+ 
+ 	// temporary registers
+ 	reg mosi_temp;
+-	reg[(SPI_TRF_BIT-1):0] din_temp = {SPI_TRF_BIT{1'd0}}; // temporary register to store din, it's purpose is to prevent the data on input to interfeer with current transmission of data
++    // temporary register to store din, it's purpose is to prevent the data on
++    // input to interfeer with current transmission of data
++	reg[(SPI_TRF_BIT-1):0] din_temp = {SPI_TRF_BIT{1'd0}}; 
+ 	reg[(SPI_TRF_BIT-1):0] dout_temp = {SPI_TRF_BIT{1'd0}};
+ 	reg done_temp_tx = 1'b0;
+ 	reg done_temp_rx = 1'b0;
+@@ -42,17 +44,19 @@ module spi_master
+ 	reg[3:0] data_index_rx = 4'd0;
+ 
+ 	// REQUEST HANDLING
+-	reg[1:0] req_temp; // store the current request to prevent it's change while performing current reuqest
++    // store the current request to prevent it's change while performing 
++    // current reuqest
++	reg[1:0] req_temp;
++
+ 	always@(posedge clk, posedge rst) begin
+ 		if(rst) begin
+ 			req_temp <= 2'b00; // no operation
+ 		end
+-		else if(state_tx == IDLE_TX && state_rx == IDLE_RX) begin // request can be changed only when both transmitter and receiver are in their IDLE states!
++        // request can be changed only when both transmitter and receiver are 
++        // in their IDLE states!
++		else if(state_tx == IDLE_TX && state_rx == IDLE_RX) begin 
+ 			req_temp <= req;
+ 		end
+-		else begin // in other states set req_temp to no operation
+-			req_temp <= 2'b00;
+-		end
+ 	end
+ 
+ 	// EDGE DETECTION FOR TRANSMITTER AND RECEIVER
+@@ -61,8 +65,10 @@ module spi_master
+ 	always @(posedge clk) begin
+ 		sclk_previous_value <= sclk; // sample last value of sclk
+ 	end
+-	assign sclk_posedge = (~sclk_previous_value) & sclk; // positive edge detection (for transmitter)
+-	assign sclk_negedge = sclk_previous_value & (~sclk); // negative edge detection (for receiver)
++    // positive edge detection (for transmitter)
++	assign sclk_posedge = (~sclk_previous_value) & sclk; 
++    // negative edge detection (for receiver)
++	assign sclk_negedge = sclk_previous_value & (~sclk); 
+ 
+ 	// TRANSMITTER FSM
+ 	always @(posedge clk, posedge rst) begin
+@@ -84,9 +90,11 @@ module spi_master
+ 					mosi_temp <= 1'b0;
+ 					done_temp_tx <= 1'b0;
+ 					wait_counter <= 8'd0;
+-					if (req_temp == 2'b01 || req_temp == 2'b11) begin // transmit or full duplex request
++					if (req_temp == 2'b01 || req_temp == 2'b11) begin 
++                        // transmit or full duplex request
+ 						din_temp <= din; // sample din
+-						wait_duration_reg <= wait_duration; // sample wait duration
++                        // sample wait duration
++						wait_duration_reg <= wait_duration;
+ 						state_tx <= WAIT_STATE_1;
+ 					end
+ 				end
+@@ -102,14 +110,17 @@ module spi_master
+ 				end
+ 
+ 				SEND_DATA: begin
+-					if(sclk_posedge) begin // only send the data on the posedge of sclk
++					if(sclk_posedge) begin 
++                        // only send the data on the posedge of sclk
+ 						if(data_index_tx <= (SPI_TRF_BIT-1)) begin
+-							mosi_temp <= din_temp[(SPI_TRF_BIT-1) - data_index_tx]; // MSB is sent first
++                            // MSB is sent first
++							mosi_temp <= din_temp[(SPI_TRF_BIT-1) - data_index_tx]; 
+ 							data_index_tx <= data_index_tx + 1;
+ 						end else begin
+ 							state_tx <= WAIT_STATE_2;
+ 							din_temp <= {SPI_TRF_BIT{1'd0}};
+ 							mosi_temp <= 1'b0;
++                            req_temp <= 2'b00;
+ 							data_index_tx <= 4'd0;
+ 						end
+ 					end
+@@ -146,7 +157,8 @@ module spi_master
+ 				IDLE_RX: begin
+ 					done_temp_rx <= 1'b0;
+ 					data_index_rx <= 4'd0;
+-					if(req_temp == 2'b10 || req_temp == 2'b11) begin // receive or full duplex
++					if(req_temp == 2'b10 || req_temp == 2'b11) begin 
++                        // receive or full duplex
+ 						state_rx <= GET_DATA;
+ 					end
+ 				end
+@@ -161,6 +173,7 @@ module spi_master
+ 							done_temp_rx <= 1'b1;
+ 							data_index_rx <= 4'd0;
+ 							state_rx <= IDLE_RX;
++                            req_temp <= 2'b00;
+ 						end
+ 					end
+ 				end
+@@ -175,7 +188,10 @@ module spi_master
+ 	assign done_rx = done_temp_rx;
+ 	assign mosi = mosi_temp;
+ 	assign dout = dout_temp;
+-	assign sclk_en = ((state_tx == SEND_DATA) || (state_rx == GET_DATA))? 1'b1 : 1'b0; // only generate sclk when master is either sending data, receiving data or both
+-	assign cs = ((state_tx != IDLE_TX) || (state_rx != IDLE_RX))? 1'b0 : 1'b1; // CS is low only when some request is being executed
+-
++    // only generate sclk when master is either sending data, receiving data 
++    // or both
++	assign sclk_en = ((state_tx == SEND_DATA) || ((state_rx == GET_DATA) && (req_temp == 2'b10))|| ((state_tx == SEND_DATA) && (state_rx == GET_DATA)))? 1'b1 : 1'b0; 
++	// CS is low only when some request is being executed
++	assign cs = ((state_tx != IDLE_TX) || (state_rx != IDLE_RX))? 1'b0 : 1'b1; 
++        
+ endmodule
+diff --git a/SPI-Master-Slave/spi_design/spi_top.v b/SPI-Master-Slave/spi_design/spi_top.v
+index 7bed964..1321b03 100644
+--- a/SPI-Master-Slave/spi_design/spi_top.v
++++ b/SPI-Master-Slave/spi_design/spi_top.v
+@@ -1,7 +1,8 @@
+ // spi_top module that is consisted of: sclk_generator, spi_master and spi_slave
+-// both the master and the slave send the data on positive edge of the sclk, and sample the data on negative edge of the sclk
+-// mosi of the master is connected to mosi of the slave
+-// miso of the master is connected to miso of the slave
++// both the master and the slave send the data on positive edge of the sclk, 
++// and sample the data on negative edge of the sclk.
++// mosi of the master is connected to mosi of the slave.
++// miso of the master is connected to miso of the slave.
+ module spi_top #(
+ 	parameter MASTER_FREQ = 100_000_000,
+ 	parameter SLAVE_FREQ = 1_800_000,
+@@ -12,11 +13,13 @@ module spi_top #(
+ 	input clk,
+ 	input rst,
+ 
+-	// (input for spi_master) request: only TX -> 2'b01, only RX -> 2'b10, Full Duplex -> 2'b11, No Operation -> 2'00
++	// (input for spi_master) request: only TX -> 2'b01, only RX -> 2'b10, 
++	// Full Duplex -> 2'b11, No Operation -> 2'00
+ 	input [1:0] req,
+ 
+-	// register to store for how many clk periods CS will be low before sending the first data bit
+-	// and for how many clk periods CS will remain low after all of the the data bits have been sent
++	// register to store for how many clk periods CS will be low before sending
++	// the first data bit and for how many clk periods CS will remain low after
++	// all of the the data bits have been sent
+ 	input [7:0] wait_duration,
+ 
+ 	// input registers
