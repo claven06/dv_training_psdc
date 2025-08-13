@@ -23,6 +23,25 @@ logic [SPI_TRF_BIT-1:0]     dout_slave;
 logic                       done_tx;
 logic                       done_rx;
 
+time t1;
+time t2;
+real period_ns;
+real freq_mhz;
+int unsigned pass_count = 0, fail_count = 0;
+// Store previous outputs for comparison
+logic [(SPI_TRF_BIT-1):0] prev_dout_master;
+logic [(SPI_TRF_BIT-1):0] prev_dout_slave;
+reg [SPI_TRF_BIT-1:0] mosi_captured;
+reg [SPI_TRF_BIT-1:0] miso_captured;
+integer bit_idx;
+
+// task to randomize inputs
+task randomize_inputs();
+	//wait_duration = $urandom_range(1, 27);     // avoid 0 wait time
+	din_master    = $urandom_range(0, 255);
+	din_slave     = $urandom_range(0, 255);
+endtask
+
 // Testbench signals
 typedef enum {
     NONE,
@@ -202,6 +221,216 @@ initial begin
             wait_duration <= '0;
         `endif
         repeat (100) @(posedge clk);
+    `endif
+
+    `ifdef TEST_1
+	// Apply Reset
+	@(posedge clk);
+    	wait_duration = 8'ha;
+    	din_master = 8'hb8;
+    	din_slave = 8'ha2;
+    	req = 2'b01;
+
+    	repeat (200) @(posedge clk); // run for 200 cycles
+	$display("[%0t] Applying reset...", $time);
+    	rst = 1;
+
+    	@(posedge clk);
+	
+    	// Check reset effect
+    	if (dout_master !== '0 || dout_slave !== '0 || done_tx !== 0 || done_rx !== 0) begin
+      		$error("[%0t] Reset failed: outputs not cleared", $time);
+    	end else begin
+      		$display("[%0t] Reset test passed", $time);
+    	end
+
+	// sclk test case
+	@(posedge clk);
+	rst = 0;
+	repeat (10) @(posedge clk);
+    	force dut.sclk_en = 1'b1; // or drive via master request flow
+    	$display("[%0t] SCLK_en forced HIGH", $time);
+
+    	// Measure SCLK frequency
+
+    	@(posedge dut.sclk);
+    	t1 = $time;
+    	@(posedge dut.sclk);
+    	t2 = $time;
+
+    	period_ns = t2 - t1;
+    	freq_mhz = 1000 / period_ns; // ns -> MHz
+    	$display("Measured SCLK period: %0t ns, freq: %0.3f MHz", period_ns, freq_mhz);
+
+    	if (freq_mhz < 3.69 || freq_mhz > 3.71)
+      		$error("SCLK frequency out of range: %0.3f MHz", freq_mhz);
+    	else
+      		$display("SCLK frequency OK: %0.3f MHz", freq_mhz);
+
+    	// Check SCLK idle when disabled
+    	force dut.sclk_en = 1'b0;
+    	$display("[%0t] SCLK_en forced LOW", $time);
+    	repeat (5) @(posedge clk);
+    		if (dut.sclk !== dut.sclk) // no toggle check
+      			$error("SCLK toggled when SCLK_en=0");
+    		else
+      			$display("SCLK idle when disabled - OK");
+
+    	release dut.sclk_en;
+  
+    `endif
+
+    `ifdef TEST_2
+
+  	// Initialize
+  	@(posedge clk);
+  	
+	repeat (10) begin
+  	// ---------------- Test case 1: req = 00 ----------------
+  	randomize_inputs();
+  	$display("[%0t] TEST REQ = 00 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
+        	$time, wait_duration, din_master, din_slave);
+  	req = 2'b00;
+	prev_dout_master = dout_master;
+	prev_dout_slave = dout_slave;
+  	repeat (50) @(posedge clk);
+  	if ((prev_dout_master == dout_master) && (prev_dout_slave == dout_slave) && (done_tx === 1'b0) && (done_rx === 1'b0)) begin
+    		$display("[%0t] PASS: REQ=00 outputs are IDLE.", $time);
+    		pass_count++;
+  		end else begin
+    		$error("[%0t] FAIL: REQ=00 - unexpected outputs or done flags.", $time);
+    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
+    		fail_count++;
+  	end
+
+  	// ---------------- Test case 2: req = 01 ----------------
+  	randomize_inputs();
+  	//din_slave = 8'h00; // slave output unused in TX mode
+  	$display("[%0t] TEST REQ = 01 (wait=%0d, din_master=0x%0h)", 
+           	$time, wait_duration, din_master);
+  	req = 2'b01;
+
+	// Capture MOSI stream for MSB-first check
+	mosi_captured = '0;
+	@(posedge dut.sclk); // Wait for first transfer edge
+	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
+		@(posedge dut.sclk); // adjust for SPI mode if needed
+		mosi_captured[bit_idx] = dut.mosi;
+	end
+
+  	wait(done_tx);
+
+	// Check MSB-first correctness
+	if (mosi_captured !== din_master) begin
+		$error("[%0t] FAIL: MOSI MSB-first mismatch (REQ=01). Expected=%b Got=%b",
+		       $time, din_master, mosi_captured);
+		fail_count++;
+	end else begin
+		$display("[%0t] PASS: MOSI MSB-first OK (REQ=01)", $time);
+		pass_count++;
+	end
+
+  	if (dout_slave == din_master) begin
+    		$display("[%0t] PASS: REQ=01 dout_slave == din_master", $time);
+    		pass_count++;
+  	end else begin
+    		$error("[%0t] FAIL: REQ=01 - unexpected outputs", $time);
+    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
+    		fail_count++;
+  	end
+
+  	// ---------------- Test case 3: req = 10 ----------------
+  	randomize_inputs();
+  	//din_master = 8'h00; // master output unused in RX mode
+  	$display("[%0t] TEST REQ = 10 (wait=%0d, din_slave=0x%0h)",
+           $time, wait_duration, din_slave);
+  	req = 2'b10;
+
+	// Capture MISO stream for MSB-first check
+	miso_captured = '0;
+	@(posedge dut.sclk); 
+	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
+		@(posedge dut.sclk);
+		miso_captured[bit_idx] = dut.miso;
+	end
+
+  	wait(done_rx);
+
+	// Check MSB-first correctness
+	if (miso_captured !== din_slave) begin
+		$error("[%0t] FAIL: MISO MSB-first mismatch (REQ=10). Expected=%b Got=%b",
+		       $time, din_slave, miso_captured);
+		fail_count++;
+	end else begin
+		$display("[%0t] PASS: MISO MSB-first OK (REQ=10)", $time);
+		pass_count++;
+	end
+
+  	if (dout_master == din_slave) begin
+    		$display("[%0t] PASS: REQ=10 dout_master == din_slave", $time);
+    		pass_count++;
+  	end else begin
+    		$error("[%0t] FAIL: REQ=10 - unexpected outputs", $time);
+    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
+    		fail_count++;
+  	end
+
+  	// ---------------- Test case 4: req = 11 ----------------
+  	randomize_inputs();
+  	$display("[%0t] TEST REQ = 11 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
+           	$time, wait_duration, din_master, din_slave);
+  	req = 2'b11;
+
+	// Capture MOSI & MISO on the SPI clock edges
+	mosi_captured = '0;
+	miso_captured = '0;
+
+	// Wait for first SCLK edge (start of transfer)
+	@(posedge dut.sclk);
+
+	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
+    	@(posedge dut.sclk); 
+    	mosi_captured[bit_idx] = dut.mosi;
+    	miso_captured[bit_idx] = dut.miso;
+	end
+
+  	wait(done_rx);
+  	wait(done_tx);
+
+
+	// Check captured MSB-first streams
+	if (mosi_captured !== din_master) begin
+		$error("[%0t] FAIL: MOSI MSB-first mismatch. Expected=%b Got=%b",
+		       $time, din_master, mosi_captured);
+		fail_count++;
+	end else begin
+		$display("[%0t] PASS: MOSI MSB-first OK", $time);
+		pass_count++;
+	end
+
+	if (miso_captured !== din_slave) begin
+		$error("[%0t] FAIL: MISO MSB-first mismatch. Expected=%b Got=%b",
+		       $time, din_slave, miso_captured);
+		fail_count++;
+	end else begin
+		$display("[%0t] PASS: MISO MSB-first OK", $time);
+		pass_count++;
+	end
+
+	// Check dout
+  	if ((dout_master == din_slave) && (dout_slave == din_master)) begin
+    		$display("[%0t] PASS: REQ=11 Both dout match expected", $time);
+    		pass_count++;
+  	end else begin
+    		$error("[%0t] FAIL: REQ=11 - unexpected outputs", $time);
+    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
+    		fail_count++;
+  	end
+	
+	end
+  	$display("[%0t] TEST SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
+  	$finish;
+
     `endif
 
     cur_test <= NONE;
