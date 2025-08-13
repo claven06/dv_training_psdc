@@ -38,6 +38,8 @@ reg [SPI_TRF_BIT-1:0] miso_captured;
 integer bit_idx;
 
 logic reset_num = 1;
+bit [1:0] prev_req;
+bit [SPI_TRF_BIT-1:0] last_dout_master, last_dout_slave;
 
 // task to randomize inputs
 task randomize_inputs();
@@ -258,35 +260,35 @@ initial begin
 	req = 2'b00;
 	@(posedge clk);
 	rst = 0;
-	repeat (70) begin
-  	/*// ---------------- Test case 1: req = 00 ----------------
-    cur_test <= REQ_00_2;
-  	randomize_inputs();
-  	$display("[%0t] TEST REQ = 00 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
-        	$time, wait_duration, din_master, din_slave);
-  	req = 2'b00;
-	prev_dout_master = dout_master;
-	prev_dout_slave = dout_slave;
-  	repeat (50) @(posedge clk);
-  	if ((prev_dout_master == dout_master) && (prev_dout_slave == dout_slave) && (done_tx === 1'b0) && (done_rx === 1'b0)) begin
-    		$display("[%0t] PASS: REQ=00 outputs are IDLE.", $time);
-    		pass_count++;
-  		end else begin
-    		$error("[%0t] FAIL: REQ=00 - unexpected outputs or done flags.", $time);
-    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
-    		fail_count++;
-  	end
-*/
-    // Randomize req in range 01, 10, or 11
-    //assert(std::randomize(req) with { req inside {2'b01, 2'b10, 2'b11}; });
+	repeat (100) begin
+
     //randomize_inputs();
 	rand_input = new();
 
     rand_input.randomize_and_display();
+	rst = rand_input.rst;
     req = rand_input.req;
     wait_duration = rand_input.wait_duration;
     din_master = rand_input.din_master;
     din_slave = rand_input.din_slave;
+
+    // If reset is asserted, check all outputs immediately
+    if (rst) begin
+        @(posedge clk); // Wait 1 cycle for reset effects
+        if ((dout_master !== '0) || (dout_slave !== '0) || (done_tx !== '0) || (done_rx !== '0)) begin
+            $error("[%0t] FAIL: Outputs not zero during reset. dout_master=%h, dout_slave=%h", 
+                   $time, dout_master, dout_slave);
+            fail_count++;
+        end else begin
+            pass_count++;
+            $display("[%0t] PASS: Outputs correctly reset to 0", $time);
+        end
+        prev_req = 2'b00;
+        last_dout_master = '0;
+        last_dout_slave = '0;
+
+        continue; // Skip SPI transfer for this cycle
+    end
 
     case (req)
         2'b01: begin
@@ -316,6 +318,9 @@ initial begin
 				fail_count++;
 				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=01)", $time);
 			end
+            last_dout_slave = dout_slave;
+            last_dout_master = dout_master; // unchanged
+
         end
 
         2'b10: begin
@@ -345,6 +350,9 @@ initial begin
 				fail_count++;
 				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=10)", $time);
 			end
+            last_dout_slave = dout_slave;
+            last_dout_master = dout_master; // unchanged
+
         end
 
         2'b11: begin
@@ -383,8 +391,24 @@ initial begin
 				fail_count++;
 				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=11)", $time);
 			end
+            last_dout_slave = dout_slave;
+            last_dout_master = dout_master; // unchanged
         end
+
+        2'b00: begin
+			$display("[%0t] TEST REQ=00 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
+                     $time, wait_duration, din_master, din_slave);
+            // Idle: check outputs match the last transfer           
+			if (dout_master !== last_dout_master || dout_slave !== last_dout_slave) begin
+                $error("[%0t] FAIL: REQ=00 idle outputs changed. PrevReq=%b LastMaster=0x%0h LastSlave=0x%0h GotMaster=0x%0h GotSlave=0x%0h",
+                       $time, prev_req, last_dout_master, last_dout_slave, dout_master, dout_slave);
+                fail_count++;
+            end else pass_count++;
+        
+		end
     endcase
+    prev_req = req;
+
 	end
   	$display("[%0t] TEST SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
   	$finish;
