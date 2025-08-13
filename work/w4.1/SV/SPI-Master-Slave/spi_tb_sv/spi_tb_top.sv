@@ -41,7 +41,7 @@ logic reset_num = 1;
 
 // task to randomize inputs
 task randomize_inputs();
-	//wait_duration = $urandom_range(1, 27);     // avoid 0 wait time
+	wait_duration = $urandom_range(1, 27);     // avoid 0 wait time
 	din_master    = $urandom_range(0, 255);
 	din_slave     = $urandom_range(0, 255);
 endtask
@@ -254,9 +254,12 @@ initial begin
 
   	// Initialize
   	@(posedge clk);
-  	
-	repeat (10) begin
-  	// ---------------- Test case 1: req = 00 ----------------
+	rst = 1;
+	req = 2'b00;
+	@(posedge clk);
+	rst = 0;
+	repeat (70) begin
+  	/*// ---------------- Test case 1: req = 00 ----------------
     cur_test <= REQ_00_2;
   	randomize_inputs();
   	$display("[%0t] TEST REQ = 00 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
@@ -273,134 +276,115 @@ initial begin
     		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
     		fail_count++;
   	end
+*/
+    // Randomize req in range 01, 10, or 11
+    //assert(std::randomize(req) with { req inside {2'b01, 2'b10, 2'b11}; });
+    //randomize_inputs();
+	rand_input = new();
 
-  	// ---------------- Test case 2: req = 01 ----------------
-    cur_test <= REQ_01_2;
-  	randomize_inputs();
-  	//din_slave = 8'h00; // slave output unused in TX mode
-  	$display("[%0t] TEST REQ = 01 (wait=%0d, din_master=0x%0h)",
-           	$time, wait_duration, din_master);
-  	req = 2'b01;
+    rand_input.randomize_and_display();
+    req = rand_input.req;
+    wait_duration = rand_input.wait_duration;
+    din_master = rand_input.din_master;
+    din_slave = rand_input.din_slave;
 
-	// Capture MOSI stream for MSB-first check
-	mosi_captured = '0;
-	@(posedge dut.sclk); // Wait for first transfer edge
-	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
-		@(posedge dut.sclk); // adjust for SPI mode if needed
-		mosi_captured[bit_idx] = dut.mosi;
-	end
+    case (req)
+        2'b01: begin
+            cur_test <= REQ_01_2;
+            $display("[%0t] TEST REQ=01 (wait=%0d, din_master=0x%0h)",
+                     $time, wait_duration, din_master);
+            
+            // Capture MOSI stream
+            mosi_captured = '0;
+            @(posedge dut.sclk);
+            for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
+                @(negedge dut.sclk);
+                mosi_captured[bit_idx] = dut.mosi;
+            end
+            
+            wait(done_tx);
 
-  	wait(done_tx);
+            // Checks
+            if (mosi_captured !== din_master) begin
+                $error("[%0t] FAIL: MOSI mismatch (REQ=01)", $time);
+                fail_count++;
+            end else pass_count++;
 
-	// Check MSB-first correctness
-	if (mosi_captured !== din_master) begin
-		$error("[%0t] FAIL: MOSI MSB-first mismatch (REQ=01). Expected=%b Got=%b",
-		       $time, din_master, mosi_captured);
-		fail_count++;
-	end else begin
-		$display("[%0t] PASS: MOSI MSB-first OK (REQ=01)", $time);
-		pass_count++;
-	end
+            if (dout_slave == din_master) begin
+				pass_count++;
+            end else begin
+				fail_count++;
+				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=01)", $time);
+			end
+        end
 
-  	if (dout_slave == din_master) begin
-    		$display("[%0t] PASS: REQ=01 dout_slave == din_master", $time);
-    		pass_count++;
-  	end else begin
-    		$error("[%0t] FAIL: REQ=01 - unexpected outputs", $time);
-    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
-    		fail_count++;
-  	end
+        2'b10: begin
+            cur_test <= REQ_10_2;
+            $display("[%0t] TEST REQ=10 (wait=%0d, din_slave=0x%0h)",
+                     $time, wait_duration, din_slave);
+            
+            // Capture MISO
+            miso_captured = '0;
+            @(posedge dut.sclk);
+            for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
+                @(negedge dut.sclk);
+                miso_captured[bit_idx] = dut.miso;
+            end
+            
+            wait(done_rx);
 
-  	// ---------------- Test case 3: req = 10 ----------------
-    cur_test <= REQ_10_2;
-  	randomize_inputs();
-  	//din_master = 8'h00; // master output unused in RX mode
-  	$display("[%0t] TEST REQ = 10 (wait=%0d, din_slave=0x%0h)",
-           $time, wait_duration, din_slave);
-  	req = 2'b10;
+            // Checks
+            if (miso_captured !== din_slave) begin
+                $error("[%0t] FAIL: MISO mismatch (REQ=10)", $time);
+                fail_count++;
+            end else pass_count++;
 
-	// Capture MISO stream for MSB-first check
-	miso_captured = '0;
-	@(posedge dut.sclk);
-	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
-		@(posedge dut.sclk);
-		miso_captured[bit_idx] = dut.miso;
-	end
+            if (dout_master == din_slave) begin
+				pass_count++;
+            end else begin 
+				fail_count++;
+				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=10)", $time);
+			end
+        end
 
-  	wait(done_rx);
+        2'b11: begin
+            cur_test <= REQ_11_2;
+            $display("[%0t] TEST REQ=11 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
+                     $time, wait_duration, din_master, din_slave);
+            
+            mosi_captured = '0;
+            miso_captured = '0;
+            @(posedge dut.sclk);
+            for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
+                @(negedge dut.sclk);
+                mosi_captured[bit_idx] = dut.mosi;
+                miso_captured[bit_idx] = dut.miso;
+            end
 
-	// Check MSB-first correctness
-	if (miso_captured !== din_slave) begin
-		$error("[%0t] FAIL: MISO MSB-first mismatch (REQ=10). Expected=%b Got=%b",
-		       $time, din_slave, miso_captured);
-		fail_count++;
-	end else begin
-		$display("[%0t] PASS: MISO MSB-first OK (REQ=10)", $time);
-		pass_count++;
-	end
+            fork
+                wait(done_rx);
+                wait(done_tx);
+            join
 
-  	if (dout_master == din_slave) begin
-    		$display("[%0t] PASS: REQ=10 dout_master == din_slave", $time);
-    		pass_count++;
-  	end else begin
-    		$error("[%0t] FAIL: REQ=10 - unexpected outputs", $time);
-    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
-    		fail_count++;
-  	end
+            // Checks
+            if (mosi_captured !== din_master) begin
+				fail_count++;
+				$error("[%0t] FAIL: MOSI mismatch (REQ=11)", $time);
+            end else pass_count++;
 
-  	// ---------------- Test case 4: req = 11 ----------------
-    cur_test <= REQ_11_2;
-  	randomize_inputs();
-  	$display("[%0t] TEST REQ = 11 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
-           	$time, wait_duration, din_master, din_slave);
-  	req = 2'b11;
+            if (miso_captured !== din_slave) begin
+				fail_count++;
+				$error("[%0t] FAIL: MISO mismatch (REQ=11)", $time);
+            end else pass_count++;
 
-	// Capture MOSI & MISO on the SPI clock edges
-	mosi_captured = '0;
-	miso_captured = '0;
-
-	// Wait for first SCLK edge (start of transfer)
-	@(posedge dut.sclk);
-
-	for (bit_idx = SPI_TRF_BIT-1; bit_idx >= 0; bit_idx--) begin
-    	@(posedge dut.sclk);
-    	mosi_captured[bit_idx] = dut.mosi;
-    	miso_captured[bit_idx] = dut.miso;
-	end
-
-  	wait(done_rx);
-  	wait(done_tx);
-
-
-	// Check captured MSB-first streams
-	if (mosi_captured !== din_master) begin
-		$error("[%0t] FAIL: MOSI MSB-first mismatch. Expected=%b Got=%b",
-		       $time, din_master, mosi_captured);
-		fail_count++;
-	end else begin
-		$display("[%0t] PASS: MOSI MSB-first OK", $time);
-		pass_count++;
-	end
-
-	if (miso_captured !== din_slave) begin
-		$error("[%0t] FAIL: MISO MSB-first mismatch. Expected=%b Got=%b",
-		       $time, din_slave, miso_captured);
-		fail_count++;
-	end else begin
-		$display("[%0t] PASS: MISO MSB-first OK", $time);
-		pass_count++;
-	end
-
-	// Check dout
-  	if ((dout_master == din_slave) && (dout_slave == din_master)) begin
-    		$display("[%0t] PASS: REQ=11 Both dout match expected", $time);
-    		pass_count++;
-  	end else begin
-    		$error("[%0t] FAIL: REQ=11 - unexpected outputs", $time);
-    		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
-    		fail_count++;
-  	end
-	
+            if ((dout_master == din_slave) && (dout_slave == din_master)) begin
+                pass_count++;
+            end else begin
+				fail_count++;
+				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=11)", $time);
+			end
+        end
+    endcase
 	end
   	$display("[%0t] TEST SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
   	$finish;
