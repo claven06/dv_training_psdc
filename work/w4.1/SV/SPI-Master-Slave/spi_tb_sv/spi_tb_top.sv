@@ -1,11 +1,13 @@
-module spi_tb_top;
+`include "rand_input_pkg.sv"
 
+module spi_tb_top;
+import rand_input_pkg::*;
 localparam MASTER_FREQ = 100_000_000;
 localparam SLAVE_FREQ = 4_000_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
 localparam SPI_TRF_BIT = 8;
 
-localparam TEST_ITERATION = 4;
+localparam TEST_ITERATION = 10;
 
 // Clock & reset signals
 logic clk;
@@ -35,6 +37,8 @@ reg [SPI_TRF_BIT-1:0] mosi_captured;
 reg [SPI_TRF_BIT-1:0] miso_captured;
 integer bit_idx;
 
+logic reset_num = 1;
+
 // task to randomize inputs
 task randomize_inputs();
 	//wait_duration = $urandom_range(1, 27);     // avoid 0 wait time
@@ -58,6 +62,7 @@ typedef enum {
 } test_t;
 
 test_t cur_test;
+Rand_Input rand_input;
 
 // Clock generation
 initial begin
@@ -85,131 +90,96 @@ end
 AST_RST_ALL_OUTPUT_ZERO : assert property (@(posedge clk) (
                             (rst) |-> ((dout_master == '0) && (dout_slave == '0) && (done_tx == '0) && (done_rx == '0))));
 
-// Tasks
-task reset_design;
-    rst = 1;
-    repeat (5) @(posedge clk);
-    rst = 0;
-    repeat (5) @(posedge clk);
-endtask
-
 // Main
 initial begin
+    rand_input = new();
+
     wait_duration = '0;
     din_master = '0;
     din_slave = '0;
     req = 2'b00;
     rst = 0;
-    cur_test <= NONE;
+    cur_test = NONE;
 
-    repeat (5) @(posedge clk);
+    for (int i = 0; i < TEST_ITERATION; i++) begin
+        rand_input.randomize_and_display();
+        req <= rand_input.req;
+        wait_duration <= rand_input.wait_duration;
+        din_master <= rand_input.din_master;
+        din_slave <= rand_input.din_slave;
 
-    `ifdef RESET_ACTIVE
-        cur_test <= RESET_ACTIVE;
-        repeat (5) @(posedge clk);
-        req <= 2'b11;
+        //@(posedge clk);
+        `ifdef RESET_ACTIVE
+        @(posedge clk);
+        if (reset_num == 1) begin
 
-        // No checkers, covered by AST_RST_ALL_OUTPUT_ZERO assertion
-        for (int i = 0; i < TEST_ITERATION; i++) begin
-            rst <= 0;
-            din_master <= $urandom();
-            din_slave <= $urandom();
-            fork
-                @(done_tx);
-                @(done_rx);
-            join
+            cur_test = RESET_ACTIVE;
+            rst <= 1;      
             repeat (5) @(posedge clk);
-            rst <= 1;
             $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
-            repeat (1) @(posedge clk);
-            $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
+            rst <= 0;
+            reset_num = 0;
         end
 
-        // Clear inputs before next test
-        rst <= 0;
-        req <= '0;
-        din_master <= '0;
-        din_slave <= '0;
-        repeat (100) @(posedge clk);
-    `endif
+        `endif
 
-    `ifdef REQ_01
-        cur_test <= REQ_01;
-        for (int i = 0; i < TEST_ITERATION; i++) begin
-            din_master <= $urandom();
-            `ifdef WAIT_RAND
-                wait_duration <= $urandom();
-            `endif
-            req <= 2'b01;
+        `ifdef REQ_01
+        @(posedge clk);
+         if (req == 2'b01) begin
+            cur_test = REQ_01;
             #1ps $display("%0t: REQ_01 [INPUTS] req = %b, wait_duration = %0d, din_master = %b", $time, req, wait_duration, din_master);
-            repeat (2) @(posedge clk);
+            repeat (1) @(posedge clk);
             req <= 2'b00;
 
-            @(done_tx);
+            @(posedge done_tx);
             if (dout_slave == din_master)
                 $display("%0t: REQ_01 [PASS] req = 01, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
             else
                 $display("%0t: REQ_01 [FAIL] req = 01, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
             repeat (10) @(posedge clk);
-        end
-        // Clear inputs before next test
-        din_master <= '0;
-        `ifdef WAIT_RAND
-            wait_duration <= '0;
-        `endif
-        repeat (100) @(posedge clk);
-    `endif
 
-    `ifdef REQ_10
-        cur_test <= REQ_10;
-        for (int i = 0; i < TEST_ITERATION; i++) begin
-            din_slave <= $urandom();
-            `ifdef WAIT_RAND
-                wait_duration <= $urandom();
-            `endif
-            req <= 2'b10;
+        end
+
+        `endif
+
+        `ifdef REQ_10
+        @(posedge clk);
+        if (req == 2'b10) begin
+            cur_test = REQ_10;
             #1ps $display("%0t: REQ_10 [INPUTS] req = %b, wait_duration = %0d, din_slave = %b", $time, req, wait_duration, din_slave);
-            repeat (2) @(posedge clk);
+            repeat (1) @(posedge clk);
             req <= 2'b00;
 
-            @(done_rx);
+            @(posedge done_rx);
             if (dout_master == din_slave)
                 $display("%0t: REQ_10 [PASS] req = 10, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
             else
                 $display("%0t: REQ_10 [FAIL] req = 10, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
             repeat (10) @(posedge clk);
         end
-        // Clear inputs before next test
-        din_slave <= '0;
-        `ifdef WAIT_RAND
-            wait_duration <= '0;
         `endif
-        repeat (100) @(posedge clk);
-    `endif
 
-    `ifdef REQ_11
-        cur_test <= REQ_11;
-        for (int i = 0; i < TEST_ITERATION; i++) begin
-            din_master <= $urandom();
-            din_slave <= $urandom();
-            `ifdef WAIT_RAND
-                wait_duration <= $urandom();
-            `endif
-            req <= 2'b11;
+        `ifdef REQ_11
+        @(posedge clk);
+        if (req == 2'b11) begin        
+            cur_test = REQ_11;
+            req <= 2'b00;
+            
             #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
-            repeat (2) @(posedge clk);
-            req <= '0;
+
+            //@(dut.spi_master_inst.state_rx == 2'b10);
+            //req <= '0;
 
             fork
                 begin
-                    @(done_rx);
+                    @(posedge done_rx);
                     if (dout_master == din_slave)
                         $display("%0t: REQ_11 S->M [PASS] req = 11, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
                     else
                         $display("%0t: REQ_11 S->M [FAIL] req = 11, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
                     end
                     begin
-                    @(done_tx);
+                    @(posedge done_tx);
                     if (dout_slave == din_master)
                         $display("%0t: REQ_11 M->S [PASS] req = 11, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
                     else
@@ -217,19 +187,12 @@ initial begin
                 end
             join
             repeat (10) @(posedge clk);
-        end
 
-        // Clear inputs before next test
-        din_master <= '0;
-        din_slave <= '0;
-        `ifdef WAIT_RAND
-            wait_duration <= '0;
-        `endif
-        repeat (100) @(posedge clk);
+        end
     `endif
+    end
 
     `ifdef TEST_1
-    cur_test <= RESET_ACTIVE_2;
 	// Apply Reset
 	@(posedge clk);
     	wait_duration = 8'ha;
@@ -242,7 +205,7 @@ initial begin
     	rst = 1;
 
     	@(posedge clk);
-
+	
     	// Check reset effect
     	if (dout_master !== '0 || dout_slave !== '0 || done_tx !== 0 || done_rx !== 0) begin
       		$error("[%0t] Reset failed: outputs not cleared", $time);
@@ -284,14 +247,14 @@ initial begin
       			$display("SCLK idle when disabled - OK");
 
     	release dut.sclk_en;
-
+  
     `endif
 
     `ifdef TEST_2
 
   	// Initialize
   	@(posedge clk);
-
+  	
 	repeat (10) begin
   	// ---------------- Test case 1: req = 00 ----------------
     cur_test <= REQ_00_2;
@@ -437,7 +400,7 @@ initial begin
     		$display("  dout_slave=%p dout_master=%p done_tx=%b done_rx=%b", dout_slave, dout_master, done_tx, done_rx);
     		fail_count++;
   	end
-
+	
 	end
   	$display("[%0t] TEST SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
   	$finish;
@@ -449,6 +412,7 @@ initial begin
     $finish;
 end
 
+`include "coverage.sv"
 //initial begin
 //    #100000000ps
 //    $finish;
