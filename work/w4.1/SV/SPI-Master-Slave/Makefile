@@ -17,7 +17,15 @@ vdCov.conf vdCovLog build.log sim.log .fsm.sch.verilog.xml dump.fsdb\.*
 
 #Grab the second word in the make command (e.g., the .sv file)
 #SRC      = $(filter %.sv, $(MAKECMDGOALS))
-SRC		  = -f ./build.f
+
+# Toggle to non zero value to test own spi_master
+export own ?= 0
+
+ifneq ($(own), 0)
+	SRC		  = -f ./build_own.f
+else
+	SRC		  = -f ./build.f
+endif
 
 TEST      = \
 			+define+RESET_ACTIVE \
@@ -30,6 +38,10 @@ TEST      = \
 			+define+
 
 #target
+
+own:
+	make all own=1
+
 all: build run
 
 build:
