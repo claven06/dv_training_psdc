@@ -1,6 +1,6 @@
-# PCDA Training Repository — PSDC Jul–Aug 2025
+# Design Verification Training Repository
 
-This repository contains materials, labs, and miniprojects for the **PCDA Training at PSDC** during **July–August 2025**.
+This repository contains materials, labs, and miniprojects Design Verification.
 
 ---
 
