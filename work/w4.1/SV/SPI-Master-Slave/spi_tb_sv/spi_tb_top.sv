@@ -137,16 +137,16 @@ initial begin
         @(posedge clk);
         `ifdef RESET_ACTIVE
         if (reset_num == 1) begin
-            rst <= 1;
+            rst = 1;
             repeat (5) @(posedge clk);
             $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
+            reset_num <= 0;            
             rst <= 0;
-            reset_num = 0;
         end
         `endif
 
         `ifdef REQ_01
-         if (req == 2'b01) begin
+         else if (req == 2'b01) begin
             #1ps $display("%0t: REQ_01 [INPUTS] req = %b, wait_duration = %0d, din_master = %b", $time, req, wait_duration, din_master);
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -163,7 +163,7 @@ initial begin
         `endif
 
         `ifdef REQ_10
-        if (req == 2'b10) begin
+        else if (req == 2'b10) begin
             #1ps $display("%0t: REQ_10 [INPUTS] req = %b, wait_duration = %0d, din_slave = %b", $time, req, wait_duration, din_slave);
             repeat (1) @(posedge clk);
             req <= 2'b00;
@@ -178,7 +178,8 @@ initial begin
         `endif
 
         `ifdef REQ_11
-        if (req == 2'b11) begin
+        else if (req == 2'b11) begin
+            repeat (1) @(posedge clk);
             req <= 2'b00;
 
             #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
@@ -190,8 +191,8 @@ initial begin
                         $display("%0t: REQ_11 S->M [PASS] req = 11, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
                     else
                         $display("%0t: REQ_11 S->M [FAIL] req = 11, din_slave = %b, dout_master = %b", $time, din_slave, dout_master);
-                    end
-                    begin
+                end
+                begin
                     @(posedge done_tx);
                     if (dout_slave == din_master)
                         $display("%0t: REQ_11 M->S [PASS] req = 11, din_master = %b, dout_slave = %b", $time, din_master, dout_slave);
