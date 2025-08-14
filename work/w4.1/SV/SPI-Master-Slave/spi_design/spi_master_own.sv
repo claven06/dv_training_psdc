@@ -70,7 +70,7 @@ module spi_master
             req_temp <= '0;
         end
         else begin
-            if (next_state_tx == IDLE_TX && next_state_rx == IDLE_RX) begin
+            if (state_tx == IDLE_TX && state_rx == IDLE_RX) begin
                 req_temp <= req;
             end
             else begin
