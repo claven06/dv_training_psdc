@@ -74,7 +74,7 @@ module spi_master
                 req_temp <= req;
             end
             else begin
-                if (next_state_tx == SEND_DATA && next_state_rx == GET_DATA) begin
+                if (next_state_tx == SEND_DATA || next_state_rx == GET_DATA) begin
                     req_temp <= 2'b00;
                 end
             end
