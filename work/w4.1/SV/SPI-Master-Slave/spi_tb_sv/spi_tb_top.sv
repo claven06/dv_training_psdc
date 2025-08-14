@@ -137,7 +137,7 @@ initial begin
         @(posedge clk);
         `ifdef RESET_ACTIVE
         if (reset_num == 1) begin
-            rst <= 1;      
+            rst <= 1;
             repeat (5) @(posedge clk);
             $display("%0t: RESET_ACTIVE [MONITOR] rst = %0b, dout_master = %b, dout_slave = %b, done_tx = %0b, done_rx = %0b", $time, rst, dout_master, dout_slave, done_tx, done_rx);
             rst <= 0;
@@ -178,9 +178,9 @@ initial begin
         `endif
 
         `ifdef REQ_11
-        if (req == 2'b11) begin        
+        if (req == 2'b11) begin
             req <= 2'b00;
-            
+
             #1ps $display("%0t: REQ_11 [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
 
             fork
@@ -226,7 +226,7 @@ initial begin
     	end
         end
 
-	// sclk test case 
+	// sclk test case
 	@(posedge clk);
     //cur_test <= SCLK_TEST;
 	rst = 0;
@@ -261,7 +261,7 @@ initial begin
       			$display("SCLK idle when disabled - OK");
 
     	release dut.sclk_en;
-  
+
     `endif
 
     `ifdef TEST_2
@@ -288,7 +288,7 @@ initial begin
     if (rst) begin
         @(posedge clk); // Wait 1 cycle for reset effects
         if ((dout_master !== '0) || (dout_slave !== '0) || (done_tx !== '0) || (done_rx !== '0)) begin
-            $error("[%0t] FAIL: Outputs not zero during reset. dout_master=%h, dout_slave=%h", 
+            $error("[%0t] FAIL: Outputs not zero during reset. dout_master=%h, dout_slave=%h",
                    $time, dout_master, dout_slave);
             fail_count++;
         end else begin
@@ -307,7 +307,7 @@ initial begin
             cur_test <= REQ_01_2;
             $display("[%0t] TEST REQ=01 (wait=%0d, din_master=0x%0h)",
                      $time, wait_duration, din_master);
-            
+
             // Capture MOSI stream
             mosi_captured = '0;
             @(posedge dut.sclk);
@@ -315,7 +315,7 @@ initial begin
                 @(negedge dut.sclk);
                 mosi_captured[bit_idx] = dut.mosi;
             end
-            
+
             wait(done_tx);
 
             // Checks
@@ -339,7 +339,7 @@ initial begin
             cur_test <= REQ_10_2;
             $display("[%0t] TEST REQ=10 (wait=%0d, din_slave=0x%0h)",
                      $time, wait_duration, din_slave);
-            
+
             // Capture MISO
             miso_captured = '0;
             @(posedge dut.sclk);
@@ -347,7 +347,7 @@ initial begin
                 @(negedge dut.sclk);
                 miso_captured[bit_idx] = dut.miso;
             end
-            
+
             wait(done_rx);
 
             // Checks
@@ -358,7 +358,7 @@ initial begin
 
             if (dout_master == din_slave) begin
 				pass_count++;
-            end else begin 
+            end else begin
 				fail_count++;
 				$error("[%0t] FAIL: dout_slave and din_master mismatch (REQ=10)", $time);
 			end
@@ -371,7 +371,7 @@ initial begin
             cur_test <= REQ_11_2;
             $display("[%0t] TEST REQ=11 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
                      $time, wait_duration, din_master, din_slave);
-            
+
             mosi_captured = '0;
             miso_captured = '0;
             @(posedge dut.sclk);
@@ -410,13 +410,13 @@ initial begin
         2'b00: begin
 			$display("[%0t] TEST REQ=00 (wait=%0d, din_master=0x%0h, din_slave=0x%0h)",
                      $time, wait_duration, din_master, din_slave);
-            // Idle: check outputs match the last transfer           
+            // Idle: check outputs match the last transfer
 			if (dout_master !== last_dout_master || dout_slave !== last_dout_slave) begin
                 $error("[%0t] FAIL: REQ=00 idle outputs changed. PrevReq=%b LastMaster=0x%0h LastSlave=0x%0h GotMaster=0x%0h GotSlave=0x%0h",
                        $time, prev_req, last_dout_master, last_dout_slave, dout_master, dout_slave);
                 fail_count++;
             end else pass_count++;
-        
+
 		end
     endcase
     prev_req = req;
@@ -433,10 +433,10 @@ initial begin
 end
 
 `include "coverage.sv"
-//initial begin
-//    #100000000ps
-//    $finish;
-//end
+// initial begin
+//     #100000000ps
+//     $finish;
+// end
 
 endmodule
 
