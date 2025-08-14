@@ -44,6 +44,7 @@ module spi #(
                     busy <= 1'b0;
                     clk_cnt <= '0;
                     bit_cnt <= 3'd7;
+		    rx_data <= 1'b0;
                     
                     if (start) begin
                         state <= TRANSFER;
