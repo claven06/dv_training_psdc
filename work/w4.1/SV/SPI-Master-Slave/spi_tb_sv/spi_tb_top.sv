@@ -39,6 +39,7 @@ logic prev_sclk = 0;
 bit [1:0] prev_req;
 logic [(SPI_TRF_BIT-1):0] prev_dout_master;
 logic [(SPI_TRF_BIT-1):0] prev_dout_slave;
+int sclk_posedge_count, sclk_negedge_count;
 
 // task to randomize inputs
 task randomize_inputs();
@@ -105,6 +106,35 @@ always @(posedge rst) begin
     prev_req <= 2'b00;
     prev_dout_master <= '0;
     prev_dout_slave <= '0;
+end
+
+// Count exact number of posedges and negedges of sclk
+always @(posedge clk) begin
+    if (dut.sclk_en) begin
+        if (dut.spi_master_inst.sclk_posedge) begin
+            sclk_posedge_count <= sclk_posedge_count + 1;
+        end
+    end else begin
+        if (sclk_posedge_count != 0 && sclk_posedge_count != SPI_TRF_BIT) begin
+            $error("%0t: SCLK_COUNT_TEST [FAIL] sclk had %0d POS-edges when sclk_en asserted (expected %0d)", $time, sclk_posedge_count, SPI_TRF_BIT);
+        end
+        #1ps
+        sclk_posedge_count <= 0;
+    end
+end
+
+always @(posedge clk) begin
+    if (dut.sclk_en) begin
+        if (dut.spi_master_inst.sclk_negedge) begin
+            sclk_negedge_count <= sclk_negedge_count + 1;
+        end
+    end else begin
+        if (sclk_negedge_count != 0 && sclk_negedge_count != SPI_TRF_BIT) begin
+            $error("%0t: SCLK_COUNT_TEST [FAIL] sclk had %0d NEG-edges when sclk_en asserted (expected %0d)", $time, sclk_negedge_count, SPI_TRF_BIT);
+        end
+        #1ps
+        sclk_negedge_count <= 0;
+    end
 end
 
 // Main
@@ -181,6 +211,9 @@ initial begin
             $display("%0t: SCLK_TEST [PASS] SCLK frequency expected at %0.3f MHz", $time, freq_mhz);
             pass_count++;
         end
+
+        repeat (SPI_TRF_BIT - 2) @(posedge dut.sclk);
+        @(negedge dut.sclk);
 
         // Check SCLK idle when disabled
         force dut.sclk_en = 1'b0;
