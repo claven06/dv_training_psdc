@@ -5,9 +5,9 @@ import rand_input_pkg::*;
 localparam MASTER_FREQ = 100_000_000;
 localparam SLAVE_FREQ = 5_000_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
-localparam SPI_TRF_BIT = 12;
+localparam SPI_TRF_BIT = 8;
 
-localparam TEST_ITERATION = 100;
+localparam TEST_ITERATION = 1000;
 
 // Clock & reset signals
 logic clk;
@@ -156,7 +156,7 @@ initial begin
     din_master = '0;
     din_slave = '0;
     req = 2'b00;
-    rst = 0;    
+    rst = 0;
     pass_count = 0;
     fail_count = 0;
 
@@ -169,7 +169,7 @@ initial begin
     	req <= 2'b11;
 
         // Run for 200 cycles to let outputs stable
-    	repeat (200) @(posedge clk); 
+    	repeat (200) @(posedge clk);
 
         // Assert reset
     	rst <= 1;
@@ -231,7 +231,7 @@ initial begin
         $display("%0t: SCLK_TEST [INPUTS] sclk_en (%0b) forced LOW", $time, dut.sclk_en);
 
         // Check for the maximum number of counter in clock divider
-        repeat (1024) begin 
+        repeat (1024) begin
             repeat (1) @(posedge clk);
             if (dut.sclk !== prev_sclk) begin // No toggle check
                 $error("%0t: SCLK_TEST [FAIL] sclk = %0b, prev_sclk = %0b", $time, dut.sclk, prev_sclk);
@@ -405,12 +405,12 @@ initial begin
                 else begin
                     $error("%0t: REQ_01_B2B MSB_FIRST [FAIL] req = %b, din_master = %b, mosi_captured = %b", $time, req, din_master, mosi_captured);
                     fail_count++;
-                end 
+                end
 
                 if (dout_slave == din_master) begin
                     $display("%0t: REQ_01_B2B [PASS] req = %b, din_master = %b, dout_slave = %b", $time, req, din_master, dout_slave);
                     pass_count++;
-                end 
+                end
                 else begin
                     $error("%0t: REQ_01_B2B [FAIL] req = %b, din_master = %b, dout_slave = %b", $time, req, din_master, dout_slave);
                     fail_count++;
@@ -440,12 +440,12 @@ initial begin
                 else begin
                     $error("%0t: REQ_10_B2B MSB_FIRST [FAIL] req = %b, din_slave = %b, miso_captured = %b", $time, req, din_slave, miso_captured);
                     fail_count++;
-                end 
+                end
 
                 if (dout_master == din_slave) begin
                     $display("%0t: REQ_10_B2B [PASS] req = %b, din_slave = %b, dout_master = %b", $time, req, din_slave, dout_master);
                     pass_count++;
-                end 
+                end
                 else begin
                     $error("%0t: REQ_10_B2B [FAIL] req = %b, din_slave = %b, dout_master = %b", $time, req, din_slave, dout_master);
                     fail_count++;
@@ -476,12 +476,12 @@ initial begin
                         else begin
                             $error("%0t: REQ_11_B2B MSB_FIRST [FAIL] req = %b, din_master = %b, mosi_captured = %b", $time, req, din_master, mosi_captured);
                             fail_count++;
-                        end 
+                        end
 
                         if (dout_slave == din_master) begin
                             $display("%0t: REQ_11_B2B [PASS] req = %b, din_master = %b, dout_slave = %b", $time, req, din_master, dout_slave);
                             pass_count++;
-                        end 
+                        end
                         else begin
                             $error("%0t: REQ_11_B2B [FAIL] req = %b, din_master = %b, dout_slave = %b", $time, req, din_master, dout_slave);
                             fail_count++;
@@ -497,12 +497,12 @@ initial begin
                         else begin
                             $error("%0t: REQ_11_B2B MSB_FIRST [FAIL] req = %b, din_slave = %b, miso_captured = %b", $time, req, din_slave, miso_captured);
                             fail_count++;
-                        end 
+                        end
 
                         if (dout_master == din_slave) begin
                             $display("%0t: REQ_11_B2B [PASS] req = %b, din_slave = %b, dout_master = %b", $time, req, din_slave, dout_master);
                             pass_count++;
-                        end 
+                        end
                         else begin
                             $error("%0t: REQ_11_B2B [FAIL] req = %b, din_slave = %b, dout_master = %b", $time, req, din_slave, dout_master);
                             fail_count++;
@@ -516,12 +516,12 @@ initial begin
             if (req == 2'b00) begin
                 cur_test <= REQ_00_B2B;
                 $display("%0t: REQ_00_B2B [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
-                
+
                 // Idle: check outputs match the last transfer
                 if (dout_master == prev_dout_master) begin
                     $display("%0t REQ_00_B2B [PASS] req = %b, prev_req = %b, dout_master = %b, prev_dout_master = %b", $time, req, prev_req, dout_master, prev_dout_master);
                     pass_count++;
-                end 
+                end
                 else begin
                     $error("%0t REQ_00_B2B [FAIL] req = %b, prev_req = %b, dout_master = %b, prev_dout_master = %b", $time, req, prev_req, dout_master, prev_dout_master);
                     fail_count++;
@@ -530,14 +530,14 @@ initial begin
                 if (dout_slave == prev_dout_slave) begin
                     $display("%0t REQ_00_B2B [PASS] req = %b, prev_req = %b, dout_slave = %b, prev_dout_slave = %b", $time, req, prev_req, dout_slave, prev_dout_slave);
                     pass_count++;
-                end 
+                end
                 else begin
                     $error("%0t REQ_00_B2B [FAIL] req = %b, prev_req = %b, dout_slave = %b, prev_dout_slave = %b", $time, req, prev_req, dout_slave, prev_dout_slave);
                     fail_count++;
                 end
             end
         `endif
-            
+
         // Store previous cycle values
         prev_req <= req;
         prev_dout_slave <= dout_slave;
