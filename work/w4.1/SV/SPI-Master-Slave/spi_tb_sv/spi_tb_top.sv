@@ -5,7 +5,7 @@ import rand_input_pkg::*;
 localparam MASTER_FREQ = 100_000_000;
 localparam SLAVE_FREQ = 5_000_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
-localparam SPI_TRF_BIT = 8;
+localparam SPI_TRF_BIT = 12;
 
 localparam TEST_ITERATION = 100;
 
@@ -109,31 +109,41 @@ always @(posedge rst) begin
 end
 
 // Count exact number of posedges and negedges of sclk
-always @(posedge clk) begin
-    if (dut.sclk_en) begin
-        if (dut.spi_master_inst.sclk_posedge) begin
-            sclk_posedge_count <= sclk_posedge_count + 1;
-        end
-    end else begin
-        if (sclk_posedge_count != 0 && sclk_posedge_count != SPI_TRF_BIT) begin
-            $error("%0t: SCLK_COUNT_TEST [FAIL] sclk had %0d POS-edges when sclk_en asserted (expected %0d)", $time, sclk_posedge_count, SPI_TRF_BIT);
-        end
-        #1ps
+always @(posedge clk or posedge rst) begin
+    if (rst) begin
         sclk_posedge_count <= 0;
+    end
+    else begin
+        if (dut.sclk_en) begin
+            if (dut.spi_master_inst.sclk_posedge) begin
+                sclk_posedge_count <= sclk_posedge_count + 1;
+            end
+        end else begin
+            if (sclk_posedge_count != 0 && sclk_posedge_count != SPI_TRF_BIT) begin
+                $error("%0t: SCLK_COUNT_TEST [FAIL] sclk had %0d POS-edges when sclk_en asserted (expected %0d)", $time, sclk_posedge_count, SPI_TRF_BIT);
+            end
+            #1ps
+            sclk_posedge_count <= 0;
+        end
     end
 end
 
-always @(posedge clk) begin
-    if (dut.sclk_en) begin
-        if (dut.spi_master_inst.sclk_negedge) begin
-            sclk_negedge_count <= sclk_negedge_count + 1;
-        end
-    end else begin
-        if (sclk_negedge_count != 0 && sclk_negedge_count != SPI_TRF_BIT) begin
-            $error("%0t: SCLK_COUNT_TEST [FAIL] sclk had %0d NEG-edges when sclk_en asserted (expected %0d)", $time, sclk_negedge_count, SPI_TRF_BIT);
-        end
-        #1ps
+always @(posedge clk or posedge rst) begin
+    if (rst) begin
         sclk_negedge_count <= 0;
+    end
+    else begin
+        if (dut.sclk_en) begin
+            if (dut.spi_master_inst.sclk_negedge) begin
+                sclk_negedge_count <= sclk_negedge_count + 1;
+            end
+        end else begin
+            if (sclk_negedge_count != 0 && sclk_negedge_count != SPI_TRF_BIT) begin
+                $error("%0t: SCLK_COUNT_TEST [FAIL] sclk had %0d NEG-edges when sclk_en asserted (expected %0d)", $time, sclk_negedge_count, SPI_TRF_BIT);
+            end
+            #1ps
+            sclk_negedge_count <= 0;
+        end
     end
 end
 
@@ -213,7 +223,6 @@ initial begin
         end
 
         repeat (SPI_TRF_BIT - 2) @(posedge dut.sclk);
-        @(negedge dut.sclk);
 
         // Check SCLK idle when disabled
         force dut.sclk_en = 1'b0;
