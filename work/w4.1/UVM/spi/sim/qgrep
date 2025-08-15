@@ -9,3 +9,5 @@ grep "DRIVER" $MODULE\_sim.log
 grep "MONITOR" $MODULE\_sim.log
 grep "SCOREBOARD" $MODULE\_sim.log
 grep "COVERAGE" $MODULE\_sim.log
+grep "ERROR" $MODULE\_sim.log
+

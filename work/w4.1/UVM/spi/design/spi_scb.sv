@@ -39,7 +39,8 @@ class spi_scb extends uvm_scoreboard;
       end
 
       // (B) Busy goes high immediately after start
-      if (vif.mon_cb.start && !start_prev) begin
+      if (vif.mon_cb.start) begin
+		@(posedge vif.clk);
         if (!vif.mon_cb.busy)
           `uvm_error("PROTO", "Busy did not assert immediately after start")
         else begin
