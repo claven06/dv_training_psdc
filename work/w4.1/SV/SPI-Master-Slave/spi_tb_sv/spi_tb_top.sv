@@ -3,7 +3,7 @@
 module spi_tb_top;
 import rand_input_pkg::*;
 localparam MASTER_FREQ = 100_000_000;
-localparam SLAVE_FREQ = 4_000_000; // Modified from 1,800,000 to achieve spec
+localparam SLAVE_FREQ = 5_000_000; // Modified from 1,800,000 to achieve spec
 localparam SPI_MODE = 1;
 localparam SPI_TRF_BIT = 8;
 
@@ -238,8 +238,8 @@ initial begin
         freq_mhz = 1000 / period_ns; // ns -> MHz
         $display("%0t: SCLK_TEST [MONITOR] Measured SCLK period: %0t ns, freq: %0.3f MHz", $time, period_ns, freq_mhz);
 
-        if (freq_mhz < ((SLAVE_FREQ / 1000000) - 0.01) || freq_mhz > ((SLAVE_FREQ / 1000000) + 0.01))
-            $error("%0t: SCLK_TEST [FAIL] SCLK frequency out of range at %0.3f MHz (expect %0.3f MHz)", $time, freq_mhz, (SLAVE_FREQ / 1000000));
+        if (freq_mhz < ((SLAVE_FREQ / 1000000.00) - 0.01) || freq_mhz > ((SLAVE_FREQ / 1000000.00) + 0.01))
+            $error("%0t: SCLK_TEST [FAIL] SCLK frequency out of range at %0.3f MHz (expect %0.3f MHz)", $time, freq_mhz, (SLAVE_FREQ / 1000000.00 ));
         else
             $display("%0t: SCLK_TEST [PASS] SCLK frequency expected at %0.3f MHz", $time, freq_mhz);
 
