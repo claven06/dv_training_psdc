@@ -13,7 +13,7 @@ RUN_OPTS = -R
 FUNC_CVR = -cm line+cond+tgl+fsm+branch+assert
 FILE_TO_DEL = csrc simv simv.daidir ucli.key libnz4w_r.soLog verdiLog \
 verdi_config_file inter.fsdb dump.vcd novas* cm.log simv.vdb urgReport \
-vdCov.conf vdCovLog build.log sim.log .fsm.sch.verilog.xml dump.fsdb\.*
+vdCov.conf vdCovLog build.log sim.log .fsm.sch.verilog.xml dump.fsdb*
 
 #Grab the second word in the make command (e.g., the .sv file)
 #SRC      = $(filter %.sv, $(MAKECMDGOALS))
