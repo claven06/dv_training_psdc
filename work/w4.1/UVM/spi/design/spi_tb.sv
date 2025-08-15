@@ -1,89 +1,129 @@
-module testbench;
-  localparam int                    LOOP        = 1000;
-  localparam int                    ADDR_WIDTH  = 8;
-  localparam int                    DATA_WIDTH  = 16;
-  localparam bit [ADDR_WIDTH-1:0]   ADDR_DIV    = 8'h3f;
-  bit tb_clk;
+`include "spi_if.sv"
+`include "spi.sv"
 
-  clk_if 	                                                                            m_clk_if();
-  switch_if #(.ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH))                         m_switch_if_in(); 	// Interface handle inputs
-  switch_if #(.ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH))                         m_switch_if_out(); 	// Interface handle outputs
+module spi_tb;
 
-  switch	#(.ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH), .ADDR_DIV(ADDR_DIV))    dut0 (
-    .clk(m_clk_if.tb_clk),
-    .rstn(m_switch_if_in.rstn),
-    .vld(m_switch_if_in.vld),
-    .addr(m_switch_if_in.addr),
-    .data(m_switch_if_in.data),
-    .addr_a(m_switch_if_out.addr_a),
-    .data_a(m_switch_if_out.data_a),
-    .addr_b(m_switch_if_out.addr_b),
-    .data_b(m_switch_if_out.data_b)
-  );   //Design Under Test
+import uvm_pkg::*;
+`include "uvm_macros.svh"
 
-  covergroup cg;
-    cp_rstn     : coverpoint m_switch_if_in.rstn{}
-    cp_vld      : coverpoint m_switch_if_in.vld{}
-    cp_addr     : coverpoint m_switch_if_in.addr    {
-        bins addr_equal_zero        = { 0 };
-        bins addr_lesser_than_h40   = {['h1:'h3f]};
-        bins addr_more_or_equal_h40 = {['h40:'hff]};
-    }
-    cp_data     : coverpoint m_switch_if_in.data    {
-        bins data_equal_zero        = { 0 };
-        bins data_equal_nonzero     = {['h1:'hffff]};
-    }
-    cp_addr_a   : coverpoint m_switch_if_out.addr_a {
-        bins addr_equal_zero        = { 0 };
-        bins addr_lesser_than_h40   = {['h1:'h3f]};
-        illegal_bins addr_more_or_equal_h40 = {['h40:'hff]};
-    }
-    cp_data_a   : coverpoint m_switch_if_out.data_a {
-        bins data_equal_zero        = { 0 };
-        bins data_equal_nonzero     = {['h1:'hffff]};
-    }
-    cp_addr_b   : coverpoint m_switch_if_out.addr_b {
-        bins addr_equal_zero        = { 0 };
-        bins addr_more_or_equal_h40 = {['h40:'hff]};
-        illegal_bins addr_lesser_than_h40   = {['h1:'h3f]};
-    }
-    cp_data_b   : coverpoint m_switch_if_out.data_b {
-        bins data_equal_zero        = { 0 };
-        bins data_equal_nonzero     = {['h1:'hffff]};
-    }
-  endgroup
+// $time is a built-in system function
+initial $display(">>>>>>>> SIM TIME START: %0t", $time);
+final   $display(">>>>>>>> SIM TIME END  : %0t", $time);
+localparam CLK_DIV = 4;
 
-  initial begin
-      m_switch_if_in.rstn <= '0;
-      m_switch_if_in.vld <= '0;
-      m_switch_if_in.addr <= '0;
-      m_switch_if_in.data <= '0;
-  end
+  // Include all required files
+  `include "spi_tran.sv"
+  `include "spi_seq.sv"
+  `include "spi_sqr.sv"
+  `include "spi_drv.sv"
+  `include "spi_mon.sv"
+  `include "spi_agt.sv"
+  `include "spi_scb.sv"
+  `include "spi_env.sv"
+  `include "spi_test.sv"
 
-  initial begin
-    test  #(.LOOP(LOOP), .ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH), .ADDR_DIV(ADDR_DIV)) t0;
 
-    cg cg_switch = new();
-    t0 = new();
-    t0.e0.m_switch_vif_in = m_switch_if_in;
-    t0.e0.m_switch_vif_out = m_switch_if_out;
-    t0.e0.m_clk_vif = m_clk_if;
-    fork
-      t0.run();
-      forever @(posedge m_clk_if.tb_clk) cg_switch.sample();
-    join_any
+spi_if spi_if();
 
-    // Once the main stimulus is over, wait for some time
-    // until all transactions are finished and then end
-    // simulation. Note that $finish is required because
-    // there are components that are running forever in
-    // the background like clk, monitor, driver, etc
-    #50 $finish;
-  end
 
-  initial begin
+spi #(.CLK_DIV(CLK_DIV)) dut (
+	.clk(spi_if.clk),
+	.rst_n(spi_if.rst_n),
+	.start(spi_if.start),
+	.tx_data(spi_if.tx_data),
+	.rx_data(spi_if.rx_data),
+	.busy(spi_if.busy),
+	.done(spi_if.done),
+	.sclk(spi_if.sclk),
+	.mosi(spi_if.mosi),
+	.miso(spi_if.miso),
+	.cs_n(spi_if.cs_n)
+);
+
+initial begin
+	spi_if.clk = 0;
+	forever #5 spi_if.clk = ~spi_if.clk;
+end
+
+initial begin
+	// Pass the full interface handle
+	uvm_config_db#(virtual spi_if)::set(null, "*drv*", "vif", spi_if);
+	uvm_config_db#(virtual spi_if)::set(null, "*mon*", "vif", spi_if);
+	uvm_config_db#(virtual spi_if)::set(null, "*scb*", "vif", spi_if);
+    run_test("spi_test");
+end
+initial begin
+  spi_if.rst_n = 0;
+  repeat (5) @(posedge spi_if.clk); // Hold reset low for 5 cycles
+  spi_if.rst_n = 1;
+
+end
+// FSDB waveform dump
+initial begin
     $fsdbDumpfile("dump.fsdb");
-    $fsdbDumpvars;
-    $fsdbDumpMDA;
-  end
+    $fsdbDumpSVA(0, spi_tb);
+    $fsdbDumpvars(0, spi_tb);
+end
+
+
+
+// Constants
+bit [7:0] SLAVE_RESET_RESPONSE = 8'hB9;
+int slave_reset_response = SLAVE_RESET_RESPONSE;
+    
+// Simple SPI slave model for testing
+logic [7:0] slave_rx_data;
+logic [7:0] slave_tx_data;
+logic [3:0] idle_counter;
+
+
+always @(posedge spi_if.sclk or negedge spi_if.rst_n or posedge spi_if.cs_n) begin
+    if (!spi_if.rst_n) begin
+        slave_rx_data <= 8'h00;
+        spi_if.miso <= 1'b0;
+        slave_tx_data <= SLAVE_RESET_RESPONSE;
+    end
+else if (spi_if.cs_n) begin
+        spi_if.miso <= 1'b0;
+        slave_tx_data <= SLAVE_RESET_RESPONSE;
+
+    `uvm_info("SLV-RLD", $sformatf("RX_REG=0x%2h \(%8b\), TX_REG=0x%2h \(%8b\)",
+                                           slave_rx_data, slave_rx_data, slave_tx_data, slave_tx_data), UVM_MEDIUM)
+    end
+else begin
+            // Shift in MOSI on rising edge
+            slave_rx_data <= {slave_rx_data[6:0], spi_if.mosi};
+
+            // Update MISO immediately for next bit
+            spi_if.miso <= slave_tx_data[7];
+            slave_tx_data <= {slave_tx_data[6:0], 1'b0};
+
+	`uvm_info("SLV", $sformatf("RX_REG=0x%2h \(%8b\), TX_REG=0x%2h \(%8b\)",
+                                       slave_rx_data, slave_rx_data, slave_tx_data, slave_tx_data), UVM_MEDIUM)
+    end
+end
+
+always @(posedge spi_if.clk or negedge spi_if.rst_n) begin
+    if (!spi_if.rst_n) begin
+        idle_counter <= 5'd0;
+        slave_tx_data <= SLAVE_RESET_RESPONSE;
+    end
+    else if (spi_if.cs_n) begin  // SPI idle (cs_n=1)
+        if (idle_counter < 5'd7) begin
+            slave_tx_data <= 8'h00;  // Drive 0 for 8 cycles
+            idle_counter <= idle_counter + 1;
+        end
+        else begin
+            slave_tx_data <= SLAVE_RESET_RESPONSE;  // Revert to default
+        end
+    end
+    else begin  // SPI active (cs_n=0)
+        idle_counter <= 5'd0;  // Reset counter
+    end
+end
+
 endmodule
+
+
+
+

@@ -1,12 +1,28 @@
-// The test can instantiate any environment.
-class test #( int LOOP, int ADDR_WIDTH, int DATA_WIDTH, bit [ADDR_WIDTH-1:0] ADDR_DIV );
-  env #(.LOOP(LOOP), .ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH), .ADDR_DIV(ADDR_DIV)) e0;
+class spi_test extends uvm_test;
+  `uvm_component_utils(spi_test)
 
-  function new();
-    e0 = new();
+  spi_env env;
+  spi_seq seq;
+
+  function new(string name, uvm_component parent);
+    super.new(name, parent);
   endfunction
 
-  virtual task run();
-    e0.run();
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    env = spi_env::type_id::create("env", this);
+  endfunction
+
+  task run_phase(uvm_phase phase);
+    seq = spi_seq::type_id::create("seq");
+
+    `uvm_info("TEST", $sformatf("Starting sequences with config:\n"),
+                                UVM_MEDIUM)
+
+    phase.raise_objection(this);
+
+    seq.start(env.agt.sqr);
+
+    phase.drop_objection(this);
   endtask
 endclass

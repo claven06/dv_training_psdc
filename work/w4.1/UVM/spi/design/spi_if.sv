@@ -1,30 +1,35 @@
-// Switch interface contains all signals that the switch requires
-// to operate
-interface switch_if #(
-     parameter int ADDR_WIDTH,
-     parameter int DATA_WIDTH
-) ();
-    logic                     rstn;
-    logic                     vld;
-    logic [ADDR_WIDTH-1:0]    addr;
-    logic [DATA_WIDTH-1:0]    data;
-    logic [ADDR_WIDTH-1:0]    addr_a;
-    logic [DATA_WIDTH-1:0]    data_a;
-    logic [ADDR_WIDTH-1:0]    addr_b;
-    logic [DATA_WIDTH-1:0]    data_b;
-endinterface
+interface spi_if;
 
-// Although an adder does not have a clock, let us create a mock clock
-// used in the testbench to synchronize when value is driven and when
-// value is sampled. Typically combinational logic is used between
-// sequential elements like FF in a real circuit. So, let us assume
-// that inputs to the adder is provided at some posedge clock. But because
-// the design does not have clock in its input, we will keep this clock
-// in a separate interface that is available only to testbench components
-interface clk_if();
-  logic tb_clk;
+  // DUT inputs (driven by driver)
+  logic        start;    
+  logic [7:0]  tx_data;  
+  logic		   clk;
+  logic		   rst_n;
+  // DUT outputs (sampled by monitor)
+  logic [7:0]  rx_data;  
+  logic        busy;     
+  logic        done;     
 
-  initial tb_clk <= 0;
+  // SPI interface signals
+  logic        sclk;     
+  logic        mosi;     
+  logic        miso;     
+  logic        cs_n;     
 
-  always #10 tb_clk = ~tb_clk;
+  // === Clocking block for driver ===
+  clocking drv_cb @(posedge clk);
+    default input #1step output #1step;
+    output start, tx_data, miso;  
+    input  rx_data, busy, done;
+    input  sclk, mosi, cs_n;
+  endclocking
+
+  // === Clocking block for monitor ===
+  clocking mon_cb @(posedge clk);
+    default input #1step output #1step;
+    input start, tx_data, rx_data, busy, done;
+    input sclk, mosi, miso, cs_n;
+  endclocking
+
+
 endinterface

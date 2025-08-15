@@ -1,100 +1,85 @@
-// The scoreboard is responsible to check data integrity. Since the design
-// simple adds inputs to give sum and carry, scoreboard helps to check if the
-// output has changed for given set of inputs based on expected logic
-class scoreboard #( int ADDR_WIDTH, int DATA_WIDTH, bit [ADDR_WIDTH-1:0] ADDR_DIV );
-  int flop_stage = 1;
-  int count = 0;
-  mailbox scb_mbx_in;
-  mailbox scb_mbx_out;
-  Packet #(.ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH)) queue_in[$];
-  Packet #(.ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH)) item_from_in, ref_item_calc;
-  Packet #(.ADDR_WIDTH(ADDR_WIDTH), .DATA_WIDTH(DATA_WIDTH)) item_from_out, ref_item_from_in;
+class spi_scb extends uvm_scoreboard;
+  `uvm_component_utils(spi_scb)
 
-  task run();
-      ref_item_calc = new();
-      ref_item_from_in = new();
-    fork
-      forever begin
-        $display("T=%0t [Scoreboard] run task and waiting for item_from_in", $time);
-        scb_mbx_in.get(item_from_in);
+  uvm_analysis_imp#(spi_tran, spi_scb) scb_imp;
+  virtual spi_if vif;
 
-        item_from_in.print("Scoreboard item_from_in: ");
+  // Internal tracking variables
+  bit busy_prev, done_prev, start_prev;
+  int busy_cycle_count;
+  bit in_transaction;
 
-        if (item_from_in.rstn) begin
-          if (item_from_in.vld) begin
-            if (item_from_in.addr <= ADDR_DIV) begin
-              ref_item_calc.addr_a <= item_from_in.addr;
-              ref_item_calc.data_a <= item_from_in.data;
-              ref_item_calc.addr_b <= 0;
-              ref_item_calc.data_b <= 0;
-            end
-            else begin
-              ref_item_calc.addr_a <= 0;
-              ref_item_calc.data_a <= 0;
-              ref_item_calc.addr_b <= item_from_in.addr;
-              ref_item_calc.data_b <= item_from_in.data;
-            end
-          end
-        end
-        else begin
-          ref_item_calc.addr_a <= 0;
-          ref_item_calc.data_a <= 0;
-          ref_item_calc.addr_b <= 0;
-          ref_item_calc.data_b <= 0;
-        end
+  function new(string name, uvm_component parent);
+    super.new(name, parent);
+    scb_imp = new("scb_imp", this);
+  endfunction
 
-        queue_in.push_back(ref_item_calc);
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+
+    if (!uvm_config_db#(virtual spi_if)::get(this, "", "vif", vif)) begin
+      `uvm_fatal("NOVIF", "Virtual interface for scoreboard not set")
+    end
+  endfunction
+
+  function void write(spi_tran tr);
+    `uvm_info("SPI_SCB", $sformatf(
+      "Transaction received: start=%0b tx_data=0x%0h rx_data=0x%0h",
+      tr.start, tr.tx_data, tr.rx_data
+    ), UVM_LOW);
+  endfunction
+
+  task run_phase(uvm_phase phase);
+    forever begin
+      @(posedge vif.clk);
+
+      // (A) start during busy
+      if (vif.mon_cb.start && vif.mon_cb.busy) begin
+        `uvm_error("PROTO", "Start asserted while busy=1 (should be ignored)")
       end
-      forever begin
-        $display("T=%0t [Scoreboard] run task and waiting for item_from_out", $time);
-        scb_mbx_out.get(item_from_out);
-        item_from_out.print("Scoreboard item_from_out: ");
-        if (count < flop_stage) begin
-            count++;
-            continue;
-        end
 
-        if (queue_in.size() == 0) begin
-          $display("T=%0t [Scoreboard] Error - Queue is empty!", $time);
-        end
+      // (B) Busy goes high immediately after start
+      if (vif.mon_cb.start && !start_prev) begin
+        if (!vif.mon_cb.busy)
+          `uvm_error("PROTO", "Busy did not assert immediately after start")
         else begin
-          ref_item_from_in = queue_in.pop_front();
-          ref_item_from_in.print("Scoreboard ref_item_from_in: ");
-
-
-          if (ref_item_from_in.addr_a != item_from_out.addr_a) begin
-            $display("T=%0t Scoreboard Error! addr_a mismatch ref_item_from_in=0x%0h item_from_out=0x%0h",
-                $time, ref_item_from_in.addr_a, item_from_out.addr_a);
-          end else begin
-            $display("T=%0t Scoreboard Pass! addr_a match ref_item_from_in=0x%0h item_from_out=0x%0h",
-                $time, ref_item_from_in.addr_a, item_from_out.addr_a);
-          end
-
-          if (ref_item_from_in.data_a != item_from_out.data_a) begin
-            $display("T=%0t Scoreboard Error! data_a mismatch ref_item_from_in=0x%0h item_from_out=0x%0h",
-                 $time, ref_item_from_in.data_a, item_from_out.data_a);
-          end else begin
-            $display("T=%0t Scoreboard Pass! data_a match ref_item_from_in=0x%0h item_from_out=0x%0h",
-                $time, ref_item_from_in.data_a, item_from_out.data_a);
-          end
-
-          if (ref_item_from_in.addr_b != item_from_out.addr_b) begin
-            $display("T=%0t Scoreboard Error! addr_b mismatch ref_item_from_in=0x%0h item_from_out=0x%0h",
-                $time, ref_item_from_in.addr_b, item_from_out.addr_b);
-          end else begin
-            $display("T=%0t Scoreboard Pass! addr_b match ref_item_from_in=0x%0h item_from_out=0x%0h",
-                $time, ref_item_from_in.addr_b, item_from_out.addr_b);
-          end
-
-          if (ref_item_from_in.data_b != item_from_out.data_b) begin
-            $display("T=%0t Scoreboard Error! data_b mismatch ref_item_from_in=0x%0h item_from_out=0x%0h",
-                 $time, ref_item_from_in.data_b, item_from_out.data_b);
-          end else begin
-            $display("T=%0t Scoreboard Pass! data_b match ref_item_from_in=0x%0h item_from_out=0x%0h",
-                 $time, ref_item_from_in.data_b, item_from_out.data_b);
-          end
+          busy_cycle_count = 0;
+          in_transaction = 1;
         end
       end
-    join_any
+
+      // (C) Count busy cycles
+      if (in_transaction && vif.mon_cb.busy)
+        busy_cycle_count++;
+
+      // (D) Busy should last exactly 8 bits
+      if (busy_prev && !vif.mon_cb.busy) begin
+        if (busy_cycle_count != 8)
+          `uvm_error("PROTO", $sformatf(
+            "Busy lasted %0d cycles, expected 8", busy_cycle_count
+          ));
+        in_transaction = 0;
+      end
+
+      // (E) Done pulse = exactly 1 clock cycle
+      if (vif.mon_cb.done && !done_prev) begin
+        @(posedge vif.clk);
+        if (vif.mon_cb.done)
+          `uvm_error("PROTO", "Done should be 1 cycle only");
+      end
+
+      // (F) Busy deasserts 1 cycle after done
+      if (vif.mon_cb.done && !done_prev) begin
+        @(posedge vif.clk);
+        if (vif.mon_cb.busy)
+          `uvm_error("PROTO", "Busy did not deassert 1 cycle after done");
+      end
+
+      // Update previous values
+      start_prev = vif.mon_cb.start;
+      busy_prev  = vif.mon_cb.busy;
+      done_prev  = vif.mon_cb.done;
+    end
   endtask
 endclass
+
