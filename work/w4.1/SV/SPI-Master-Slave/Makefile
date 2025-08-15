@@ -28,11 +28,10 @@ else
 endif
 
 TEST      = \
-			+define+FIRST_RESET \
+			+define+RESET_ACTIVE_TEST \
 			+define+REQ_01 \
 			+define+REQ_10 \
 			+define+REQ_11 \
-			+define+RESET_ACTIVE_TEST \
 			+define+SCLK_TEST \
 			+define+RESET_ACTIVE_B2B \
 			+define+REQ_00_B2B \
