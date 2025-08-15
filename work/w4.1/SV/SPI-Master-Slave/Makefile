@@ -20,11 +20,16 @@ vdCov.conf vdCovLog build.log sim.log .fsm.sch.verilog.xml dump.fsdb*
 
 # Toggle to non zero value to test own spi_master
 export own ?= 0
+export old ?= 0
 
 ifneq ($(own), 0)
 	SRC		  = -f ./build_own.f
 else
-	SRC		  = -f ./build.f
+    ifneq ($(old), 0)
+        SRC = -f ./build_old.f
+    else
+        SRC = -f ./build.f
+    endif
 endif
 
 TEST      = \
@@ -40,6 +45,9 @@ TEST      = \
 			+define+REQ_11_B2B
 
 #target
+
+old:
+	make all old=1
 
 own:
 	make all own=1

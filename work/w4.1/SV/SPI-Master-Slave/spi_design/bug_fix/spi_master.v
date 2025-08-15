@@ -103,11 +103,14 @@ module spi_master
 						if(data_index_tx <= (SPI_TRF_BIT-1)) begin
 							mosi_temp <= din_temp[(SPI_TRF_BIT-1) - data_index_tx]; // MSB is sent first
 							data_index_tx <= data_index_tx + 1;
-						end else begin
+						end
+					end
+					if(sclk_negedge) begin
+						if(data_index_tx > (SPI_TRF_BIT-1)) begin
 							state_tx <= WAIT_STATE_2;
 							din_temp <= {SPI_TRF_BIT{1'd0}};
 							mosi_temp <= 1'b0;
-                            req_temp <= 2'b00;
+							req_temp <= 2'b00;
 							data_index_tx <= 4'd0;
 						end
 					end
@@ -154,12 +157,12 @@ module spi_master
 						if(data_index_rx <= (SPI_TRF_BIT-1)) begin
 							data_index_rx <= data_index_rx + 1;
 							dout_temp <= {dout_temp[(SPI_TRF_BIT-2):0], miso};
-						end
-						else begin
-							done_temp_rx <= 1'b1;
-							data_index_rx <= 4'd0;
-							state_rx <= IDLE_RX;
-                            req_temp <= 2'b00;
+							if (data_index_rx == (SPI_TRF_BIT-1)) begin
+								done_temp_rx <= 1'b1;
+								data_index_rx <= 4'd0;
+								state_rx <= IDLE_RX;
+								req_temp <= 2'b00;
+							end
 						end
 					end
 				end
