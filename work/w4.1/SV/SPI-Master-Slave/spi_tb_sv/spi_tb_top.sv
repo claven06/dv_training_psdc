@@ -41,13 +41,6 @@ logic [(SPI_TRF_BIT-1):0] prev_dout_master;
 logic [(SPI_TRF_BIT-1):0] prev_dout_slave;
 int sclk_posedge_count, sclk_negedge_count;
 
-// task to randomize inputs
-task randomize_inputs();
-	wait_duration = $urandom_range(1, 27);     // avoid 0 wait time
-	din_master    = $urandom_range(0, 255);
-	din_slave     = $urandom_range(0, 255);
-endtask
-
 // Testbench signals
 typedef enum {
     NONE,
@@ -61,7 +54,8 @@ typedef enum {
     REQ_00_B2B,
     REQ_01_B2B,
     REQ_10_B2B,
-    REQ_11_B2B
+    REQ_11_B2B,
+	WAIT_STATE_1_to_IDLE
 } test_t;
 
 test_t cur_test;
@@ -538,12 +532,41 @@ initial begin
             end
         `endif
 
+
         // Store previous cycle values
         prev_req <= req;
         prev_dout_slave <= dout_slave;
         prev_dout_master <= dout_master;
     end
     $display("[%0t] B2B TESTS SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
+
+	`ifdef WAIT_STATE_1_to_IDLE
+		cur_test <= WAIT_STATE_1_to_IDLE;
+		rst <= 1;
+		req <= 2'b00;
+		repeat (10) @(posedge clk)
+		rst <= 0;
+        din_master <= 8'ha5;
+
+		req <= 2'b01;
+		@(dut.spi_master_inst.state_tx == 2'b01);
+		if (dut.spi_master_inst.state_tx == 2'b01) begin
+			
+            $display("%0t: WAIT_STATE_1_to_IDLE [INPUTS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
+			@(posedge clk);
+			rst <= 1;
+			#1ps
+			if (dut.spi_master_inst.state_tx == 2'b00) begin
+				$display("%0t: WAIT_STATE_1_to_IDLE [PASS] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
+				pass_count++;
+			end else begin
+				$display("%0t: WAIT_STATE_1_to_IDLE [FAIL] req = %b, wait_duration = %0d, din_master = %b, din_slave = %b", $time, req, wait_duration, din_master, din_slave);
+				fail_count++;
+			end
+		end	else $display("Not found");	
+
+	`endif
+	$display("[%0t] WAIT_STATE_1_to_IDLE TESTS SUMMARY: PASS=%0d FAIL=%0d", $time, pass_count, fail_count);
 
     cur_test <= NONE;
     repeat (1000) @(posedge clk);
