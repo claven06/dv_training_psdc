@@ -42,7 +42,8 @@ TEST      = \
 			+define+REQ_00_B2B \
 			+define+REQ_01_B2B \
 			+define+REQ_10_B2B \
-			+define+REQ_11_B2B
+			+define+REQ_11_B2B \
+			+define+WAIT_STATE_1_to_IDLE
 
 #target
 
