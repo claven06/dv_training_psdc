@@ -65,6 +65,8 @@ run:
 	else \
 		printf "\033[0;32mTEST PASSED\033[0m: No FAIL in sim.log\n"; \
 	fi
+	@printf "\n-------------------------------------------------------\n\n"
+	@grep --color=always -nH "SUMMARY" sim.log
 
 wave:
 	verdi -ssf dump.fsdb &
