@@ -11,7 +11,7 @@ class spi_seq extends uvm_sequence #(spi_tran);
   task body();
     spi_tran tr;
 
-    repeat (20) begin
+    repeat (200) begin
       tr = spi_tran::type_id::create("tr");
  
       start_item(tr);

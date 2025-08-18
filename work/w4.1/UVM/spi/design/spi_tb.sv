@@ -52,8 +52,12 @@ initial begin
 	uvm_config_db#(virtual spi_if)::set(null, "*scb*", "vif", spi_if);
     run_test("spi_test");
 end
+
 initial begin
   spi_if.rst_n = 0;
+  spi_if.start = 0;
+  spi_if.tx_data = 0;
+  
   repeat (5) @(posedge spi_if.clk); // Hold reset low for 5 cycles
   spi_if.rst_n = 1;
 

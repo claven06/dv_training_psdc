@@ -32,4 +32,21 @@ interface spi_if;
   endclocking
 
 
+  // Done pulse must be 1 cycle
+  property done_one_cycle_pulse;
+    @(posedge clk) disable iff (!rst_n)
+      done |-> ##1 !done;
+  endproperty
+  assert property (done_one_cycle_pulse)
+    else $error("SPI protocol: 'done' not one cycle long");
+
+  // SCLK must idle low when CS_n is high
+  property sclk_idle_low;
+    @(posedge clk) disable iff (!rst_n)
+      (cs_n == 1) |-> (sclk == 0);
+  endproperty
+  assert property (sclk_idle_low)
+    else $error("SPI protocol: SCLK not low when CS_n=1");
+
+
 endinterface
