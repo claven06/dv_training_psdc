@@ -118,7 +118,8 @@ module spi_assertions #(parameter int NUM_BITS=8) (
     // 2.5a. miso is sampled only on falling sclk edges
     property miso_sampled_on_falling_sclk;
         @(posedge clk) disable iff (!rst_n)
-        sclk && busy |-> !sclk && (rx_reg[0] == miso);
+        busy && $changed(rx_reg[0]) |-> $fell(sclk);
+        //sclk && busy |-> !sclk && (rx_reg[0] == miso);
     endproperty
     AST_MISO_SAMPLED_ON_FALLING_SCLK: assert property (miso_sampled_on_falling_sclk)
         else $error("Failed assertion: miso is sampled only on falling sclk edges");
