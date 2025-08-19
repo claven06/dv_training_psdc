@@ -1,8 +1,0 @@
-Command: vlogan -full64 -l dv_ana.log -sverilog -timescale=1ns/1ps -ntb_opts uvm-ieee-2020-2.0 \
-+define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR  -kdb -lca -f filelist.f
-
-Error-[P1ARGS-CANTOPN-F] Cannot open file
-  Unable to open 'filelist.f' due to 'No such file or directory'.
-  Please fix the reason mentioned above and continue.
-
-CPU time: .102 seconds to compile
