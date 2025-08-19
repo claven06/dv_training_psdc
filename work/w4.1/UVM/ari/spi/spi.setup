@@ -1,0 +1,14 @@
+# For csh
+#setenv ROOT `pwd`
+
+# For bash
+export ROOT=`pwd`
+export TYPE="sv"
+export MODULE="spi"
+export MODULE_TB="spi_tb"
+export FLIST=1
+export UVM_DESIGN="$ROOT/design"
+export UVM_HOME="/home/synopsys/vcs/W-2024.09-SP2/etc/uvm-ieee-2020-2.0"
+export UVM_LIBS="$ROOT/libs"
+export COVERAGE=1
+export ASSERT=1

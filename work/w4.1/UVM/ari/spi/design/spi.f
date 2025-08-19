@@ -1,0 +1,9 @@
++incdir+$UVM_DESIGN
++incdir+$UVM_HOME/src
+$UVM_HOME/src/uvm_pkg.sv
+$UVM_DESIGN/spi_if.sv
+$UVM_DESIGN/spi_slave_if.sv
+$UVM_DESIGN/spi_pkg.sv
+$UVM_DESIGN/spi.sv
+$UVM_DESIGN/spi_assertions.sv
+$UVM_DESIGN/spi_tb.sv
