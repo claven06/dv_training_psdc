@@ -76,7 +76,7 @@ module spi_tb;
       end
 
       begin
-        #20000ns; // set timeout duration
+        #1000000ns; // set timeout duration
         `uvm_fatal("TIMEOUT", $sformatf("Test timed out after %0t",$time))
       end
     join_any

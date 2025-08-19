@@ -6,14 +6,8 @@ if (! $?TYPE) then
 endif
 
 # Check to ensure at least 2 inputs
-#if (($#argv != 2) || ($1 == "")) then
-#    echo "[1] Usage: $0 <dv|idebug|pdebug|cov> <module_name>"
-#    exit 1
-#endif
-
-# Check to ensure at least 2 inputs
 if (($#argv < 2) || ($1 == "")) then
-    echo "[1] Usage: $0 <dv|idebug|pdebug|cov> <module_name> [uvm_testname]"
+    echo "[1] Usage: $0 <dv|idebug|pdebug|cov> <module_name> [uvm_testname] [iter]"
     exit 1
 endif
 
@@ -24,7 +18,15 @@ else
     setenv UVM_TESTNAME "spi_base_test"
 endif
 
+# Optional 4th argument for ITER
+if ($#argv >= 4) then
+    setenv ITER $4
+else
+    setenv ITER 10
+endif
+
 echo "[==== INFO ====] UVM_TESTNAME: $UVM_TESTNAME"
+echo "[==== INFO ====] ITER: $ITER"
 
 # Check to ensure the valid 1st input
 if (($1 != "dv") && ($1 != "idebug") && ($1 != "pdebug") && ($1 != "cov")) then
@@ -127,7 +129,7 @@ if ($MODE == "dv") then
             echo "$command" >> $qrun_file
         endif
 
-        set command = "$MODULE\_simv -l $MODULE\_sim.log +UVM_NO_RELNOTES $coverage2 $assert2"
+        set command = "$MODULE\_simv -l $MODULE\_sim.log +UVM_NO_RELNOTES +UVM_TESTNAME=$UVM_TESTNAME +ITER=$ITER $coverage2 $assert2"
         echo "[==== INFO ====] $command"
         if ($NR != 1) then
             eval $command
@@ -143,7 +145,7 @@ if ($MODE == "dv") then
             echo "$command" >> $qrun_file
         endif
 
-        set command = "$MODULE\_simv -l $MODULE\_sim.log +UVM_NO_RELNOTES +UVM_TESTNAME=$UVM_TESTNAME $coverage2 $assert2"
+        set command = "$MODULE\_simv -l $MODULE\_sim.log +UVM_NO_RELNOTES +UVM_TESTNAME=$UVM_TESTNAME +ITER=$ITER $coverage2 $assert2"
         echo "[==== INFO ====] $command"
         if ($NR != 1) then
             eval $command

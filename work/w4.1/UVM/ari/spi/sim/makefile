@@ -12,4 +12,4 @@ clean:
 	\rm -frd qrun sysProgressP.conf sysProgressPLog vdCov.conf vdCovLog
 
 run_dv:
-	${ROOT}/sim/run_sim.csh dv ${MODULE} ${TEST}
+	${ROOT}/sim/run_sim.csh dv ${MODULE} ${TEST} ${ITER}

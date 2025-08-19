@@ -2,7 +2,7 @@ class spi_tran extends uvm_sequence_item;
   //inputs
   rand logic rst_n;
   rand logic start;
-  rand logic [7:0] tx_data;
+  randc logic [7:0] tx_data;
   //rand logic miso;
   logic miso;
 

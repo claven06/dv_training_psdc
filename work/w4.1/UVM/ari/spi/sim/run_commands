@@ -1,0 +1,4 @@
+make dv MODULE=spi TEST=spi_base_test ITER=100
+make dv MODULE=spi TEST=spi_clock_test ITER=100
+make dv MODULE=spi TEST=spi_reset_test ITER=100
+make dv MODULE=spi TEST=spi_mosi_integrity_test ITER=100
